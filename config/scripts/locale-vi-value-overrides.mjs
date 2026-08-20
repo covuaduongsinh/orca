@@ -165,6 +165,10 @@ export const VI_VALUE_OVERRIDES = {
   // NEVER_TRANSLATE_VALUES' capitalized "Grok") got MT'd to "mò mẫm" — the English verb "to
   // grok" (understand intuitively) — instead of staying the product name.
   grok: 'grok',
+  // Why: "Fable" (the Fable 5 model brand) is absent from the shared NEVER_TRANSLATE_VALUES —
+  // es/ja/ko/zh happened not to mistranslate it, but vi's MT rendered it as the literal noun
+  // "truyện ngụ ngôn" (a fable/moral story).
+  Fable: 'Fable',
   // Why: MT restructured the whole phrase rather than leaving "runtime" isolable as a
   // substring, so there is no safe wrong-form to extract — pin these two leaves directly.
   'Codex usage runtime': 'Runtime sử dụng Codex',

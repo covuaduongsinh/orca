@@ -1292,7 +1292,10 @@
         "0d0ace8861": "Sao trên GitHub",
         "ec43b38ba7": "Được gắn dấu sao trên GitHub",
         "157bb5ecbb": "Mở GitHub",
-        "preflightDismiss": "Bỏ qua"
+        "preflightDismiss": "Bỏ qua",
+        "createShortcutAction": "Tạo {{value0}}",
+        "moveUpShortcutAction": "Di chuyển lên workspace",
+        "moveDownShortcutAction": "Di chuyển xuống workspace"
       },
       "LinearIssueMarkdownDescriptionEditor": {
         "d9c47069ef": "Markdown",
@@ -3409,9 +3412,9 @@
             "c35af53b73": "Đăng nhập",
             "f19a63e7cd": "Đăng nhập để xem cách sử dụng",
             "5c938d39ac": "tuần",
-            "54e8d6bb2d": "truyện ngụ ngôn",
+            "54e8d6bb2d": "Fable",
             "d79c3362c4": "5 giờ",
-            "a79c64f87e": "truyện ngụ ngôn",
+            "a79c64f87e": "Fable",
             "8295903d17": "Khởi động lại terminal Claude trực tiếp trước khi tiếp tục các cuộc trò chuyện cũ sau khi chuyển đổi.",
             "c98ea88392": "Không có tài khoản nào khác",
             "9332ba8684": "Chuyển sang",
@@ -3599,7 +3602,7 @@
             "6d6df77f41": "Không có sẵn dữ liệu",
             "7f7f208060": "hàng tháng",
             "252c096536": "hàng tuần",
-            "a79c64f87e": "truyện ngụ ngôn",
+            "a79c64f87e": "Fable",
             "94038ad2fa": "Phiên họp",
             "2c35eca8d4": "Không thể fetch mức sử dụng",
             "1292d4f2ee": "Không có sẵn",

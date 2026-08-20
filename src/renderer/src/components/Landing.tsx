@@ -246,10 +246,20 @@ export default function Landing(): React.JSX.Element {
       {
         id: 'create',
         shortcut: createWorktreeShortcut,
-        action: `Create ${createTargetLabel.toLowerCase()}`
+        action: translate('auto.components.Landing.createShortcutAction', 'Create {{value0}}', {
+          value0: createTargetLabel.toLowerCase()
+        })
       },
-      { id: 'up', shortcut: previousWorktreeShortcut, action: 'Move up workspace' },
-      { id: 'down', shortcut: nextWorktreeShortcut, action: 'Move down workspace' }
+      {
+        id: 'up',
+        shortcut: previousWorktreeShortcut,
+        action: translate('auto.components.Landing.moveUpShortcutAction', 'Move up workspace')
+      },
+      {
+        id: 'down',
+        shortcut: nextWorktreeShortcut,
+        action: translate('auto.components.Landing.moveDownShortcutAction', 'Move down workspace')
+      }
     ]
   }, [createTargetLabel, createWorktreeShortcut, nextWorktreeShortcut, previousWorktreeShortcut])
 
