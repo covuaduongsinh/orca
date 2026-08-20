@@ -79,6 +79,7 @@ export type GlobalSettings = {
   leftSidebarTintColor?: string
   leftSidebarTintOpacity?: number
   uiLanguage: UiLanguage
+  uiLanguageDefaultedToVietnamese?: boolean
   appIcon: AppIconId
   appFontFamily: string
   editorAutoSave: boolean

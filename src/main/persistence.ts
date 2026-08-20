@@ -277,6 +277,7 @@ import {
 } from '../shared/osc52-clipboard-settings'
 import { normalizeTerminalLineHeight } from '../shared/terminal-line-height-settings'
 import { normalizeUiLanguage } from '../shared/ui-language'
+import { normalizeUiLanguageDefaultToVietnamese } from '../shared/ui-language-default-migration'
 import { normalizeBrowserPageZoomLevel } from '../shared/browser-page-zoom'
 import { persistedUIValuesEqual } from '../shared/persisted-ui-equality'
 import { ActiveViewPreference } from './active-view-preference'
@@ -3390,6 +3391,10 @@ export class Store {
           parsed.settings
         )
         const migratedTerminalCursorStyle = normalizeTerminalCursorStyleDefault(parsed.settings)
+        const migratedUiLanguage = normalizeUiLanguageDefaultToVietnamese(parsed.settings)
+        if (parsed.settings?.uiLanguageDefaultedToVietnamese !== true) {
+          this.loadNeedsSave = true
+        }
         if (
           parsed.settings?.terminalCursorStyle !==
             migratedTerminalCursorStyle.terminalCursorStyle ||
@@ -3626,7 +3631,7 @@ export class Store {
             minimizeToTrayOnClose: parsed.settings?.minimizeToTrayOnClose === true,
             // Why: missing means default-on; round-trips unchanged on non-mac since darwin consumers gate the effect.
             showMenuBarIcon: parsed.settings?.showMenuBarIcon !== false,
-            uiLanguage: normalizeUiLanguage(parsed.settings?.uiLanguage),
+            ...migratedUiLanguage,
             defaultTaskSource: taskProviderSettings.defaultTaskSource,
             visibleTaskProviders: taskProviderSettings.visibleTaskProviders,
             visibleTaskProvidersDefaultedForJira: true,
@@ -6135,6 +6140,9 @@ export class Store {
     }
     if ('uiLanguage' in updates) {
       sanitizedUpdates.uiLanguage = normalizeUiLanguage(updates.uiLanguage)
+    }
+    if ('uiLanguage' in updates || 'uiLanguageDefaultedToVietnamese' in updates) {
+      sanitizedUpdates.uiLanguageDefaultedToVietnamese = true
     }
     if ('prBotAuthorOverrides' in updates) {
       // Why: every writer (desktop IPC, web RPC, migrations) hits this boundary, so the persisted list stays bounded and well-formed.

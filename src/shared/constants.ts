@@ -21,7 +21,7 @@ import { DEFAULT_OPEN_IN_APPLICATIONS } from './open-in-applications'
 import { DEFAULT_BROWSER_PAGE_ZOOM_LEVEL } from './browser-page-zoom'
 import { DEFAULT_DISABLED_TUI_AGENTS } from './tui-agent-selection'
 import { DEFAULT_TUI_AGENT_ARGS, DEFAULT_TUI_AGENT_ENV } from './tui-agent-launch-defaults'
-import { UI_LANGUAGE_SYSTEM } from './ui-language'
+import { UI_LANGUAGE_VIETNAMESE } from './ui-language'
 import {
   DEFAULT_LEFT_SIDEBAR_TINT_COLOR,
   DEFAULT_LEFT_SIDEBAR_TINT_OPACITY
@@ -184,7 +184,8 @@ export function getDefaultSettings(homedir: string): GlobalSettings {
     leftSidebarAppearanceMode: 'default',
     leftSidebarTintColor: DEFAULT_LEFT_SIDEBAR_TINT_COLOR,
     leftSidebarTintOpacity: DEFAULT_LEFT_SIDEBAR_TINT_OPACITY,
-    uiLanguage: UI_LANGUAGE_SYSTEM,
+    uiLanguage: UI_LANGUAGE_VIETNAMESE,
+    uiLanguageDefaultedToVietnamese: true,
     appIcon: DEFAULT_APP_ICON_ID,
     appFontFamily: DEFAULT_APP_FONT_FAMILY,
     editorAutoSave: false,
