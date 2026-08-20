@@ -11,7 +11,8 @@ const LOCALE_CACHE_FILES = {
   ko: '.ko-catalog-cache.json',
   zh: '.zh-catalog-cache.json',
   ja: '.ja-catalog-cache.json',
-  es: '.es-catalog-cache.json'
+  es: '.es-catalog-cache.json',
+  vi: '.vi-catalog-cache.json'
 }
 
 function parseLocaleArg(argv) {

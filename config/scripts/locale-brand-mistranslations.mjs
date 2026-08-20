@@ -163,5 +163,36 @@ export const BRAND_MISTRANSLATIONS = {
     Repos: ['Repositorios', 'repositorios'],
     repo: ['repositorio'],
     repos: ['repositorios']
+  },
+  vi: {
+    Orca: ['cá voi sát thủ', 'Cá voi sát thủ', 'cá kình', 'Cá kình'],
+    Codex: ['bộ luật', 'Bộ luật', 'pháp điển'],
+    Gemini: ['Song Tử', 'song tử'],
+    Cursor: ['con trỏ', 'Con trỏ'],
+    Goose: ['con ngỗng', 'Con ngỗng', 'ngỗng'],
+    Charm: ['sự quyến rũ', 'quyến rũ'],
+    Linear: ['tuyến tính', 'Tuyến tính'],
+    Discord: ['sự bất hòa', 'Bất hòa', 'bất hòa'],
+    Droid: ['người máy', 'rô bốt'],
+    // MT sometimes leaves the brand name untranslated but re-cases it as two words.
+    Antigravity: ['phản trọng lực', 'chống trọng lực', 'AntiGravity'],
+    OpenCode: ['mã nguồn mở', 'Mã nguồn mở'],
+    Amp: ['bộ khuếch đại', 'Ampe'],
+    Pi: ['số pi', 'Số Pi'],
+    Jira: ['jira'],
+    Bitbucket: ['thùng bit'],
+    Tailscale: ['vảy đuôi'],
+    'GitHub Copilot': ['Phi công phụ GitHub', 'phi công phụ'],
+    'Claude Code': ['Mã Claude'],
+    'VS Code': ['Mã VS'],
+    Markdown: ['đánh dấu xuống', 'Giảm giá', 'giảm giá'],
+    markdown: ['đánh dấu xuống', 'giảm giá'],
+    Mermaid: ['nàng tiên cá'],
+    PowerShell: ['vỏ nguồn', 'vỏ điện'],
+    Bash: ['đập'],
+    Swift: ['nhanh chóng'],
+    Rust: ['rỉ sắt', 'gỉ'],
+    REST: ['Nghỉ ngơi', 'nghỉ ngơi'],
+    HEAD: ['cái đầu', 'Cái đầu', 'ĐẦU']
   }
 }

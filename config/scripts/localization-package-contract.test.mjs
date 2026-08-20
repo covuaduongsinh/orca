@@ -17,6 +17,7 @@ describe('localization package scripts', () => {
     expect(scripts['bootstrap:ko-catalog']).toBeUndefined()
     expect(scripts['bootstrap:ja-catalog']).toBeUndefined()
     expect(scripts['bootstrap:es-catalog']).toBeUndefined()
+    expect(scripts['bootstrap:vi-catalog']).toBeUndefined()
     expect(scripts['repair:locale-catalog']).toBeUndefined()
   })
 })

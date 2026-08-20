@@ -3,6 +3,11 @@
 // inside a sentence. The product-name homonyms (Continue.dev, the agent entries) stay Latin
 // through ENGLISH_ONLY_KEY_PREFIXES, which matches on the catalog key rather than the word.
 
+// `vi` is absent from every `renderings` map on purpose: Vietnamese keeps this vocabulary in
+// English (see locale-vi-phrase-fixes.mjs), so canonicalGenericRenderings('vi') must stay empty
+// and leave the generic-term gate inert for it. Adding vi renderings here would make the gate
+// demand translations the product has decided against.
+
 // Renderings a locale is expected to use. They are translations, never machine-translation
 // errors, so a brand revert must leave them alone. Nonsense forms that share the same English
 // term (zh 回购 "repurchase agreement", ja 端子 "electrical connector", es "Comprometerse")

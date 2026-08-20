@@ -217,10 +217,41 @@ export const NEVER_TRANSLATE_VALUES = new Set([
 ])
 
 export const NATIVE_PICKER_LABELS = {
-  zh: { chinese: '中文（简体）', korean: '한국어', japanese: '日本語', spanish: 'Español' },
-  ko: { chinese: '中文（简体）', korean: '한국어', japanese: '日本語', spanish: 'Español' },
-  ja: { chinese: '中文（简体）', korean: '한국어', japanese: '日本語', spanish: 'Español' },
-  es: { chinese: '中文（简体）', korean: '한국어', japanese: '日本語', spanish: 'Español' }
+  zh: {
+    chinese: '中文（简体）',
+    korean: '한국어',
+    japanese: '日本語',
+    spanish: 'Español',
+    vietnamese: 'Tiếng Việt'
+  },
+  ko: {
+    chinese: '中文（简体）',
+    korean: '한국어',
+    japanese: '日本語',
+    spanish: 'Español',
+    vietnamese: 'Tiếng Việt'
+  },
+  ja: {
+    chinese: '中文（简体）',
+    korean: '한국어',
+    japanese: '日本語',
+    spanish: 'Español',
+    vietnamese: 'Tiếng Việt'
+  },
+  es: {
+    chinese: '中文（简体）',
+    korean: '한국어',
+    japanese: '日本語',
+    spanish: 'Español',
+    vietnamese: 'Tiếng Việt'
+  },
+  vi: {
+    chinese: '中文（简体）',
+    korean: '한국어',
+    japanese: '日本語',
+    spanish: 'Español',
+    vietnamese: 'Tiếng Việt'
+  }
 }
 
 const CJK_LATIN_SPACED_TERM_PATTERN = CJK_LATIN_SPACED_TERMS.join('|')
