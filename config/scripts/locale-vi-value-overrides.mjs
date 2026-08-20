@@ -169,6 +169,9 @@ export const VI_VALUE_OVERRIDES = {
   // es/ja/ko/zh happened not to mistranslate it, but vi's MT rendered it as the literal noun
   // "truyện ngụ ngôn" (a fable/moral story).
   Fable: 'Fable',
+  // Why: "primary" (the primary/main worktree or branch badge) got MT'd to "sơ đẳng"
+  // ("elementary" as in elementary school) instead of "chính" (main/primary).
+  primary: 'chính',
   // Why: MT restructured the whole phrase rather than leaving "runtime" isolable as a
   // substring, so there is no safe wrong-form to extract — pin these two leaves directly.
   'Codex usage runtime': 'Runtime sử dụng Codex',
