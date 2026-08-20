@@ -18,9 +18,10 @@ import en from './locales/en.json'
 import es from './locales/es.json'
 import ja from './locales/ja.json'
 import ko from './locales/ko.json'
+import vi from './locales/vi.json'
 import zh from './locales/zh.json'
 
-const catalogs = { es, ja, ko, zh }
+const catalogs = { es, ja, ko, vi, zh }
 
 function lookup(catalog: unknown, key: string): string | undefined {
   const value = key

@@ -14,6 +14,10 @@ const SEEN_FIRST_RUN_FEATURE_INTERACTION_TIMESTAMP = Date.parse('2026-01-01T00:0
 export function getE2ECompletedOnboardingProfile() {
   return {
     settings: {
+      // Why: E2E assertions are written in English, so pin the locale instead of inheriting
+      // the product default. The flag stops the Vietnamese-default migration re-flipping it.
+      uiLanguage: 'en',
+      uiLanguageDefaultedToVietnamese: true,
       telemetry: {
         optedIn: true,
         installId: '00000000-0000-4000-8000-000000000000',

@@ -28,6 +28,7 @@ import { TEST_REPO_PATH_FILE } from '../global-setup'
 import { cleanupE2EDaemons, closeElectronAppForE2E } from './electron-process-shutdown'
 import { getOrcaElectronLaunchArgs } from './electron-launch-args'
 import { getE2ECompletedOnboardingProfile } from './e2e-completed-onboarding-profile'
+import { getE2EPendingOnboardingProfile } from './e2e-pending-onboarding-profile'
 import {
   assertElectronResolvedIsolatedHome,
   createElectronHomeIsolation
@@ -44,6 +45,9 @@ type OrcaTestFixtures = {
   // events for every other test. Dismiss it by default; onboarding.spec.ts
   // opts out via `test.use({ dismissOnboarding: false })`.
   dismissOnboarding: boolean
+  // Seeds an English-locale profile that still shows onboarding. Only a spec that must see
+  // a completely empty userData directory should turn this off.
+  seedPendingOnboardingProfile: boolean
   // Why: most E2E specs need a ready project before assertions start. Golden
   // first-run specs opt out so they can prove the zero-project onboarding path.
   seedTestRepo: boolean
@@ -172,6 +176,7 @@ export const test = base.extend<OrcaTestFixtures, OrcaWorkerFixtures>({
   electronApp: async (
     {
       dismissOnboarding,
+      seedPendingOnboardingProfile,
       launchEnv,
       orcaAppExtraEnv,
       orcaAppExtraArgs,
@@ -186,6 +191,14 @@ export const test = base.extend<OrcaTestFixtures, OrcaWorkerFixtures>({
     const mainPath = path.join(process.cwd(), 'out', 'main', 'index.js')
     const userDataDir = mkdtempSync(path.join(os.tmpdir(), 'orca-e2e-userdata-'))
 
+    if (!dismissOnboarding && seedPendingOnboardingProfile) {
+      // Why: with no file at all the profile inherits the product default UI language
+      // (Vietnamese), which every English assertion in these specs would then miss.
+      writeFileSync(
+        path.join(userDataDir, 'orca-data.json'),
+        `${JSON.stringify(getE2EPendingOnboardingProfile(), null, 2)}\n`
+      )
+    }
     if (dismissOnboarding) {
       // Why: onboarding renders a fullscreen `fixed inset-0 z-[100]` overlay
       // when persisted `closedAt` is null, which intercepts pointer events for
@@ -272,6 +285,8 @@ export const test = base.extend<OrcaTestFixtures, OrcaWorkerFixtures>({
 
   // Default: dismiss the onboarding overlay so it doesn't intercept clicks.
   dismissOnboarding: [true, { option: true }],
+  // Why: opt out only when a spec exists to exercise the truly-empty profile directory.
+  seedPendingOnboardingProfile: [true, { option: true }],
   seedTestRepo: [true, { option: true }],
   launchEnv: [{}, { option: true }],
   orcaAppExtraEnv: [{}, { option: true }],
