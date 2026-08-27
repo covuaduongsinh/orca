@@ -11,6 +11,7 @@ import {
   type ReactNode
 } from 'react'
 import type { RpcClient } from './rpc-client'
+import type { StableLogicalRpcClient } from './stable-logical-rpc-client'
 import { subscribeConnectionRevivalTriggers } from './connection-revival-triggers'
 import { HostClientOpenRegistry } from './host-client-open-registry'
 import {
@@ -19,6 +20,7 @@ import {
 } from './host-client-acquisition-registry'
 import { HostOpenRetryScheduler } from './host-open-retry-scheduler'
 import { openHostClientEntry, type HostClientStoreEntry } from './host-entry-opener'
+import { shouldPreserveActiveRelay } from './relay-reconnect-preservation'
 import {
   createHostClientSelectors,
   listHostClients,
@@ -76,6 +78,7 @@ export function RpcClientProvider({ children }: { children: ReactNode }) {
       primedHostsRef.current.delete(hostId)
     }
     entry?.unsubState()
+    entry?.unsubConnectionPath()
     storeRef.current.delete(hostId)
     entry?.client.close()
     notifyHostState(hostId, 'disconnected')
@@ -237,11 +240,19 @@ export function RpcClientProvider({ children }: { children: ReactNode }) {
   const forceReconnect = useCallback(
     async (hostId: string) => {
       const entry = storeRef.current.get(hostId)
+      const logical = entry?.client as Partial<StableLogicalRpcClient> | undefined
+      if (entry && shouldPreserveActiveRelay(entry, logical)) {
+        // Keep a Relay-active host on its existing recovery state; rebuilding the
+        // facade starts the unreachable direct endpoint before Relay can race it.
+        entry.client.notifyForeground('app-resume')
+        return
+      }
       // Why: ownership survives explicit close/re-pair while observers never become synthetic owners.
       const savedRefCount = acquisitionsRef.current.count(hostId)
       manualDemandRef.current.add(hostId)
       if (entry) {
         entry.unsubState()
+        entry.unsubConnectionPath()
         entry.client.close()
         storeRef.current.delete(hostId)
       }
@@ -260,8 +271,10 @@ export function RpcClientProvider({ children }: { children: ReactNode }) {
     [openEntry]
   )
 
-  const { getKnownState, getState, getReconnectAttempt, getLastConnectedAt, getActivePath } =
-    useMemo(() => createHostClientSelectors(storeRef.current, pendingOpensRef.current), [])
+  const selectors = useMemo(
+    () => createHostClientSelectors(storeRef.current, pendingOpensRef.current),
+    []
+  )
 
   const subscribeHostState = useCallback(
     (hostId: string, listener: (state: ConnectionState) => void) =>
@@ -318,11 +331,7 @@ export function RpcClientProvider({ children }: { children: ReactNode }) {
       refreshHostClient,
       forgetHostClient,
       disconnectHostClient,
-      getState,
-      getKnownState,
-      getReconnectAttempt,
-      getLastConnectedAt,
-      getActivePath,
+      ...selectors,
       subscribeHostState,
       getAllClients,
       subscribeAllHosts,
@@ -337,11 +346,7 @@ export function RpcClientProvider({ children }: { children: ReactNode }) {
       refreshHostClient,
       forgetHostClient,
       disconnectHostClient,
-      getState,
-      getKnownState,
-      getReconnectAttempt,
-      getLastConnectedAt,
-      getActivePath,
+      selectors,
       subscribeHostState,
       getAllClients,
       subscribeAllHosts,

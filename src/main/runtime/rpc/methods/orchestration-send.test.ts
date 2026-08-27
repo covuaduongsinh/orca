@@ -7,8 +7,11 @@ import type { OrchestrationDb } from '../../orchestration/db'
 import type { OrcaRuntimeService } from '../../orca-runtime'
 import type { RuntimeTerminalSummary } from '../../../../shared/runtime-types'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../shared/protocol-version'
+import { createRootDispatch } from '../../orchestration/db/root-dispatch-test-fixture'
 
-function lifecycleGroupRecipientError(type: 'worker_done' | 'heartbeat'): string {
+function lifecycleGroupRecipientError(
+  type: 'worker_done' | 'heartbeat' | 'escalation' | 'decision_gate'
+): string {
   return `${type} messages belong to one exact Dispatch and cannot target a group address.`
 }
 
@@ -90,7 +93,7 @@ describe('orchestration RPC methods', () => {
     it('routes exact Dispatch mail independently of terminal handles', async () => {
       setup()
       const task = db.createTask({ spec: 'controlled worker' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker')
 
       const result = (await call('orchestration.send', {
         from: 'term_coord',
@@ -115,7 +118,8 @@ describe('orchestration RPC methods', () => {
     it('routes Dispatch mail by stable pane identity after worker handle remint', async () => {
       setup()
       const task = db.createTask({ spec: 'controlled worker after restart' })
-      const dispatch = db.createDispatchContext(
+      const dispatch = createRootDispatch(
+        db,
         task.id,
         'term_worker_before',
         'tab_worker:leaf_worker'
@@ -183,7 +187,7 @@ describe('orchestration RPC methods', () => {
     it('completes an identity-less injected send through its explicit worker handle', async () => {
       setup()
       const task = db.createTask({ spec: 'work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker', 'tab_worker:leaf_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker', 'tab_worker:leaf_worker')
       vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) =>
         handle === 'term_worker' ? 'tab_worker:leaf_worker' : null
       )
@@ -206,11 +210,114 @@ describe('orchestration RPC methods', () => {
       expect(result).toMatchObject({ lifecycle: { action: 'completed' } })
     })
 
+    it('fences a replacement process for a capability-less manual Dispatch', async () => {
+      setup()
+      const task = db.createTask({ spec: 'process-bound manual work' })
+      const dispatch = createRootDispatch(
+        db,
+        task.id,
+        'term_worker',
+        'tab_worker:leaf_worker',
+        undefined,
+        'runtime_test:term_worker:1'
+      )
+      vi.mocked(runtime.getTerminalPaneKey).mockImplementation((handle) =>
+        handle === 'term_worker' ? 'tab_worker:leaf_worker' : coordinatorPaneKey
+      )
+      vi.mocked(runtime.getTerminalProcessIncarnation).mockReturnValue('runtime_test:term_worker:2')
+      const payload = JSON.stringify({
+        taskId: task.id,
+        dispatchId: dispatch.id,
+        outcome: 'succeeded'
+      })
+
+      const rejected = (await call('orchestration.send', {
+        from: 'term_worker',
+        subject: 'Done after replacement',
+        type: 'worker_done',
+        payload
+      })) as { lifecycle: { action: string; code: string } }
+
+      expect(rejected.lifecycle).toEqual({
+        action: 'rejected',
+        code: 'sender_not_assignee',
+        reason: `Dispatch ${dispatch.id} process incarnation is no longer current for its pane.`
+      })
+      expect(db.getTask(task.id)?.status).toBe('dispatched')
+
+      vi.mocked(runtime.getTerminalProcessIncarnation).mockReturnValue('runtime_test:term_worker:1')
+      const accepted = (await call('orchestration.send', {
+        from: 'term_worker',
+        subject: 'Done by assignee',
+        type: 'worker_done',
+        payload
+      })) as { lifecycle: { action: string } }
+      expect(accepted.lifecycle.action).toBe('completed')
+    })
+
+    it.each(['escalation', 'decision_gate'] as const)(
+      'fences a replacement process from a %s mutation',
+      async (type) => {
+        setup()
+        const task = db.createTask({ spec: `process-bound ${type}` })
+        const dispatch = createRootDispatch(
+          db,
+          task.id,
+          'term_worker',
+          'tab_worker:leaf_worker',
+          undefined,
+          'runtime_test:term_worker:1'
+        )
+        vi.mocked(runtime.getTerminalPaneKey).mockImplementation((handle) =>
+          handle === 'term_worker' ? 'tab_worker:leaf_worker' : coordinatorPaneKey
+        )
+        vi.mocked(runtime.getTerminalProcessIncarnation).mockReturnValue(
+          'runtime_test:term_worker:2'
+        )
+
+        const rejected = (await call('orchestration.send', {
+          from: 'term_worker',
+          subject: `${type} after replacement`,
+          type,
+          payload: JSON.stringify({
+            taskId: task.id,
+            ...(type === 'decision_gate' ? { question: 'Proceed?' } : {})
+          })
+        })) as {
+          lifecycle: { action: string; code: string }
+          message: { type: string }
+        }
+
+        expect(rejected.lifecycle).toMatchObject({
+          action: 'rejected',
+          code: 'sender_not_assignee'
+        })
+        expect(db.getTask(task.id)?.status).toBe('dispatched')
+        expect(db.getDispatchContextById(dispatch.id)?.status).toBe('dispatched')
+        expect(db.listGates({ taskId: task.id })).toHaveLength(0)
+        expect(rejected.message.type).toBe('status')
+
+        vi.mocked(runtime.getTerminalProcessIncarnation).mockReturnValue(
+          'runtime_test:term_worker:1'
+        )
+        const accepted = (await call('orchestration.send', {
+          from: 'term_worker',
+          subject: `${type} by assignee`,
+          type,
+          payload: JSON.stringify({
+            taskId: task.id,
+            ...(type === 'decision_gate' ? { question: 'Proceed?' } : {})
+          })
+        })) as { message: { type: string } }
+        expect(accepted.message.type).toBe(type)
+      }
+    )
+
     it('rejects an identity-less lifecycle send resolved through the coordinator handle', async () => {
       setup()
       const task = db.createTask({ spec: 'work' })
       const dependent = db.createTask({ spec: 'dependent', deps: [task.id] })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker', 'tab_worker:leaf_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker', 'tab_worker:leaf_worker')
       vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) =>
         handle === 'term_coord' ? 'tab_coord:leaf_coord' : null
       )
@@ -235,7 +342,7 @@ describe('orchestration RPC methods', () => {
     it('ignores caller-supplied pane claims and uses the runtime-observed pane', async () => {
       setup()
       const task = db.createTask({ spec: 'work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker', 'tab_worker:leaf_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker', 'tab_worker:leaf_worker')
       vi.spyOn(runtime, 'getTerminalPaneKey').mockReturnValue('tab_worker:leaf_worker')
       vi.spyOn(runtime, 'deliverPendingMessagesForHandle').mockImplementation(() => {})
       vi.spyOn(runtime, 'notifyMessageArrived').mockImplementation(() => {})
@@ -271,7 +378,7 @@ describe('orchestration RPC methods', () => {
     it('requires the minted capability, exact pane, and process incarnation', async () => {
       setup()
       const task = db.createTask({ spec: 'capability work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker', 'tab_worker:leaf_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker', 'tab_worker:leaf_worker')
       const capability = db.mintDispatchCapability({
         dispatchId: dispatch.id,
         paneKey: 'tab_worker:leaf_worker',
@@ -353,7 +460,7 @@ describe('orchestration RPC methods', () => {
     it('does not wake waiters for a heartbeat suppressed at send time', async () => {
       setup()
       const task = db.createTask({ spec: 'work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker')
       db.updateTaskStatus(task.id, 'completed')
       vi.spyOn(runtime, 'deliverPendingMessagesForHandle').mockImplementation(() => {})
       const notify = vi.spyOn(runtime, 'notifyMessageArrived').mockImplementation(() => {})
@@ -373,7 +480,7 @@ describe('orchestration RPC methods', () => {
     it('still wakes waiters for a heartbeat on an active dispatch', async () => {
       setup()
       const task = db.createTask({ spec: 'work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker')
       vi.spyOn(runtime, 'deliverPendingMessagesForHandle').mockImplementation(() => {})
       const notify = vi.spyOn(runtime, 'notifyMessageArrived').mockImplementation(() => {})
 
@@ -498,6 +605,13 @@ describe('orchestration RPC methods', () => {
         totalCount: terminals.length,
         truncated: false
       })
+      vi.mocked(runtime.getTerminalPaneKey).mockImplementation((handle) => {
+        if (handle === 'term_coord') {
+          return coordinatorPaneKey
+        }
+        const terminal = terminals.find((candidate) => candidate.handle === handle)
+        return terminal ? `${terminal.tabId}:${terminal.leafId}` : null
+      })
       vi.spyOn(runtime, 'getAgentStatusForHandle').mockImplementation(
         (handle: string) => agentStatuses?.[handle] ?? null
       )
@@ -551,10 +665,31 @@ describe('orchestration RPC methods', () => {
       expect(db.getInbox(100)).toHaveLength(0)
     })
 
+    it.each(['escalation', 'decision_gate'] as const)(
+      'rejects %s group sends before inserting rows',
+      async (type) => {
+        setup()
+        const listTerminals = vi.spyOn(runtime, 'listTerminals')
+
+        await expect(
+          call('orchestration.send', {
+            from: 'term_worker',
+            to: '@all',
+            subject: `${type} broadcast`,
+            type,
+            payload: JSON.stringify({ taskId: 'task_1' })
+          })
+        ).rejects.toThrow(lifecycleGroupRecipientError(type))
+
+        expect(listTerminals).not.toHaveBeenCalled()
+        expect(db.getInbox(100)).toHaveLength(0)
+      }
+    )
+
     it('continues to send worker_done to a concrete terminal handle', async () => {
       setup()
       const task = db.createTask({ spec: 'work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker')
 
       const result = (await call('orchestration.send', {
         from: 'term_worker',
@@ -701,7 +836,7 @@ describe('orchestration RPC methods', () => {
     it('releases dispatch lock before waking recipients when worker_done is sent via send', async () => {
       setup()
       const task = db.createTask({ spec: 'lock-release work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker')
 
       // Why: waiter notification must observe the settled Dispatch, not stale lifecycle state.
       vi.spyOn(runtime, 'notifyMessageArrived').mockImplementation(() => {
@@ -726,13 +861,13 @@ describe('orchestration RPC methods', () => {
       expect(db.getActiveDispatchForTerminal('term_worker')).toBeUndefined()
       // Lock released — a new dispatch to the same terminal must succeed.
       const t2 = db.createTask({ spec: 'follow-up work' })
-      expect(() => db.createDispatchContext(t2.id, 'term_worker')).not.toThrow()
+      expect(() => createRootDispatch(db, t2.id, 'term_worker')).not.toThrow()
     })
 
     it('records heartbeat when heartbeat is sent via send', async () => {
       setup()
       const task = db.createTask({ spec: 'heartbeat work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker')
       vi.spyOn(runtime, 'deliverPendingMessagesForHandle').mockImplementation(() => {})
 
       await call('orchestration.send', {
@@ -752,7 +887,7 @@ describe('orchestration RPC methods', () => {
     it('does not release dispatch lock for non-lifecycle sends', async () => {
       setup()
       const task = db.createTask({ spec: 'in-flight work' })
-      const dispatch = db.createDispatchContext(task.id, 'term_worker')
+      const dispatch = createRootDispatch(db, task.id, 'term_worker')
       vi.spyOn(runtime, 'deliverPendingMessagesForHandle').mockImplementation(() => {})
 
       await call('orchestration.send', {
