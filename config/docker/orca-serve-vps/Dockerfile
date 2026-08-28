@@ -1,0 +1,87 @@
+# Builds and runs `orca serve` (the headless Orca runtime) for remote client
+# pairing on a Dokploy-managed VPS. See docs/reference/headless-linux-server.md
+# for the non-Docker systemd deployment this mirrors.
+
+FROM node:24-bookworm AS build
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatspi2.0-0 \
+    libdrm2 \
+    libgbm1 \
+    libgtk-3-0 \
+    libnss3 \
+    libsecret-1-dev \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxkbcommon0 \
+    libxrandr2 \
+    libxss1 \
+    pkg-config \
+    python3 \
+    rpm \
+    zlib1g-dev \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable \
+  && corepack prepare pnpm@10.24.0 --activate
+
+WORKDIR /workspace
+
+COPY . .
+
+RUN npm install -g node-gyp@11.5.0 \
+  && export npm_config_node_gyp="$(npm root -g)/node-gyp/bin/node-gyp.js" \
+  && pnpm install --frozen-lockfile
+
+RUN pnpm run build:unpack
+
+FROM ubuntu:24.04 AS runtime
+
+ARG LIBASOUND_PACKAGE=libasound2t64
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    dbus-x11 \
+    jq \
+    libatk-bridge2.0-0 \
+    libatspi2.0-0 \
+    "${LIBASOUND_PACKAGE}" \
+    libdrm2 \
+    libgbm1 \
+    libgtk-3-0 \
+    libnss3 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxkbcommon0 \
+    libxrandr2 \
+    libxss1 \
+    procps \
+    util-linux \
+    xauth \
+    xvfb \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN useradd --create-home --shell /bin/bash orca
+
+COPY --from=build --chown=orca:orca /workspace/dist/linux-unpacked /app
+
+USER orca
+ENV LIBGL_ALWAYS_SOFTWARE=1
+WORKDIR /home/orca
+
+EXPOSE 6768
+
+ENTRYPOINT ["/app/resources/bin/orca-ide"]
+CMD ["serve", "--port", "6768", "--pairing-address", "https://orca.dsc.edu.vn", "--json"]

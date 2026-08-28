@@ -1,0 +1,12 @@
+node_modules
+.git
+.husky
+dist
+out
+mobile
+test-results
+coverage
+docs
+*.log
+.vscode
+.idea
