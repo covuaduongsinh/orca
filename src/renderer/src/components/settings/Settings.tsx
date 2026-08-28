@@ -1317,37 +1317,35 @@ function Settings(): React.JSX.Element {
                 ) : null}
 
                 {showDesktopOnlySettings ? (
-                  <>
-                    <SettingsSection
-                      id="computer-use"
-                      title={translate(
-                        'auto.components.settings.Settings.c9841721cb',
-                        'Computer Use'
-                      )}
-                      description={translate(
-                        'auto.components.settings.Settings.7118953f14',
-                        'Enable agents to control any app on your computer.'
-                      )}
-                      searchEntries={getSectionSearchEntries('computer-use')}
-                    >
-                      {isSectionMounted('computer-use') ? <ComputerUsePane /> : null}
-                    </SettingsSection>
-
-                    <SettingsSection
-                      id="voice"
-                      title={translate('auto.components.settings.Settings.5063bb47a5', 'Voice')}
-                      description={translate(
-                        'auto.components.settings.Settings.eb1176a14e',
-                        'Local speech-to-text dictation with on-device models.'
-                      )}
-                      searchEntries={getSectionSearchEntries('voice')}
-                    >
-                      {isSectionMounted('voice') ? (
-                        <VoicePane settings={settings} updateSettings={updateSettings} />
-                      ) : null}
-                    </SettingsSection>
-                  </>
+                  <SettingsSection
+                    id="computer-use"
+                    title={translate(
+                      'auto.components.settings.Settings.c9841721cb',
+                      'Computer Use'
+                    )}
+                    description={translate(
+                      'auto.components.settings.Settings.7118953f14',
+                      'Enable agents to control any app on your computer.'
+                    )}
+                    searchEntries={getSectionSearchEntries('computer-use')}
+                  >
+                    {isSectionMounted('computer-use') ? <ComputerUsePane /> : null}
+                  </SettingsSection>
                 ) : null}
+
+                <SettingsSection
+                  id="voice"
+                  title={translate('auto.components.settings.Settings.5063bb47a5', 'Voice')}
+                  description={translate(
+                    'auto.components.settings.Settings.eb1176a14e',
+                    'Local speech-to-text dictation with on-device models.'
+                  )}
+                  searchEntries={getSectionSearchEntries('voice')}
+                >
+                  {isSectionMounted('voice') ? (
+                    <VoicePane settings={settings} updateSettings={updateSettings} />
+                  ) : null}
+                </SettingsSection>
 
                 {showDesktopOnlySettings ? (
                   <SettingsSection

@@ -143,6 +143,17 @@ export const SPEECH_MODEL_CATALOG: SpeechModelManifest[] = [
     language: 'multilingual',
     sampleRate: 16000,
     streaming: false
+  },
+  {
+    id: 'groq-whisper-large-v3-turbo',
+    label: 'Groq Whisper Large v3 Turbo',
+    description:
+      'Ultra-fast cloud transcription with excellent Vietnamese support. Requires a Groq API key.',
+    type: 'groq',
+    provider: 'groq',
+    language: 'multilingual',
+    sampleRate: 16000,
+    streaming: false
   }
 ]
 

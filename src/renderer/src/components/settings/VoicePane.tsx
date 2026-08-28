@@ -7,6 +7,8 @@ import { toast } from 'sonner'
 import { useAppStore } from '@/store'
 import { OpenAiTranscriptionKeyDialog } from './OpenAiTranscriptionKeyDialog'
 import { OpenAiTranscriptionSettingsRow } from './OpenAiTranscriptionSettingsRow'
+import { GroqTranscriptionKeyDialog } from './GroqTranscriptionKeyDialog'
+import { GroqTranscriptionSettingsRow } from './GroqTranscriptionSettingsRow'
 import { handleVoiceDictationToggle } from './voice-dictation-toggle'
 import { VoiceDictationSettingsSection } from './VoiceDictationSettingsSection'
 import { VoiceSpeechModelSection } from './VoiceSpeechModelSection'
@@ -34,6 +36,11 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
   const [openAiDialogOpen, setOpenAiDialogOpen] = useState(false)
   const [openAiApiKeyDraft, setOpenAiApiKeyDraft] = useState('')
   const [openAiKeyPending, setOpenAiKeyPending] = useState(false)
+
+  const [groqDialogOpen, setGroqDialogOpen] = useState(false)
+  const [groqApiKeyDraft, setGroqApiKeyDraft] = useState('')
+  const [groqKeyPending, setGroqKeyPending] = useState(false)
+
   const [pendingCloudModelId, setPendingCloudModelId] = useState<string | null>(null)
   const mountedRef = useRef(true)
   // Why: every write here is a read-modify-write of the whole voice object, and the
@@ -82,10 +89,26 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
         }
       })
       .catch(() => {})
+
+    void window.api.speech
+      .getGroqApiKeyStatus()
+      .then((status) => {
+        if (!cancelled && status.configured !== voiceSettings.groqApiKeyConfigured) {
+          updateVoiceSettings({ groqApiKeyConfigured: status.configured })
+          refreshModelStates()
+        }
+      })
+      .catch(() => {})
+
     return () => {
       cancelled = true
     }
-  }, [refreshModelStates, updateVoiceSettings, voiceSettings.openAiApiKeyConfigured])
+  }, [
+    refreshModelStates,
+    updateVoiceSettings,
+    voiceSettings.openAiApiKeyConfigured,
+    voiceSettings.groqApiKeyConfigured
+  ])
 
   useEffect(() => {
     const cleanup = window.api.speech.onDownloadProgress(() => {
@@ -135,16 +158,26 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
   }
 
   const selectedModel = catalog.find((m) => m.id === voiceSettings.sttModel)
+
   const showOpenAiSettingsRow =
     voiceSettings.openAiApiKeyConfigured ||
     selectedModel?.provider === 'openai' ||
     (settingsSearchQuery.trim() !== '' &&
       matchesSettingsSearch(settingsSearchQuery, getOpenaiTranscriptionSearchEntry()))
 
+  const showGroqSettingsRow =
+    voiceSettings.groqApiKeyConfigured || selectedModel?.provider === 'groq'
+
   const openOpenAiDialog = (modelId: string | null = null): void => {
     setPendingCloudModelId(modelId)
     setOpenAiApiKeyDraft('')
     setOpenAiDialogOpen(true)
+  }
+
+  const openGroqDialog = (modelId: string | null = null): void => {
+    setPendingCloudModelId(modelId)
+    setGroqApiKeyDraft('')
+    setGroqDialogOpen(true)
   }
 
   const saveOpenAiApiKey = async (): Promise<void> => {
@@ -209,6 +242,50 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
     }
   }
 
+  const saveGroqApiKey = async (): Promise<void> => {
+    setGroqKeyPending(true)
+    try {
+      await window.api.speech.saveGroqApiKey(groqApiKeyDraft)
+      updateVoiceSettings({
+        groqApiKeyConfigured: true,
+        sttModel: pendingCloudModelId ?? voiceSettings.sttModel
+      })
+      await refreshModelStates()
+      setGroqDialogOpen(false)
+      setGroqApiKeyDraft('')
+      setPendingCloudModelId(null)
+      toast.success('Groq API key saved')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to save Groq API key')
+    } finally {
+      if (mountedRef.current) {
+        setGroqKeyPending(false)
+      }
+    }
+  }
+
+  const clearGroqApiKey = async (): Promise<void> => {
+    setGroqKeyPending(true)
+    try {
+      await window.api.speech.clearGroqApiKey()
+      updateVoiceSettings({
+        groqApiKeyConfigured: false,
+        sttModel: selectedModel?.provider === 'groq' ? '' : voiceSettings.sttModel
+      })
+      await refreshModelStates()
+      setGroqDialogOpen(false)
+      setGroqApiKeyDraft('')
+      setPendingCloudModelId(null)
+      toast.success('Groq API key cleared')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to clear Groq API key')
+    } finally {
+      if (mountedRef.current) {
+        setGroqKeyPending(false)
+      }
+    }
+  }
+
   return (
     <div ref={handlePaneRef} className="space-y-1">
       <VoiceDictationSettingsSection
@@ -224,6 +301,7 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
         modelStates={modelStates}
         onUpdateVoiceSettings={updateVoiceSettings}
         onOpenOpenAiDialog={openOpenAiDialog}
+        onOpenGroqDialog={openGroqDialog}
         onRefreshModelStates={refreshModelStates}
       />
 
@@ -239,6 +317,18 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
         </>
       )}
 
+      {showGroqSettingsRow && (
+        <>
+          <Separator />
+          <GroqTranscriptionSettingsRow
+            configured={voiceSettings.groqApiKeyConfigured}
+            disabled={groqKeyPending}
+            onConfigure={() => openGroqDialog(null)}
+            onClear={() => void clearGroqApiKey()}
+          />
+        </>
+      )}
+
       <OpenAiTranscriptionKeyDialog
         open={openAiDialogOpen}
         configured={voiceSettings.openAiApiKeyConfigured}
@@ -248,6 +338,17 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
         onApiKeyDraftChange={setOpenAiApiKeyDraft}
         onSave={() => void saveOpenAiApiKey()}
         onClear={() => void clearOpenAiApiKey()}
+      />
+
+      <GroqTranscriptionKeyDialog
+        open={groqDialogOpen}
+        configured={voiceSettings.groqApiKeyConfigured}
+        apiKeyDraft={groqApiKeyDraft}
+        pending={groqKeyPending}
+        onOpenChange={setGroqDialogOpen}
+        onApiKeyDraftChange={setGroqApiKeyDraft}
+        onSave={() => void saveGroqApiKey()}
+        onClear={() => void clearGroqApiKey()}
       />
     </div>
   )

@@ -176,11 +176,12 @@ export function getDefaultVoiceSettings(): VoiceSettings {
     enabled: false,
     sttModel: '',
     modelsDir: '',
-    language: 'en',
+    language: 'auto',
     dictationMode: 'toggle' as const,
     terminalConfirmBeforeInsert: false,
     userModels: [],
     openAiApiKeyConfigured: false,
+    groqApiKeyConfigured: false,
     microphoneDeviceId: null,
     microphoneDeviceLabel: null
   }

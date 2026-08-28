@@ -8,6 +8,7 @@ import { getCatalogModel } from './model-catalog'
 import type { ModelManager } from './model-manager'
 import { OpenAiTranscriptionSession } from './openai-transcription-client'
 import { readOpenAiSpeechApiKey } from './openai-api-key-store'
+import { readGroqSpeechApiKey } from './groq-api-key-store'
 
 export const START_DICTATION_TIMEOUT_MS = 60_000
 const STOP_DICTATION_TIMEOUT_MS = 60_000
@@ -60,7 +61,8 @@ export class SttService {
     modelId: string,
     sink: SttEventSink,
     hotwordsFilePath?: string,
-    owner = 'desktop'
+    owner = 'desktop',
+    language?: string
   ): Promise<void> {
     if (this.starting) {
       if (this.startingOwner !== owner) {
@@ -77,7 +79,7 @@ export class SttService {
     this.clearIdleTeardownTimer()
 
     try {
-      await this._startDictation(modelId, sink, hotwordsFilePath, owner)
+      await this._startDictation(modelId, sink, hotwordsFilePath, owner, language)
       if (this.canceledOwners.delete(owner)) {
         await this.stopDictation(owner, { cancelStarting: false })
         throw new Error('dictation_canceled')
@@ -95,14 +97,15 @@ export class SttService {
     modelId: string,
     sink: SttEventSink,
     hotwordsFilePath?: string,
-    owner = 'desktop'
+    owner = 'desktop',
+    language?: string
   ): Promise<void> {
     const manifest = getCatalogModel(modelId)
     if (!manifest) {
       throw new Error(`Unknown model: ${modelId}`)
     }
 
-    if (manifest.provider === 'openai') {
+    if (manifest.provider === 'openai' || manifest.provider === 'groq') {
       if (this.worker) {
         const existingWorker = this.worker
         await this.stopDictation(owner, { cancelStarting: false })
@@ -114,7 +117,14 @@ export class SttService {
         throw new Error(`Model not ready: ${modelState.status}`)
       }
 
-      this.cloudSession = new OpenAiTranscriptionSession(modelId, readOpenAiSpeechApiKey)
+      const readApiKey =
+        manifest.provider === 'groq' ? readGroqSpeechApiKey : readOpenAiSpeechApiKey
+      this.cloudSession = new OpenAiTranscriptionSession(
+        modelId,
+        readApiKey,
+        manifest.provider,
+        language
+      )
       this.activeModelId = modelId
       this.activeHotwordsFilePath = undefined
       this.eventSink = sink

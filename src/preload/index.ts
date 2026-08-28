@@ -5179,6 +5179,12 @@ const api = {
       ipcRenderer.invoke('speech:saveOpenAiApiKey', apiKey),
     clearOpenAiApiKey: (): Promise<{ configured: boolean }> =>
       ipcRenderer.invoke('speech:clearOpenAiApiKey'),
+    getGroqApiKeyStatus: (): Promise<{ configured: boolean }> =>
+      ipcRenderer.invoke('speech:getGroqApiKeyStatus'),
+    saveGroqApiKey: (apiKey: string): Promise<{ configured: boolean }> =>
+      ipcRenderer.invoke('speech:saveGroqApiKey', apiKey),
+    clearGroqApiKey: (): Promise<{ configured: boolean }> =>
+      ipcRenderer.invoke('speech:clearGroqApiKey'),
     downloadModel: (modelId: string): Promise<void> =>
       ipcRenderer.invoke('speech:downloadModel', modelId),
     cancelDownload: (modelId: string): Promise<void> =>

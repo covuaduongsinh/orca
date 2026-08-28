@@ -9,6 +9,7 @@ import type {
 } from '../../shared/speech-types'
 import { SPEECH_MODEL_CATALOG, getCatalogModel, isLocalSpeechModel } from './model-catalog'
 import { hasOpenAiSpeechApiKey } from './openai-api-key-store'
+import { hasGroqSpeechApiKey } from './groq-api-key-store'
 import {
   getSpeechModelCacheDirCandidates,
   migrateSpeechModelCacheIfNeeded,
@@ -101,6 +102,13 @@ export class ModelManager extends SpeechModelDownloadTransport {
       return {
         id: modelId,
         status: hasOpenAiSpeechApiKey() ? 'ready' : 'not-downloaded'
+      }
+    }
+
+    if (manifest.provider === 'groq') {
+      return {
+        id: modelId,
+        status: hasGroqSpeechApiKey() ? 'ready' : 'not-downloaded'
       }
     }
 

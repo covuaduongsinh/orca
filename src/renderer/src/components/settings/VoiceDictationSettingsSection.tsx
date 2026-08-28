@@ -2,6 +2,7 @@ import type { VoiceSettings } from '../../../../shared/speech-types'
 import { Label } from '../ui/label'
 import { Separator } from '../ui/separator'
 import { Switch } from '../ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { useShortcutLabel } from '@/hooks/useShortcutLabel'
 import { translate } from '@/i18n/i18n'
 import { VoiceMicrophoneSetting } from './VoiceMicrophoneSetting'
@@ -83,6 +84,37 @@ export function VoiceDictationSettingsSection({
                 : translate('auto.components.settings.VoicePane.174da92062', 'Hold')}
             </button>
           ))}
+        </div>
+      </div>
+
+      <Separator />
+
+      <div className="flex items-center justify-between gap-4 py-2">
+        <div className="space-y-0.5">
+          <Label>Dictation Language</Label>
+          <p className="text-xs text-muted-foreground">
+            Select the language you will dictate in. Selecting a specific language is faster and
+            more accurate than auto-detect, especially for Vietnamese.
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center">
+          <Select
+            value={voiceSettings.language || 'auto'}
+            onValueChange={(val) => onUpdateVoiceSettings({ language: val })}
+            disabled={!voiceSettings.enabled}
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="auto">Auto-detect</SelectItem>
+              <SelectItem value="vi">Tiếng Việt (Vietnamese)</SelectItem>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="zh">Chinese</SelectItem>
+              <SelectItem value="ja">Japanese</SelectItem>
+              <SelectItem value="ko">Korean</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

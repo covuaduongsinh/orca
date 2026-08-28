@@ -28,6 +28,7 @@ import {
 import { createWebKeybindingsApi } from './preload-api/web-keybindings-api'
 import { createMacosTccPromptsApi } from './preload-api/web-macos-tcc-api'
 import { createEmptyMemorySnapshot } from './preload-api/web-memory-api'
+import { createWebSpeechApi } from './preload-api/web-speech-api'
 import { createWebMobileApi } from './preload-api/web-mobile-api'
 import { createWebNativeChatApi } from './preload-api/web-native-chat-api'
 import { createNotificationsApi } from './preload-api/web-notifications-api'
@@ -134,6 +135,7 @@ function createWebPreloadApi(): Partial<PreloadApi> {
     gitBash: {
       isAvailable: () => callRuntimeResult<boolean>('host.gitBash.isAvailable').catch(() => false)
     },
+    speech: createWebSpeechApi(),
     ...createWebAgentStatusApi(),
     ...createWebMobileApi(),
     ...createWebTelemetryApi()
