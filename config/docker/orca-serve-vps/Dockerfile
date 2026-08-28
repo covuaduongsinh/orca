@@ -84,7 +84,17 @@ RUN chown -R orca:orca /app \
   && chown root:root /app/chrome-sandbox \
   && chmod 4755 /app/chrome-sandbox
 
+# Why: pre-create the mount point orca-owned so the persistent volume backing
+# it (state under docs/reference/headless-linux-server.md's ~/.config) isn't
+# created root-owned by Docker on first mount.
+RUN mkdir -p /home/orca/.config && chown orca:orca /home/orca/.config
+
 USER orca
+# Why: Docker's USER directive doesn't export HOME for a non-shell
+# ENTRYPOINT, and Electron's app.getPath('userData') requires HOME to
+# resolve the Linux XDG config dir — without it, startup throws "Failed
+# to get 'userData' path" before orca serve ever binds its listener.
+ENV HOME=/home/orca
 ENV LIBGL_ALWAYS_SOFTWARE=1
 # Why: Chromium's zygote also needs a user namespace (CLONE_NEWUSER), which
 # Docker's default seccomp profile denies without CAP_SYS_ADMIN — a far
