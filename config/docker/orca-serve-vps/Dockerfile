@@ -96,6 +96,11 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
   && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
   && ln -s /usr/local/lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack
 
+# Why: root-owned /usr/local/lib/node_modules blocks `npm install -g` for the
+# orca user with EACCES. orca is the only account in this container, so
+# owning its own copy of the global npm prefix carries no multi-user risk.
+RUN chown -R orca:orca /usr/local/lib/node_modules /usr/local/bin
+
 # Why: Chromium's setuid sandbox helper must stay root-owned with the setuid
 # bit (4755) to function; a blanket --chown to the non-root runtime user
 # strips that and Electron aborts at startup rather than run unsandboxed.
