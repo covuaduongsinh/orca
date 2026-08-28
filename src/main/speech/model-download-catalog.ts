@@ -179,6 +179,27 @@ const MODEL_DOWNLOAD_FILES = {
       ['tokens.txt', 28_557, '732f64c53909f2620c713f4106b487d92e6f54a6915b3cd3d1dbd32f9f4f392a']
     ]
   ),
+    'whisper-base': huggingFaceFiles(
+    'csukuangfj/sherpa-onnx-whisper-base',
+    'bb53ee204431c90d314c1cc08d28d23e5b7927cc',
+    [
+      [
+        'base-encoder.onnx',
+        95087154,
+        '5a6b87cb313993f6c9fefec9e7027556f6cb30becddf49655bee36c50ecc12d7'
+      ],
+      [
+        'base-decoder.onnx',
+        196548998,
+        '8a12c3f6ad65bb5b86d7e6eccc302378f20f9fb2df6cb10747c62895da7ac194'
+      ],
+      [
+        'base-tokens.txt',
+        816730,
+        'b34b360dbb493e781e479794586d661700670d65564001f23024971d1f2fa126'
+      ]
+    ]
+  ),
   'whisper-tiny': huggingFaceFiles(
     'csukuangfj/sherpa-onnx-whisper-tiny',
     '65176e2deb88badc814a94058666cadccc29b61c',
@@ -228,3 +249,4 @@ export function getSpeechModelDownloadMetadata(modelId: DownloadableSpeechModelI
     sizeBytes: downloadFiles.reduce((total, { sizeBytes }) => total + sizeBytes, 0)
   }
 }
+

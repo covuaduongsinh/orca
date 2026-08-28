@@ -101,6 +101,17 @@ export const SPEECH_MODEL_CATALOG: SpeechModelManifest[] = [
     streaming: false
   },
   {
+    id: 'whisper-base',
+    label: 'Whisper Base',
+    description: '90+ languages. Balanced accuracy and speed for multilingual dictation.',
+    type: 'whisper',
+    provider: 'local',
+    language: 'multilingual',
+    ...getSpeechModelDownloadMetadata('whisper-base'),
+    sampleRate: 16000,
+    streaming: false
+  },
+  {
     id: 'whisper-tiny',
     label: 'Whisper Tiny',
     description: '90+ languages. Lower accuracy than Parakeet but broadest language coverage.',
@@ -164,3 +175,5 @@ export function getCatalogModel(id: string): SpeechModelManifest | undefined {
 export function isLocalSpeechModel(manifest: SpeechModelManifest): boolean {
   return manifest.provider === 'local'
 }
+
+
