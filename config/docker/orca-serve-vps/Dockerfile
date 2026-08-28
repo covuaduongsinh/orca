@@ -53,6 +53,7 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates \
     dbus-x11 \
+    git \
     jq \
     libatk-bridge2.0-0 \
     libatspi2.0-0 \
@@ -67,6 +68,7 @@ RUN apt-get update \
     libxkbcommon0 \
     libxrandr2 \
     libxss1 \
+    openssh-client \
     procps \
     util-linux \
     xauth \
