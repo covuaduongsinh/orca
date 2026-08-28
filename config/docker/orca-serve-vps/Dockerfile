@@ -52,6 +52,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates \
+    curl \
     dbus-x11 \
     git \
     jq \
@@ -71,6 +72,7 @@ RUN apt-get update \
     openssh-client \
     procps \
     util-linux \
+    wget \
     xauth \
     xvfb \
   && rm -rf /var/lib/apt/lists/*
@@ -78,6 +80,15 @@ RUN apt-get update \
 RUN useradd --create-home --shell /bin/bash orca
 
 COPY --from=build /workspace/dist/linux-unpacked /app
+
+# Why: the runtime image otherwise has no `node`/`npm` for the terminals Orca
+# opens inside a user's cloned project — reuse the toolchain the build stage
+# already downloaded instead of re-fetching it from NodeSource.
+COPY --from=build /usr/local/bin/node /usr/local/bin/node
+COPY --from=build /usr/local/bin/npm /usr/local/bin/npm
+COPY --from=build /usr/local/bin/npx /usr/local/bin/npx
+COPY --from=build /usr/local/bin/corepack /usr/local/bin/corepack
+COPY --from=build /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 # Why: Chromium's setuid sandbox helper must stay root-owned with the setuid
 # bit (4755) to function; a blanket --chown to the non-root runtime user
