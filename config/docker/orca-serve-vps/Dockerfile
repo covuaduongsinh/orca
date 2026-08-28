@@ -86,6 +86,13 @@ RUN chown -R orca:orca /app \
 
 USER orca
 ENV LIBGL_ALWAYS_SOFTWARE=1
+# Why: Chromium's zygote also needs a user namespace (CLONE_NEWUSER), which
+# Docker's default seccomp profile denies without CAP_SYS_ADMIN — a far
+# bigger privilege than the sandbox it would restore. Rely on the container's
+# own isolation instead, via Orca's documented escape hatch for this exact
+# case (src/cli/runtime/launch.ts), matching Puppeteer/Playwright's own
+# Docker images.
+ENV ORCA_APPIMAGE_NO_SANDBOX=1
 WORKDIR /home/orca
 
 EXPOSE 6768
