@@ -85,10 +85,16 @@ COPY --from=build /workspace/dist/linux-unpacked /app
 # opens inside a user's cloned project — reuse the toolchain the build stage
 # already downloaded instead of re-fetching it from NodeSource.
 COPY --from=build /usr/local/bin/node /usr/local/bin/node
-COPY --from=build /usr/local/bin/npm /usr/local/bin/npm
-COPY --from=build /usr/local/bin/npx /usr/local/bin/npx
-COPY --from=build /usr/local/bin/corepack /usr/local/bin/corepack
 COPY --from=build /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+# Why: /usr/local/bin/{npm,npx,corepack} are symlinks into node_modules in the
+# build stage; a single-file COPY --from dereferences them into flattened
+# copies whose relative requires then resolve against the wrong directory
+# (MODULE_NOT_FOUND on ../lib/cli.js). Recreate the symlinks explicitly
+# instead of copying the base image's broken-once-flattened files.
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+  && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+  && ln -s /usr/local/lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack
 
 # Why: Chromium's setuid sandbox helper must stay root-owned with the setuid
 # bit (4755) to function; a blanket --chown to the non-root runtime user
