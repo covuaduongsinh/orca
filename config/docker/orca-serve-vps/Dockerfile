@@ -75,7 +75,14 @@ RUN apt-get update \
 
 RUN useradd --create-home --shell /bin/bash orca
 
-COPY --from=build --chown=orca:orca /workspace/dist/linux-unpacked /app
+COPY --from=build /workspace/dist/linux-unpacked /app
+
+# Why: Chromium's setuid sandbox helper must stay root-owned with the setuid
+# bit (4755) to function; a blanket --chown to the non-root runtime user
+# strips that and Electron aborts at startup rather than run unsandboxed.
+RUN chown -R orca:orca /app \
+  && chown root:root /app/chrome-sandbox \
+  && chmod 4755 /app/chrome-sandbox
 
 USER orca
 ENV LIBGL_ALWAYS_SOFTWARE=1
