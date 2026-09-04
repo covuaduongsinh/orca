@@ -74,6 +74,7 @@ RUN apt-get update \
     python3 \
     python3-pip \
     python3-venv \
+    unzip \
     util-linux \
     wget \
     xauth \
@@ -105,11 +106,12 @@ RUN npm install -g \
     opencode-ai \
     @openai/codex \
     @mariozechner/pi-coding-agent \
-    oh-my-pi \
+    @oh-my-pi/pi-coding-agent \
     @google/gemini-cli \
     openclaw \
     || true \
-  && ln -sf /usr/local/bin/oh-my-pi /usr/local/bin/omp \
+  && (curl -fsSL https://bun.sh/install | bash || true) \
+  && (test -f /home/orca/.bun/bin/bun && cp /home/orca/.bun/bin/bun /usr/local/bin/bun || true) \
   && (curl -fsSL https://antigravity.google/cli/install.sh | bash || true) \
   && (test -f /home/orca/.local/bin/agy && cp /home/orca/.local/bin/agy /usr/local/bin/agy || true)
 
