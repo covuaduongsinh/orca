@@ -254,9 +254,18 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
       setGroqDialogOpen(false)
       setGroqApiKeyDraft('')
       setPendingCloudModelId(null)
-      toast.success('Groq API key saved')
+      toast.success(
+        translate('auto.components.settings.VoicePane.groqKeySaved', 'Groq API key saved')
+      )
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to save Groq API key')
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : translate(
+              'auto.components.settings.VoicePane.groqKeySaveFailed',
+              'Failed to save Groq API key'
+            )
+      )
     } finally {
       if (mountedRef.current) {
         setGroqKeyPending(false)
@@ -276,9 +285,18 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
       setGroqDialogOpen(false)
       setGroqApiKeyDraft('')
       setPendingCloudModelId(null)
-      toast.success('Groq API key cleared')
+      toast.success(
+        translate('auto.components.settings.VoicePane.groqKeyCleared', 'Groq API key cleared')
+      )
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to clear Groq API key')
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : translate(
+              'auto.components.settings.VoicePane.groqKeyClearFailed',
+              'Failed to clear Groq API key'
+            )
+      )
     } finally {
       if (mountedRef.current) {
         setGroqKeyPending(false)

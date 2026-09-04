@@ -4,6 +4,7 @@ import { normalizeSupportedUiLocale, resolveUiLocale, resolveRendererUiLocale } 
 import {
   UI_LANGUAGE_CHINESE,
   UI_LANGUAGE_ENGLISH,
+  UI_LANGUAGE_FRENCH,
   UI_LANGUAGE_JAPANESE,
   UI_LANGUAGE_KOREAN,
   UI_LANGUAGE_SPANISH,
@@ -40,8 +41,14 @@ describe('ui-locale', () => {
     expect(normalizeSupportedUiLocale('vi')).toBe('vi')
   })
 
+  it('normalizes French locale prefixes', () => {
+    expect(normalizeSupportedUiLocale('fr-FR')).toBe('fr')
+    expect(normalizeSupportedUiLocale('fr-CA')).toBe('fr')
+    expect(normalizeSupportedUiLocale('fr')).toBe('fr')
+  })
+
   it('falls back unsupported locales to English', () => {
-    expect(normalizeSupportedUiLocale('fr-FR')).toBe('en')
+    expect(normalizeSupportedUiLocale('de-DE')).toBe('en')
   })
 
   it('does not map Traditional Chinese to Simplified yet', () => {
@@ -74,6 +81,10 @@ describe('ui-locale', () => {
     expect(resolveUiLocale(UI_LANGUAGE_VIETNAMESE, 'en-US')).toBe('vi')
   })
 
+  it('resolves explicit French independently of system locale', () => {
+    expect(resolveUiLocale(UI_LANGUAGE_FRENCH, 'en-US')).toBe('fr')
+  })
+
   it('preserves a selected plugin language bundle id', () => {
     expect(resolveUiLocale('plugin:orca-samples.portuguese/pt-BR')).toBe(
       'plugin:orca-samples.portuguese/pt-BR'
@@ -87,7 +98,7 @@ describe('ui-locale', () => {
     expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'ja-JP')).toBe('ja')
     expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'es-MX')).toBe('es')
     expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'vi-VN')).toBe('vi')
-    expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'fr-FR')).toBe('en')
+    expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'fr-FR')).toBe('fr')
   })
 
   it('uses renderer system locale only for the system setting', () => {
@@ -97,5 +108,6 @@ describe('ui-locale', () => {
     expect(resolveRendererUiLocale(UI_LANGUAGE_JAPANESE)).toBe('ja')
     expect(resolveRendererUiLocale(UI_LANGUAGE_SPANISH)).toBe('es')
     expect(resolveRendererUiLocale(UI_LANGUAGE_VIETNAMESE)).toBe('vi')
+    expect(resolveRendererUiLocale(UI_LANGUAGE_FRENCH)).toBe('fr')
   })
 })

@@ -63,6 +63,13 @@
     "count": 1
   },
   {
+    "filePath": "src/renderer/src/components/settings/appearance-search.ts",
+    "kind": "object-property:keywords",
+    "text": "Langue",
+    "dynamic": false,
+    "count": 1
+  },
+  {
     "filePath": "src/renderer/src/components/settings/terminal-advanced-platform-search.ts",
     "kind": "object-property:keywords",
     "text": "Ghostty",
@@ -87,6 +94,27 @@
     "filePath": "src/renderer/src/components/settings/terminal-pane-appearance-search.ts",
     "kind": "object-property:keywords",
     "text": "ghostty",
+    "dynamic": false,
+    "count": 1
+  },
+  {
+    "filePath": "src/renderer/src/web/preload-api/web-speech-api.ts",
+    "kind": "object-property:label",
+    "text": "Web Speech API",
+    "dynamic": false,
+    "count": 1
+  },
+  {
+    "filePath": "src/renderer/src/web/preload-api/web-speech-api.ts",
+    "kind": "object-property:description",
+    "text": "Use browser built-in speech recognition",
+    "dynamic": false,
+    "count": 1
+  },
+  {
+    "filePath": "src/renderer/src/web/preload-api/web-speech-api.ts",
+    "kind": "object-property:error",
+    "text": "Your browser does not support the Web Speech API.",
     "dynamic": false,
     "count": 1
   }

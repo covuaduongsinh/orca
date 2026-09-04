@@ -1022,7 +1022,6 @@
         "e52bed9264": "Chưa có kiểm tra nào được báo cáo",
         "90020cc1f3": "Pull Request này chưa có báo cáo kiểm tra nào.",
         "ecffebc251": "Không tìm thấy séc",
-        "5dddefdf58": "Mở trong GitHub",
         "744197c84d": "Không có đầu ra nội tuyến có sẵn cho kiểm tra này.",
         "08d072664d": "Việc làm",
         "96d8f36798": "Chú thích",
@@ -1568,7 +1567,6 @@
         "c57873d721": "Đã merge pull request",
         "a63b3c159c": "Điều này sẽ cập nhật pull request trên GitHub.",
         "eec3706a6a": "{{value0}} PR #{{value1}}?",
-        "b8c6cbb8c4": "Không thể {{value0}} PR",
         "710e47aa06": "Pull Request đã được mở lại",
         "7aa3b5f706": "Pull Request đã đóng",
         "3d77438c92": "Điều này sẽ mở lại pull request trên GitHub.",
@@ -2881,7 +2879,6 @@
             "a7e2fd2699": "gửi một vấn đề",
             "5c8ce20be6": "Nếu tình trạng này vẫn tiếp diễn, vui lòng",
             "cc6d997c65": "Khởi động lại daemon terminal từ đây để xóa trạng thái daemon cũ.",
-            "7ee11bc0db": "Orca không thể xác nhận liệu phiên trước của terminal này có còn chạy hay không, vì vậy, phiên này không bị ảnh hưởng. Mở lại pane này để thử lại.",
             "e16012e31e": "Daemon terminal sở hữu phiên này đã thoát nên không thể khôi phục phiên và cuộn ngược của nó. Mở một terminal mới để tiếp tục.",
             "sessionUnavailable": "Orca không thể gắn lại phiên terminal của pane này trên máy chủ. Mở một terminal mới để tiếp tục."
           },
@@ -3167,7 +3164,6 @@
             "25dc1cd653": "Mở tập tin",
             "7cdf8ee0c8": "Mở URL",
             "b27864279e": "Agent ra mắt",
-            "0e5b7a3f16": "Tìm kiếm các tab, tệp, URL, agent đang mở…",
             "8f0a1c4d92": "Chuyển sang tab",
             "2c38630a01": "Workspace không còn tồn tại",
             "4f0d9a71c2": "Tab không còn tồn tại",
@@ -3213,7 +3209,6 @@
                 "classifier": {
                   "42e6262ae9": "Không có hành động nào có sẵn.",
                   "097a982ee0": "Đang tải tập tin...",
-                  "c41f8d20b7": "Tìm kiếm các tab, tệp, URL, agent đang mở…",
                   "90eb94dc48": "Nhập URL http:// hoặc https://.",
                   "5553b283ce": "Nhập URL hoặc đường dẫn tệp.",
                   "queryTooLarge": "Văn bản tìm kiếm quá lớn.",
@@ -3695,13 +3690,9 @@
             }
           },
           "CaffeinateStatusSegment": {
-            "on": "Bật",
-            "auto": "Agent",
-            "off": "Tắt",
             "active": "Tích cực",
             "inactive": "Không hoạt động",
-            "ariaLabel": "Caffein, {{status}}",
-            "title": "caffein",
+            "ariaLabel": "{{title}}, {{status}}",
             "onDescription": "Giữ cho máy tính này hoạt động liên tục",
             "autoDescription": "Tỉnh táo khi agent đang làm việc",
             "offDescription": "Cho phép hành vi ngủ bình thường của hệ thống"
@@ -6442,12 +6433,7 @@
           "compareBaseRepositoryDefault": "Repo mặc định",
           "compareBaseBranchUpstream": "Branch ngược dòng"
         },
-        "HiddenExperimentalGroup": {
-          "d0f914a528": "Chuyển đổi phần giữ chỗ",
-          "1014ddbfaf": "Hôm nay không làm gì cả. Dành riêng làm vị trí đầu tiên cho các tùy chọn thử nghiệm ẩn.",
-          "232cf83de8": "Chuyển đổi không công khai để thử nghiệm nội bộ. Không có gì ở đây được hỗ trợ.",
-          "3e9e827ca5": "Thử nghiệm ẩn"
-        },
+        "HiddenExperimentalGroup": {},
         "InputPane": {
           "db15068196": "Được bật theo mặc định trên Linux và macOS. Linux sử dụng bảng tạm chọn hệ thống; các nền tảng khác sử dụng bộ đệm riêng.",
           "ad31c3c5fb": "Nhấp chuột giữa Dán từ vùng chọn"
@@ -10588,9 +10574,7 @@
           "switchTo": "Chuyển sang xây dựng",
           "alreadyRunning": "Đây là bản dựng bạn đang chạy.",
           "willSwitch": "{{value0}} → {{value1}}",
-          "webUnavailable": "Chuyển đổi bản dựng chỉ khả dụng trong ứng dụng dành cho máy tính để bàn.",
-          "devChannelMacOnlyAria": "{{value0}} (chỉ macOS)",
-          "devChannelMacOnly": "Bản dựng {{value0}} chỉ được sản xuất cho macOS. Linux và Windows vẫn ở trạng thái Ổn định hoặc RC."
+          "webUnavailable": "Chuyển đổi bản dựng chỉ khả dụng trong ứng dụng dành cho máy tính để bàn."
         },
         "VoiceMicrophoneSetting": {
           "systemDefault": "Mặc định hệ thống",
@@ -11228,10 +11212,6 @@
             "b3c8f1a902": "Lọc tập tin theo tên",
             "d4f8c2a901": "Xóa và đóng bộ lọc",
             "e8a1c4b203": "vs",
-            "f9b2441bb6": "1 commit trước {{value0}}",
-            "b715ef615b": "{{value0}} commit trước {{value1}}",
-            "c1a8f3e204": "1 commit đằng sau {{value0}}",
-            "d2b9g4f315": "{{value0}} commit đằng sau {{value1}}",
             "4b4a7de138": "Mở trang đánh giá trong trình duyệt",
             "createPrIntentCommitBlockedSummary": "Commit bị chặn: {{value0}} Khắc phục sự cố rồi thử lại Tạo PR.",
             "pushRecovery": {
@@ -11254,7 +11234,6 @@
             "a4e93c21d7": "Branch hiện tại: {{value0}}",
             "c7d4e2f801": "Thay đổi tham chiếu cơ sở: {{value0}}",
             "f3a1b8c204": "upstream",
-            "createPrIntentEmptyGeneratedBody": "Chi tiết đánh giá được tạo không bao gồm mô tả. Thử lại Tạo PR.",
             "createPrIntentGenerateDetailsFailed": "Không thể tạo chi tiết đánh giá. Thử lại Tạo PR."
           },
           "SourceControlAgentActionDialog": {
@@ -13422,8 +13401,6 @@
           "7e7ca60816": "tập tin đã thay đổi",
           "b6c3b84476": "Hiển thị cây tập tin",
           "39f8007549": "Xem xét xung đột",
-          "39e73e7181": "đã bị loại khỏi chế độ xem diff này.",
-          "689b99f8ad": "xung đột chưa được giải quyết",
           "820ec01f24": "Các tệp xung đột được xem xét riêng",
           "fd8892b120": "Không có thay đổi nào để hiển thị",
           "eb5f40e49c": "Chế độ xem diff này loại trừ các xung đột chưa được giải quyết vì đường dẫn diff hai chiều thông thường không an toàn cho xung đột.",
@@ -15104,7 +15081,6 @@
       },
       "LinuxPackageInstallRecoveryCard": {
         "e3de29c86a": "Hiển thị gói",
-        "3da99454c6": "Hãy thử cài đặt lại tự động",
         "55c86654b7": "Sao chép lệnh cài đặt",
         "53e1559f99": "Cài đặt tự động không thành công",
         "a7ac6ec78b": "Orca đã tải xuống bản cập nhật nhưng không thể tự động cài đặt gói hệ thống.",
@@ -15135,8 +15111,6 @@
           "deleteDescription": "“{{name}}” sẽ không còn có sẵn tại liên kết công khai của nó nữa.",
           "delete": "Xóa",
           "deleteFailed": "Không thể xóa hiện vật.",
-          "closeArtifacts": "Đóng hiện vật",
-          "closeTooltip": "Đóng · Thoát",
           "title": "Hiện vật",
           "refresh": "Làm mới",
           "signInHeading": "Đăng nhập vào Orca",
@@ -15153,8 +15127,6 @@
           "publishingOff": "Xuất bản bị tắt",
           "publishingOffCopy": "Chưa có gì trên thiết bị này có thể tạo liên kết giả công khai. Cho phép xuất bản trong Cài đặt → Hiện vật, sau đó chia sẻ từ tệp HTML hoặc Markdown đang mở hoặc hỏi agent của bạn.",
           "openArtifactsSettings": "Mở Cài đặt → Hiện vật",
-          "loadedCountMore": "{{count}} đã tải · có thêm",
-          "loadedCount": "{{count}} đã chia sẻ",
           "retry": "Thử lại",
           "reconnectHeading": "Đăng nhập lại vào Orca",
           "reconnectCopy": "Đăng nhập lại để xem và quản lý các tạo phẩm được chia sẻ thông qua tài khoản của bạn.",
@@ -15175,11 +15147,6 @@
         },
         "ArtifactDetailHeader": {
           "publicLink": "Bất cứ ai có liên kết này đều có thể xem nó"
-        },
-        "ArtifactListPane": {
-          "search": "Tìm kiếm hiện vật",
-          "listLabel": "Hiện vật được chia sẻ",
-          "noMatches": "Không có kết quả phù hợp"
         },
         "updatedAt": "Đã cập nhật {{when}}",
         "updatedRecently": "gần đây",

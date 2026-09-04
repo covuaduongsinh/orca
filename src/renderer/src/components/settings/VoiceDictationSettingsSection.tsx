@@ -91,10 +91,17 @@ export function VoiceDictationSettingsSection({
 
       <div className="flex items-center justify-between gap-4 py-2">
         <div className="space-y-0.5">
-          <Label>Dictation Language</Label>
+          <Label>
+            {translate(
+              'auto.components.settings.VoicePane.dictationLanguage',
+              'Dictation Language'
+            )}
+          </Label>
           <p className="text-xs text-muted-foreground">
-            Select the language you will dictate in. Selecting a specific language is faster and
-            more accurate than auto-detect, especially for Vietnamese.
+            {translate(
+              'auto.components.settings.VoicePane.dictationLanguageDesc',
+              'Select the language you will dictate in. Selecting a specific language is faster and more accurate than auto-detect, especially for Vietnamese.'
+            )}
           </p>
         </div>
         <div className="flex shrink-0 items-center">
@@ -107,12 +114,24 @@ export function VoiceDictationSettingsSection({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="auto">Auto-detect</SelectItem>
-              <SelectItem value="vi">Tiếng Việt (Vietnamese)</SelectItem>
-              <SelectItem value="en">English</SelectItem>
-              <SelectItem value="zh">Chinese</SelectItem>
-              <SelectItem value="ja">Japanese</SelectItem>
-              <SelectItem value="ko">Korean</SelectItem>
+              <SelectItem value="auto">
+                {translate('auto.components.settings.VoicePane.langAuto', 'Auto-detect')}
+              </SelectItem>
+              <SelectItem value="vi">
+                {translate('auto.components.settings.VoicePane.langVi', 'Tiếng Việt (Vietnamese)')}
+              </SelectItem>
+              <SelectItem value="en">
+                {translate('auto.components.settings.VoicePane.langEn', 'English')}
+              </SelectItem>
+              <SelectItem value="zh">
+                {translate('auto.components.settings.VoicePane.langZh', 'Chinese')}
+              </SelectItem>
+              <SelectItem value="ja">
+                {translate('auto.components.settings.VoicePane.langJa', 'Japanese')}
+              </SelectItem>
+              <SelectItem value="ko">
+                {translate('auto.components.settings.VoicePane.langKo', 'Korean')}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
