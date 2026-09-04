@@ -264,6 +264,9 @@ function getExecutableAppArgs(executable: string): string[] {
 }
 
 function shouldDisableExtractedAppImageSandbox(executable: string): boolean {
+  if (process.env.ORCA_APPIMAGE_NO_SANDBOX === '1' || process.env.ORCA_NO_SANDBOX === '1') {
+    return true
+  }
   if (process.platform !== 'linux' || !existsSync(join(dirname(executable), 'AppRun'))) {
     return false
   }

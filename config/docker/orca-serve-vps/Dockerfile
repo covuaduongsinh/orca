@@ -105,12 +105,13 @@ RUN npm install -g \
     opencode-ai \
     @openai/codex \
     @mariozechner/pi-coding-agent \
-    @mariozechner/omp \
+    oh-my-pi \
     @google/gemini-cli \
     antigravity-cli \
-    hermes-agent \
     openclaw \
-    || true
+    || true \
+  && ln -sf /usr/local/bin/oh-my-pi /usr/local/bin/omp \
+  && ln -sf /usr/local/bin/kirox /usr/local/bin/agy
 
 RUN pip3 install --no-cache-dir --break-system-packages aider-chat || true
 
