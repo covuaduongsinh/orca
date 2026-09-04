@@ -71,6 +71,9 @@ RUN apt-get update \
     libxss1 \
     openssh-client \
     procps \
+    python3 \
+    python3-pip \
+    python3-venv \
     util-linux \
     wget \
     xauth \
@@ -95,6 +98,21 @@ COPY --from=build /usr/local/lib/node_modules /usr/local/lib/node_modules
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
   && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
   && ln -s /usr/local/lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack
+
+# Why: bake in the standard AI coding agents so they persist across container rebuilds & deployments
+RUN npm install -g \
+    @anthropic-ai/claude-code \
+    opencode-ai \
+    @openai/codex \
+    @mariozechner/pi-coding-agent \
+    @mariozechner/omp \
+    @google/gemini-cli \
+    antigravity-cli \
+    hermes-agent \
+    openclaw \
+    || true
+
+RUN pip3 install --no-cache-dir --break-system-packages aider-chat || true
 
 # Why: root-owned /usr/local/lib/node_modules blocks `npm install -g` for the
 # orca user with EACCES. orca is the only account in this container, so
