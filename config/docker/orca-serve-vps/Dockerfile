@@ -107,11 +107,11 @@ RUN npm install -g \
     @mariozechner/pi-coding-agent \
     oh-my-pi \
     @google/gemini-cli \
-    antigravity-cli \
     openclaw \
     || true \
   && ln -sf /usr/local/bin/oh-my-pi /usr/local/bin/omp \
-  && ln -sf /usr/local/bin/kirox /usr/local/bin/agy
+  && (curl -fsSL https://antigravity.google/cli/install.sh | bash || true) \
+  && (test -f /home/orca/.local/bin/agy && cp /home/orca/.local/bin/agy /usr/local/bin/agy || true)
 
 RUN pip3 install --no-cache-dir --break-system-packages aider-chat || true
 
