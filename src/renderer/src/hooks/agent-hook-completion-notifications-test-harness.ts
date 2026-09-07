@@ -6,11 +6,11 @@
  * before `./agent-hook-completion-notifications` is imported, which importing
  * this module first guarantees.
  */
-import { afterEach, beforeEach, vi } from 'vitest'
+import { afterEach, beforeEach, vi, type Mock } from 'vitest'
 import type { ParsedAgentStatusPayload } from '../../../shared/agent-status-types'
 
-export const dispatchTerminalNotification = vi.fn()
-export const dispatchAgentHookTerminalLifecycle = vi.fn()
+export const dispatchTerminalNotification: Mock = vi.fn()
+export const dispatchAgentHookTerminalLifecycle: Mock = vi.fn()
 
 export type MockStoreState = {
   settings: {
