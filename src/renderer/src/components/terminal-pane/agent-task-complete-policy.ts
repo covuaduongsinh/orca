@@ -28,17 +28,27 @@ export function isAgentTaskCompleteOsNotificationEnabledFromState(
   return notifications?.enabled !== false && notifications?.agentTaskComplete !== false
 }
 
+/** Gates the OS notification for a pane pausing on a permission/tool-approval prompt. */
+export function isPermissionNeededOsNotificationEnabledFromState(
+  state: NotificationSettingsState
+): boolean {
+  const notifications = state.settings?.notifications
+  return notifications?.enabled !== false && notifications?.permissionNeeded !== false
+}
+
 export function isTerminalAttentionEnabledFromState(state: NotificationSettingsState): boolean {
   return state.settings?.experimentalTerminalAttention === true
 }
 
-/** Completion tracking runs when either consumer (OS notification or the
- *  experimental terminal-attention marker) is enabled. */
+/** Completion tracking runs when any consumer (agent-task-complete OS
+ *  notification, permission-needed OS notification, or the experimental
+ *  terminal-attention marker) is enabled. */
 export function isAgentTaskCompleteTrackingEnabledFromState(
   state: NotificationSettingsState
 ): boolean {
   return (
     isAgentTaskCompleteOsNotificationEnabledFromState(state) ||
+    isPermissionNeededOsNotificationEnabledFromState(state) ||
     isTerminalAttentionEnabledFromState(state)
   )
 }

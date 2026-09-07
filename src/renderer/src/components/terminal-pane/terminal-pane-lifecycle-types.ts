@@ -98,7 +98,7 @@ export type UseTerminalPaneLifecycleDeps = {
   clearTerminalPaneUnread: (paneKey: string) => void
   onShowSessionRestoredBanner: (paneId: number, reason?: SessionRestoredBannerReason) => void
   dispatchNotification: (event: {
-    source: 'terminal-bell' | 'agent-task-complete'
+    source: 'terminal-bell' | 'agent-task-complete' | 'agent-permission-needed'
     terminalTitle?: string
     paneKey?: string
     agentStatusSnapshot?: ParsedAgentStatusPayload

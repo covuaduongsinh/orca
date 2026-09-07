@@ -14,6 +14,7 @@ import {
 
 import {
   isAgentTaskCompleteNotificationEnabled,
+  isPermissionNeededNotificationEnabled,
   subscribeAgentTaskCompleteTrackingEnabled
 } from './agent-task-complete-settings'
 
@@ -28,6 +29,9 @@ export function installAgentTaskCompleteNotify(session: ConnectPanePtySession): 
       allowDoneDetailAfterGrace?: boolean
       agentStatusSnapshot?: AgentCompletionStatusSnapshot
       agentCompletionSource?: AgentCompletionDispatchMeta['source']
+      /** Why: the attention (waiting/blocked) path reuses this scheduler's debounce/grace
+       *  logic but must dispatch on its own settings-gated channel, not task-complete's. */
+      notificationSource?: 'agent-task-complete' | 'agent-permission-needed'
     } = {}
   ): void => {
     if (
@@ -79,11 +83,15 @@ export function installAgentTaskCompleteNotify(session: ConnectPanePtySession): 
       // Why: terminal attention is a visual pane affordance, not an OS
       // notification. Route through dispatch so stale pane completions are
       // rejected before unread attention is marked.
-      const shouldDispatchOsNotification = isAgentTaskCompleteNotificationEnabled()
+      const notificationSource = options.notificationSource ?? 'agent-task-complete'
+      const shouldDispatchOsNotification =
+        notificationSource === 'agent-permission-needed'
+          ? isPermissionNeededNotificationEnabled()
+          : isAgentTaskCompleteNotificationEnabled()
       session.pendingTerminalBellNotification = false
       session.clearTerminalBellNotificationTimer()
       session.deps.dispatchNotification({
-        source: 'agent-task-complete',
+        source: notificationSource,
         terminalTitle: title,
         paneKey: session.cacheKey,
         ...(options.agentCompletionSource

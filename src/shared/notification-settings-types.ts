@@ -4,6 +4,8 @@ export type NotificationSettings = {
   enabled: boolean
   agentTaskComplete: boolean
   terminalBell: boolean
+  /** A pane pauses waiting for the user to approve/deny a tool call. */
+  permissionNeeded: boolean
   suppressWhenFocused: boolean
   customSoundId:
     | 'system'
@@ -21,7 +23,11 @@ export type NotificationSettings = {
   customSoundVolume: number
 }
 
-export type NotificationEventSource = 'agent-task-complete' | 'terminal-bell' | 'test'
+export type NotificationEventSource =
+  | 'agent-task-complete'
+  | 'agent-permission-needed'
+  | 'terminal-bell'
+  | 'test'
 
 export type NotificationDispatchRequest = {
   source: NotificationEventSource
@@ -36,6 +42,8 @@ export type NotificationDispatchRequest = {
   hasMultipleActiveRepos?: boolean
   terminalTitle?: string
   isActiveWorktree?: boolean
+  /** Whether `paneKey` is the pane the user is currently looking at (selected tab/leaf), regardless of OS window focus. */
+  isActivePane?: boolean
   agentType?: AgentType
   agentState?: AgentStatusState
   agentPrompt?: string

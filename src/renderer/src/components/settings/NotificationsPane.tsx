@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
-import { BellRing, Bot, Siren } from 'lucide-react'
+import { BellRing, Bot, ShieldAlert, Siren } from 'lucide-react'
 import { useAppStore } from '@/store'
 import {
   MacNotificationPermissionCard,
@@ -159,6 +159,25 @@ export function NotificationsPane({
         onToggle={() =>
           void updateNotificationSettings({
             terminalBell: !notificationSettings.terminalBell
+          })
+        }
+      />
+
+      <NotificationSettingToggle
+        icon={<ShieldAlert className="size-4" />}
+        label={translate(
+          'auto.components.settings.NotificationsPane.3f2a6c9d1e',
+          'Permission Needed'
+        )}
+        description={translate(
+          'auto.components.settings.NotificationsPane.7b4e1f08a3',
+          'A coding agent pauses to ask for approval on a tool call.'
+        )}
+        checked={notificationSettings.permissionNeeded}
+        disabled={!notificationSettings.enabled}
+        onToggle={() =>
+          void updateNotificationSettings({
+            permissionNeeded: !notificationSettings.permissionNeeded
           })
         }
       />

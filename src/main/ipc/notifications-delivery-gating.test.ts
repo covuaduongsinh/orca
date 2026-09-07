@@ -238,6 +238,122 @@ describe('registerNotificationHandlers', () => {
     })
   })
 
+  describe('agent-permission-needed source', () => {
+    function registerEnabledNotifications(): void {
+      registerNotificationHandlers({
+        getSettings: () => ({
+          notifications: {
+            enabled: true,
+            agentTaskComplete: true,
+            terminalBell: true,
+            permissionNeeded: true,
+            suppressWhenFocused: true
+          }
+        })
+      } as never)
+    }
+
+    it('returns source-disabled when permissionNeeded is off', async () => {
+      registerNotificationHandlers({
+        getSettings: () => ({
+          notifications: {
+            enabled: true,
+            agentTaskComplete: true,
+            terminalBell: true,
+            permissionNeeded: false,
+            suppressWhenFocused: true
+          }
+        })
+      } as never)
+
+      const handler = getDispatchHandler()
+      expect(await handler({}, { source: 'agent-permission-needed' })).toEqual({
+        delivered: false,
+        reason: 'source-disabled'
+      })
+    })
+
+    it('lights the tray dot when the window is visible/focused but the pane is not the active one', () => {
+      getAllWindowsMock.mockReturnValue([
+        {
+          isDestroyed: () => false,
+          isVisible: () => true,
+          isMinimized: () => false,
+          isFocused: () => true
+        } as never
+      ])
+      registerEnabledNotifications()
+
+      getDispatchHandler()({}, { source: 'agent-permission-needed', isActivePane: false })
+
+      expect(setTrayAttentionMock).toHaveBeenCalledWith(true)
+    })
+
+    it('does not light the tray dot when the pane is the active one and the window is visible', () => {
+      getAllWindowsMock.mockReturnValue([
+        {
+          isDestroyed: () => false,
+          isVisible: () => true,
+          isMinimized: () => false,
+          isFocused: () => true
+        } as never
+      ])
+      registerEnabledNotifications()
+
+      getDispatchHandler()({}, { source: 'agent-permission-needed', isActivePane: true })
+
+      expect(setTrayAttentionMock).not.toHaveBeenCalled()
+    })
+
+    it('delivers despite suppressWhenFocused when the pane is not the active one', async () => {
+      getAllWindowsMock.mockReturnValue([
+        {
+          isDestroyed: () => false,
+          isVisible: () => true,
+          isMinimized: () => false,
+          isFocused: () => true
+        } as never
+      ])
+      registerEnabledNotifications()
+
+      const handler = getDispatchHandler()
+      expect(
+        await handler(
+          {},
+          {
+            source: 'agent-permission-needed',
+            isActiveWorktree: true,
+            isActivePane: false
+          }
+        )
+      ).toEqual({ delivered: true })
+    })
+
+    it('still suppresses while focused when the pane is the active one', async () => {
+      getAllWindowsMock.mockReturnValue([
+        {
+          isDestroyed: () => false,
+          isVisible: () => true,
+          isMinimized: () => false,
+          isFocused: () => true
+        } as never
+      ])
+      registerEnabledNotifications()
+
+      const handler = getDispatchHandler()
+      expect(
+        await handler(
+          {},
+          {
+            source: 'agent-permission-needed',
+            isActiveWorktree: true,
+            isActivePane: true
+          }
+        )
+      ).toEqual({ delivered: false, reason: 'suppressed-focus' })
+    })
+  })
+
   it('deduplicates repeated notifications for the same worktree', async () => {
     registerNotificationHandlers({
       getSettings: () => ({

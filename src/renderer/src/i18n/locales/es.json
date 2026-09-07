@@ -6464,7 +6464,9 @@
           "274af61bc0": "sistema",
           "6e6df3a09a": "Elegir archivo personalizado",
           "76e02467b8": "Cambiar archivo personalizado",
-          "d3756cf5bc": "desactivado"
+          "d3756cf5bc": "desactivado",
+          "3f2a6c9d1e": "Permiso necesario",
+          "7b4e1f08a3": "Un agente de programación se detiene para pedir aprobación en una llamada a una herramienta."
         },
         "OpenAiTranscriptionKeyDialog": {
           "fa83512e48": "Guardar clave",
@@ -8700,7 +8702,11 @@
             "72539aede4": "sistema",
             "51ae2183e1": "escritorio",
             "0534c76311": "Interruptor maestro para notificaciones de escritorio de Orca.",
-            "4a210b2f72": "Habilitar notificaciones"
+            "4a210b2f72": "Habilitar notificaciones",
+            "5d9a2c7e41": "Permiso necesario",
+            "9c1b3a8f60": "Notificar cuando un agente de código se detiene para pedir aprobación en una llamada a una herramienta.",
+            "e2f7d4b915": "permiso",
+            "d0c6a9e372": "aprobación"
           }
         },
         "orchestration": {

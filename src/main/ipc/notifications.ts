@@ -111,9 +111,17 @@ export function registerNotificationHandlers(store: Store, runtime?: OrcaRuntime
       args: NotificationDispatchRequest
     ): NotificationDispatchResult | Promise<NotificationDispatchResult> => {
       // Why: light the tray attention dot before the cooldown/focus/enabled gates so they can't hold it back (clears on window show/restore; see index.ts).
-      if (args.source === 'agent-task-complete' || args.source === 'terminal-bell') {
+      if (
+        args.source === 'agent-task-complete' ||
+        args.source === 'terminal-bell' ||
+        args.source === 'agent-permission-needed'
+      ) {
         const activeWindow = BrowserWindow.getAllWindows().find((win) => !win.isDestroyed()) ?? null
-        if (!isMainWindowVisible(activeWindow)) {
+        // Why: a pane waiting on permission can be starved of attention even with
+        // the window visible/focused if the user is looking at a different pane/tab.
+        const paneNeedsAttentionDespiteVisibleWindow =
+          args.source === 'agent-permission-needed' && args.isActivePane === false
+        if (!isMainWindowVisible(activeWindow) || paneNeedsAttentionDespiteVisibleWindow) {
           setTrayAttention(true)
         }
       }
@@ -125,7 +133,8 @@ export function registerNotificationHandlers(store: Store, runtime?: OrcaRuntime
 
       if (
         (args.source === 'agent-task-complete' && !settings.agentTaskComplete) ||
-        (args.source === 'terminal-bell' && !settings.terminalBell)
+        (args.source === 'terminal-bell' && !settings.terminalBell) ||
+        (args.source === 'agent-permission-needed' && !settings.permissionNeeded)
       ) {
         return { delivered: false, reason: 'source-disabled' }
       }
@@ -149,9 +158,14 @@ export function registerNotificationHandlers(store: Store, runtime?: OrcaRuntime
 
       const browserWindow =
         BrowserWindow.getAllWindows().find((window) => !window.isDestroyed()) ?? null
+      // Why: a permission-needed pane the user isn't currently looking at must still
+      // notify even while the window is focused on a different pane in the same worktree.
+      const isFocusedOnTheTriggeringPane =
+        args.source !== 'agent-permission-needed' || args.isActivePane !== false
       if (
         settings.suppressWhenFocused &&
         args.isActiveWorktree &&
+        isFocusedOnTheTriggeringPane &&
         browserWindow &&
         browserWindow.isFocused()
       ) {

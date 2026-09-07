@@ -23,6 +23,7 @@ import {
   isCurrentLivePaneKey
 } from './terminal-notification-state'
 import {
+  isActiveSelectedPaneKey,
   isOrcaWindowForegroundFocused,
   isVisibleForegroundPaneKey
 } from './terminal-notification-pane-visibility'
@@ -51,12 +52,21 @@ function hasFreshActiveHookStatus(
 }
 
 export type TerminalNotificationEvent = {
-  source: 'terminal-bell' | 'agent-task-complete'
+  source: 'terminal-bell' | 'agent-task-complete' | 'agent-permission-needed'
   terminalTitle?: string
   paneKey?: string
   agentStatusSnapshot?: AgentCompletionStatusSnapshot
   agentCompletionSource?: AgentCompletionDispatchMeta['source']
   suppressOsNotification?: boolean
+}
+
+// Why: 'agent-task-complete' and 'agent-permission-needed' both carry an agent
+// status snapshot and share the same pane-liveness/unread-marking rich path;
+// only 'terminal-bell' (BEL byte detection) skips it.
+function isAgentSnapshotSource(
+  source: TerminalNotificationEvent['source']
+): source is 'agent-task-complete' | 'agent-permission-needed' {
+  return source === 'agent-task-complete' || source === 'agent-permission-needed'
 }
 
 /**
@@ -75,15 +85,15 @@ export function dispatchTerminalNotification(
   // agent, any snapshot from another agent is stale pane-reuse residue and must
   // not lend its prompt/agentType or timing id to this notification.
   const explicitTitleAgentType =
-    event.source === 'agent-task-complete' && event.terminalTitle
+    isAgentSnapshotSource(event.source) && event.terminalTitle
       ? resolveCommittedTitleAgentType(event.terminalTitle)
       : null
   const storedAgentStatus =
-    event.source === 'agent-task-complete' && event.paneKey
+    isAgentSnapshotSource(event.source) && event.paneKey
       ? state.agentStatusByPaneKey[event.paneKey]
       : undefined
   const eventAgentStatusSnapshot =
-    event.source === 'agent-task-complete' &&
+    isAgentSnapshotSource(event.source) &&
     agentSnapshotMatchesExplicitTitle(event.agentStatusSnapshot, explicitTitleAgentType)
       ? event.agentStatusSnapshot
       : undefined
@@ -94,7 +104,7 @@ export function dispatchTerminalNotification(
       ? storedAgentStatus
       : undefined
   if (
-    event.source === 'agent-task-complete' &&
+    isAgentSnapshotSource(event.source) &&
     event.agentCompletionSource !== 'process-exit' &&
     !eventAgentStatusSnapshot &&
     hasFreshActiveHookStatus(storedAgentStatus, explicitTitleAgentType)
@@ -105,15 +115,14 @@ export function dispatchTerminalNotification(
   }
   // Why: a process can die before its hook emits done; do not label the
   // resulting completion notification with that stale active state or prompt.
-  const agentStatus =
-    event.source === 'agent-task-complete'
-      ? (eventAgentStatusSnapshot ??
-        (event.agentCompletionSource === 'process-exit' && freshStoredAgentStatus?.state !== 'done'
-          ? undefined
-          : freshStoredAgentStatus))
-      : undefined
+  const agentStatus = isAgentSnapshotSource(event.source)
+    ? (eventAgentStatusSnapshot ??
+      (event.agentCompletionSource === 'process-exit' && freshStoredAgentStatus?.state !== 'done'
+        ? undefined
+        : freshStoredAgentStatus))
+    : undefined
   if (
-    event.source === 'agent-task-complete' &&
+    isAgentSnapshotSource(event.source) &&
     isSupersededAgentCompletionSnapshot(storedAgentStatus, eventAgentStatusSnapshot)
   ) {
     return
@@ -137,7 +146,7 @@ export function dispatchTerminalNotification(
     return
   }
 
-  if (event.source === 'agent-task-complete') {
+  if (isAgentSnapshotSource(event.source)) {
     const terminalAttentionEnabled = state.settings?.experimentalTerminalAttention === true
     let tabId: string | null = null
     if (event.paneKey) {
@@ -200,17 +209,21 @@ export function dispatchTerminalNotification(
         agentInterrupted: agentStatus.interrupted
       }
     : {}
-  const notificationId =
-    event.source === 'agent-task-complete'
-      ? buildAgentNotificationId({
-          worktreeId,
-          paneKey: event.paneKey,
-          // Why: delayed hook completions may dispatch after PTY teardown has
-          // removed the live row; carry the hook timing so the OS notification
-          // still has the same dismissible id as the unread agent event.
-          stateStartedAt: agentNotificationStateStartedAt
-        })
-      : null
+  const notificationId = isAgentSnapshotSource(event.source)
+    ? buildAgentNotificationId({
+        worktreeId,
+        paneKey: event.paneKey,
+        // Why: delayed hook completions may dispatch after PTY teardown has
+        // removed the live row; carry the hook timing so the OS notification
+        // still has the same dismissible id as the unread agent event.
+        stateStartedAt: agentNotificationStateStartedAt
+      })
+    : null
+  // Why: lets main light the tray/skip suppress-while-focused for a permission
+  // pane the user isn't currently looking at, even if the window/worktree is.
+  const isActivePane = event.paneKey
+    ? isActiveSelectedPaneKey(state, worktreeId, event.paneKey)
+    : undefined
 
   void window.api.notifications
     .dispatch({
@@ -223,6 +236,7 @@ export function dispatchTerminalNotification(
       hasMultipleActiveRepos: countReposNeedingNotificationDisambiguation(state) > 1,
       terminalTitle: event.terminalTitle,
       isActiveWorktree: state.activeWorktreeId === worktreeId,
+      ...(isActivePane !== undefined ? { isActivePane } : {}),
       ...agentSnapshot
     })
     .then((result) => {

@@ -118,7 +118,7 @@ export type PtyConnectionDeps = {
   // shared/types.ts keeps a wider NotificationEventSource union because the
   // main process can also emit `'test'` from the settings-pane button.
   dispatchNotification: (event: {
-    source: 'terminal-bell' | 'agent-task-complete'
+    source: 'terminal-bell' | 'agent-task-complete' | 'agent-permission-needed'
     terminalTitle?: string
     paneKey?: string
     agentStatusSnapshot?: AgentCompletionStatusSnapshot

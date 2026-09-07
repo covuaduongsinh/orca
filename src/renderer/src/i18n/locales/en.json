@@ -7517,7 +7517,9 @@
           "274af61bc0": "system",
           "6e6df3a09a": "Choose Custom File",
           "76e02467b8": "Change Custom File",
-          "d3756cf5bc": "disabled"
+          "d3756cf5bc": "disabled",
+          "3f2a6c9d1e": "Permission Needed",
+          "7b4e1f08a3": "A coding agent pauses to ask for approval on a tool call."
         },
         "OpenAiTranscriptionKeyDialog": {
           "fa83512e48": "Save Key",
@@ -9899,7 +9901,11 @@
             "72539aede4": "system",
             "51ae2183e1": "desktop",
             "0534c76311": "Master switch for Orca desktop notifications.",
-            "4a210b2f72": "Enable Notifications"
+            "4a210b2f72": "Enable Notifications",
+            "5d9a2c7e41": "Permission Needed",
+            "9c1b3a8f60": "Notify when a coding agent pauses to ask for approval on a tool call.",
+            "e2f7d4b915": "permission",
+            "d0c6a9e372": "approval"
           }
         },
         "orchestration": {

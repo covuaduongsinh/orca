@@ -229,7 +229,8 @@ export function installTerminalKeydownFit(session: ConnectPanePtySession): void 
     },
     dispatchAttention: (title, meta) =>
       session.scheduleAgentTaskCompleteNotification(title, {
-        agentStatusSnapshot: meta.agentStatus
+        agentStatusSnapshot: meta.agentStatus,
+        notificationSource: 'agent-permission-needed'
       }),
     shouldPollProcessCadence: () => {
       const ptyId = session.transport.getPtyId()

@@ -101,6 +101,7 @@ export function createSettings(overrides: Partial<GlobalSettings> = {}): GlobalS
       enabled: true,
       agentTaskComplete: true,
       terminalBell: false,
+      permissionNeeded: true,
       suppressWhenFocused: true,
       customSoundId: 'system',
       customSoundPath: null,

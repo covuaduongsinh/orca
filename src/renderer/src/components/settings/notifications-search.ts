@@ -81,6 +81,38 @@ export const getNotificationsPaneSearchEntries = createLocalizedCatalog(() => [
   },
   {
     title: translate(
+      'auto.components.settings.notifications.search.5d9a2c7e41',
+      'Permission Needed'
+    ),
+    description: translate(
+      'auto.components.settings.notifications.search.9c1b3a8f60',
+      'Notify when a coding agent pauses to ask for approval on a tool call.'
+    ),
+    keywords: [
+      ...translateSearchKeyword(
+        'auto.components.settings.notifications.search.ca8faa40d7',
+        'notifications'
+      ),
+      ...translateSearchKeyword(
+        'auto.components.settings.notifications.search.7fa07e9600',
+        'agent'
+      ),
+      ...translateSearchKeyword(
+        'auto.components.settings.notifications.search.e2f7d4b915',
+        'permission'
+      ),
+      ...translateSearchKeyword(
+        'auto.components.settings.notifications.search.a2ab73b325',
+        'attention'
+      ),
+      ...translateSearchKeyword(
+        'auto.components.settings.notifications.search.d0c6a9e372',
+        'approval'
+      )
+    ]
+  },
+  {
+    title: translate(
       'auto.components.settings.notifications.search.96562a72c6',
       'Suppress While Focused'
     ),
