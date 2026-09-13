@@ -83,26 +83,8 @@ function pruneClosedPaneCoordinators(): void {
   }
 }
 
-function isAgentTaskCompleteNotificationEnabled(): boolean {
-  const notifications = useAppStore.getState().settings?.notifications
-  return notifications?.enabled !== false && notifications?.agentTaskComplete !== false
-}
-
-function isPermissionNeededNotificationEnabled(): boolean {
-  const notifications = useAppStore.getState().settings?.notifications
-  return notifications?.enabled !== false && notifications?.permissionNeeded !== false
-}
-
-function isTerminalAttentionEnabled(): boolean {
-  return useAppStore.getState().settings?.experimentalTerminalAttention === true
-}
-
 function isAgentTaskCompleteTrackingEnabled(): boolean {
-  return (
-    isAgentTaskCompleteNotificationEnabled() ||
-    isPermissionNeededNotificationEnabled() ||
-    isTerminalAttentionEnabled()
-  )
+  return isAgentHookCompletionTrackingEnabled(useAppStore.getState())
 }
 
 function syncAgentTaskCompleteTrackingEnabled(enabled: boolean): void {
@@ -162,7 +144,6 @@ function createCoordinator(paneKey: string, worktreeId: string): AgentCompletion
         source: 'agent-task-complete',
         terminalTitle: title,
         paneKey,
-        suppressOsNotification: !isAgentTaskCompleteNotificationEnabled(),
         ...(meta?.agentStatus ? { agentStatusSnapshot: meta.agentStatus } : {})
       })
     },
@@ -178,7 +159,6 @@ function createCoordinator(paneKey: string, worktreeId: string): AgentCompletion
         source: 'agent-permission-needed',
         terminalTitle: title,
         paneKey,
-        suppressOsNotification: !isPermissionNeededNotificationEnabled(),
         agentStatusSnapshot: meta.agentStatus
       })
     },

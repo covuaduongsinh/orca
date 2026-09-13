@@ -57,7 +57,6 @@ export type TerminalNotificationEvent = {
   paneKey?: string
   agentStatusSnapshot?: AgentCompletionStatusSnapshot
   agentCompletionSource?: AgentCompletionDispatchMeta['source']
-  suppressOsNotification?: boolean
 }
 
 // Why: 'agent-task-complete' and 'agent-permission-needed' both carry an agent
@@ -183,9 +182,7 @@ export function dispatchTerminalNotification(
     }
   }
 
-  if (event.suppressOsNotification) {
-    return
-  }
+  // Desktop settings are applied in main after independent mobile delivery.
 
   // Why: prefer worktree.repoId over string-parsing the worktreeId. The
   // `${repoId}::${path}` format is an implementation detail of id

@@ -1,25 +1,18 @@
 import { app } from 'electron'
-import { existsSync, mkdirSync, rmSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, rmSync } from 'node:fs'
 import { rename, rm } from 'node:fs/promises'
-import { join, relative, resolve } from 'node:path'
-import type {
-  SpeechModelManifest,
-  SpeechModelState,
-  SpeechModelStatus
-} from '../../shared/speech-types'
+import { join } from 'node:path'
+import type { SpeechModelState, SpeechModelStatus } from '../../shared/speech-types'
 import { SPEECH_MODEL_CATALOG, getCatalogModel, isLocalSpeechModel } from './model-catalog'
 import { hasOpenAiSpeechApiKey } from './openai-api-key-store'
 import { hasGroqSpeechApiKey } from './groq-api-key-store'
-import {
-  getSpeechModelCacheDirCandidates,
-  migrateSpeechModelCacheIfNeeded,
-  type SpeechModelCacheDir
-} from './model-cache-path'
+import { migrateSpeechModelCacheIfNeeded } from './model-cache-path'
 import { SpeechModelDownloadTransport } from './speech-model-download-transport'
 import {
   removeModelDownloadFiles,
   removeModelDownloadStaging
 } from './speech-model-download-cleanup'
+import { prepareModelsDir, getSafeModelDir, validateModelFiles } from './model-dir-resolver'
 
 type DownloadHandle = {
   abort: () => void
@@ -38,7 +31,7 @@ export class ModelManager extends SpeechModelDownloadTransport {
   constructor(customModelsDir?: string) {
     super()
     const requestedModelsDir = customModelsDir || join(app.getPath('userData'), 'speech-models')
-    const prepared = this.prepareModelsDir(requestedModelsDir)
+    const prepared = prepareModelsDir(requestedModelsDir)
     this.modelsDir = prepared.modelsDir
     this.migrationSourceDir = prepared.migrationSourceDir
     // Why: migration copies large model files, so run it async and gate state reads on it to keep the UI responsive.
@@ -58,23 +51,6 @@ export class ModelManager extends SpeechModelDownloadTransport {
 
   getModelsDir(): string {
     return this.modelsDir
-  }
-
-  private prepareModelsDir(requestedModelsDir: string): SpeechModelCacheDir {
-    let lastError: unknown = null
-    for (const candidate of getSpeechModelCacheDirCandidates(requestedModelsDir)) {
-      try {
-        mkdirSync(candidate.modelsDir, { recursive: true })
-        return candidate
-      } catch (error) {
-        lastError = error
-        if (candidate.migrationSourceDir) {
-          console.warn('[speech] Failed to prepare ASCII speech model cache:', error)
-        }
-      }
-    }
-
-    throw lastError instanceof Error ? lastError : new Error(String(lastError))
   }
 
   async getModelStates(): Promise<SpeechModelState[]> {
@@ -113,7 +89,7 @@ export class ModelManager extends SpeechModelDownloadTransport {
     }
 
     const modelDir = this.getModelDir(modelId)
-    if (existsSync(modelDir) && this.validateModelFiles(manifest, modelDir)) {
+    if (existsSync(modelDir) && validateModelFiles(manifest, modelDir)) {
       const state: SpeechModelState = { id: modelId, status: 'ready' }
       this.modelStates.set(modelId, state)
       return state
@@ -123,34 +99,7 @@ export class ModelManager extends SpeechModelDownloadTransport {
   }
 
   getModelDir(modelId: string): string {
-    return this.getSafeModelDir(modelId)
-  }
-
-  private getSafeModelDir(modelId: string, root: string = this.modelsDir): string {
-    const manifest = getCatalogModel(modelId)
-    if (!manifest) {
-      throw new Error(`Unknown model: ${modelId}`)
-    }
-    const modelsRoot = resolve(root)
-    const modelDir = resolve(modelsRoot, modelId)
-    const rel = relative(modelsRoot, modelDir)
-    if (rel.startsWith('..') || rel === '' || rel.includes('..') || resolve(rel) === rel) {
-      throw new Error(`Invalid model id: ${modelId}`)
-    }
-    return modelDir
-  }
-
-  private validateModelFiles(manifest: SpeechModelManifest, modelDir: string): boolean {
-    if (!manifest.downloadFiles) {
-      return false
-    }
-    return manifest.downloadFiles.every(({ name, sizeBytes }) => {
-      try {
-        return statSync(join(modelDir, name)).size === sizeBytes
-      } catch {
-        return false
-      }
-    })
+    return getSafeModelDir(modelId, this.modelsDir)
   }
 
   async downloadModel(modelId: string): Promise<void> {
@@ -171,7 +120,7 @@ export class ModelManager extends SpeechModelDownloadTransport {
     }
 
     const modelDir = this.getModelDir(modelId)
-    if (existsSync(modelDir) && this.validateModelFiles(manifest, modelDir)) {
+    if (existsSync(modelDir) && validateModelFiles(manifest, modelDir)) {
       this.updateState(modelId, 'ready')
       return
     }
@@ -258,7 +207,7 @@ export class ModelManager extends SpeechModelDownloadTransport {
     await rm(join(this.modelsDir, `${modelId}.tar.bz2`), { force: true })
     // Why: also delete the pre-migration copy, or the next launch re-migrates it and resurrects the model.
     if (this.migrationSourceDir) {
-      const sourceModelDir = this.getSafeModelDir(modelId, this.migrationSourceDir)
+      const sourceModelDir = getSafeModelDir(modelId, this.migrationSourceDir)
       if (existsSync(sourceModelDir)) {
         await rm(sourceModelDir, { recursive: true, force: true })
       }
@@ -292,51 +241,6 @@ export class ModelManager extends SpeechModelDownloadTransport {
     const progressValue = reportedProgress ?? (status === 'extracting' ? 0.95 : -1)
     for (const callback of this.progressCallbacks) {
       callback(modelId, progressValue)
-    }
-  }
-
-  private async downloadModelFiles(
-    manifest: SpeechModelManifest,
-    stagingDir: string,
-    modelId: string,
-    isAborted: () => boolean,
-    signal: AbortSignal
-  ): Promise<void> {
-    if (!manifest.downloadFiles?.length || !manifest.sizeBytes) {
-      throw new Error(`Model download metadata missing: ${modelId}`)
-    }
-
-    let completedBytes = 0
-    for (const file of manifest.downloadFiles) {
-      if (
-        !file.name ||
-        file.name === '.' ||
-        file.name === '..' ||
-        file.name.includes('/') ||
-        file.name.includes('\\')
-      ) {
-        throw new Error(`Invalid model download filename: ${file.name}`)
-      }
-      const filePath = join(stagingDir, file.name)
-      await this.downloadFileWithRetry(
-        file.url,
-        filePath,
-        file.sizeBytes,
-        modelId,
-        isAborted,
-        signal,
-        completedBytes,
-        manifest.sizeBytes
-      )
-      if (isAborted()) {
-        return
-      }
-      await this.verifyFileSha256(filePath, file.sha256)
-      completedBytes += file.sizeBytes
-    }
-
-    if (!this.validateModelFiles(manifest, stagingDir)) {
-      throw new Error('Model files missing after download')
     }
   }
 

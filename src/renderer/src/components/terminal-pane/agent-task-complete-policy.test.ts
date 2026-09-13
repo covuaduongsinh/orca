@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { GlobalSettings } from '../../../../shared/global-settings-types'
 import {
   isAgentTaskCompleteOsNotificationEnabledFromState,
   isAgentTaskCompleteTrackingEnabledFromState,
@@ -6,14 +7,18 @@ import {
   isTerminalAttentionEnabledFromState
 } from './agent-task-complete-policy'
 
+type PolicySettingsState = {
+  settings: Pick<GlobalSettings, 'notifications' | 'experimentalTerminalAttention'> | null
+}
+
 function stateWith(
   notifications: Partial<{
     enabled: boolean
     agentTaskComplete: boolean
     permissionNeeded: boolean
-  }>,
+  }> = {},
   experimentalTerminalAttention = false
-): Parameters<typeof isAgentTaskCompleteTrackingEnabledFromState>[0] {
+): PolicySettingsState {
   return {
     settings: {
       notifications: {
@@ -32,43 +37,61 @@ function stateWith(
   }
 }
 
-describe('isAgentTaskCompleteTrackingEnabledFromState', () => {
-  it('stays enabled when only permissionNeeded is on and agentTaskComplete is off', () => {
-    // Regression: a pane waiting on permission must still be tracked (and thus
-    // notify) when the user disabled "Agent Task Complete" but left
-    // "Permission Needed" on — permissionNeeded must not be a dead setting.
-    const state = stateWith({ agentTaskComplete: false, permissionNeeded: true })
+describe('agent-task-complete-policy', () => {
+  describe('isAgentTaskCompleteTrackingEnabledFromState', () => {
+    it('is enabled when settings are hydrated', () => {
+      const state = stateWith({ agentTaskComplete: false, permissionNeeded: false })
+      expect(isAgentTaskCompleteTrackingEnabledFromState(state)).toBe(true)
+    })
 
-    expect(isAgentTaskCompleteOsNotificationEnabledFromState(state)).toBe(false)
-    expect(isPermissionNeededOsNotificationEnabledFromState(state)).toBe(true)
-    expect(isAgentTaskCompleteTrackingEnabledFromState(state)).toBe(true)
+    it('is disabled before settings hydrate (null settings)', () => {
+      expect(isAgentTaskCompleteTrackingEnabledFromState({ settings: null })).toBe(false)
+    })
   })
 
-  it('stays enabled when only agentTaskComplete is on and permissionNeeded is off', () => {
-    const state = stateWith({ agentTaskComplete: true, permissionNeeded: false })
+  describe('isAgentTaskCompleteOsNotificationEnabledFromState', () => {
+    it('returns true when globally enabled and agentTaskComplete is true', () => {
+      const state = stateWith({ enabled: true, agentTaskComplete: true })
+      expect(isAgentTaskCompleteOsNotificationEnabledFromState(state)).toBe(true)
+    })
 
-    expect(isAgentTaskCompleteTrackingEnabledFromState(state)).toBe(true)
+    it('returns false when agentTaskComplete is false', () => {
+      const state = stateWith({ enabled: true, agentTaskComplete: false })
+      expect(isAgentTaskCompleteOsNotificationEnabledFromState(state)).toBe(false)
+    })
+
+    it('returns false when notifications are globally disabled', () => {
+      const state = stateWith({ enabled: false, agentTaskComplete: true })
+      expect(isAgentTaskCompleteOsNotificationEnabledFromState(state)).toBe(false)
+    })
   })
 
-  it('falls back to the experimental terminal-attention marker', () => {
-    const state = stateWith(
-      { agentTaskComplete: false, permissionNeeded: false },
-      /* experimentalTerminalAttention */ true
-    )
+  describe('isPermissionNeededOsNotificationEnabledFromState', () => {
+    it('returns true when globally enabled and permissionNeeded is true', () => {
+      const state = stateWith({ enabled: true, permissionNeeded: true })
+      expect(isPermissionNeededOsNotificationEnabledFromState(state)).toBe(true)
+    })
 
-    expect(isTerminalAttentionEnabledFromState(state)).toBe(true)
-    expect(isAgentTaskCompleteTrackingEnabledFromState(state)).toBe(true)
+    it('returns false when permissionNeeded is false', () => {
+      const state = stateWith({ enabled: true, permissionNeeded: false })
+      expect(isPermissionNeededOsNotificationEnabledFromState(state)).toBe(false)
+    })
+
+    it('returns false when notifications are globally disabled', () => {
+      const state = stateWith({ enabled: false, permissionNeeded: true })
+      expect(isPermissionNeededOsNotificationEnabledFromState(state)).toBe(false)
+    })
   })
 
-  it('disables tracking only when every consumer is off', () => {
-    const state = stateWith({ agentTaskComplete: false, permissionNeeded: false })
+  describe('isTerminalAttentionEnabledFromState', () => {
+    it('returns true when experimentalTerminalAttention is true', () => {
+      const state = stateWith({}, true)
+      expect(isTerminalAttentionEnabledFromState(state)).toBe(true)
+    })
 
-    expect(isAgentTaskCompleteTrackingEnabledFromState(state)).toBe(false)
-  })
-
-  it('disables tracking when notifications are globally off, regardless of per-source toggles', () => {
-    const state = stateWith({ enabled: false, agentTaskComplete: true, permissionNeeded: true })
-
-    expect(isAgentTaskCompleteTrackingEnabledFromState(state)).toBe(false)
+    it('returns false when experimentalTerminalAttention is false', () => {
+      const state = stateWith({}, false)
+      expect(isTerminalAttentionEnabledFromState(state)).toBe(false)
+    })
   })
 })

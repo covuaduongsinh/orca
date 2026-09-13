@@ -12,11 +12,7 @@ import {
   canDispatchAgentNotificationAfterGrace
 } from '../agent-task-complete-policy'
 
-import {
-  isAgentTaskCompleteNotificationEnabled,
-  isPermissionNeededNotificationEnabled,
-  subscribeAgentTaskCompleteTrackingEnabled
-} from './agent-task-complete-settings'
+import { subscribeAgentTaskCompleteTrackingEnabled } from './agent-task-complete-settings'
 
 import type { ConnectPanePtySession } from './connect-pane-pty-session'
 
@@ -84,10 +80,6 @@ export function installAgentTaskCompleteNotify(session: ConnectPanePtySession): 
       // notification. Route through dispatch so stale pane completions are
       // rejected before unread attention is marked.
       const notificationSource = options.notificationSource ?? 'agent-task-complete'
-      const shouldDispatchOsNotification =
-        notificationSource === 'agent-permission-needed'
-          ? isPermissionNeededNotificationEnabled()
-          : isAgentTaskCompleteNotificationEnabled()
       session.pendingTerminalBellNotification = false
       session.clearTerminalBellNotificationTimer()
       session.deps.dispatchNotification({
@@ -97,7 +89,6 @@ export function installAgentTaskCompleteNotify(session: ConnectPanePtySession): 
         ...(options.agentCompletionSource
           ? { agentCompletionSource: options.agentCompletionSource }
           : {}),
-        ...(shouldDispatchOsNotification ? {} : { suppressOsNotification: true }),
         ...(options.agentStatusSnapshot ? { agentStatusSnapshot: options.agentStatusSnapshot } : {})
       })
     }

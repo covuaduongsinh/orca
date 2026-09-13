@@ -2154,8 +2154,7 @@
         "recentChatsTerminalsHeader": "Trò chuyện và terminal gần đây",
         "27f10cca63": "Tìm kiếm các cuộc trò chuyện, terminal, worktree, cài đặt và hành động...",
         "2770f02910": "Tìm kiếm các cuộc trò chuyện, terminal, worktree, cài đặt và hành động",
-        "paletteOpenTabBranch": "Tên branch",
-        "paletteOpenTabWorkspace": "Tên workspace"
+        "lastActiveTime": "Hoạt động gần nhất {{value0}} trước"
       },
       "github": {
         "pr": {
@@ -4490,12 +4489,14 @@
           "keepDefaultBranchAria": "Giữ branch mặc định hiển thị trong khi ẩn workspace đang ngủ"
         },
         "SidebarHeader": {
-          "25a95899c9": "Thêm dự án",
+          "projects": "Dự án",
+          "spaces": "Không gian",
           "92154beb7e": "Workspace mới",
           "49f62c5665": "Bảng workspace",
           "5c9c7c16aa": "Thêm dự án để tạo workspace",
-          "ca6f729da2": "Workspace mới ({{value0}})",
-          "a30e34eb5c": "Đóng bảng workspace"
+          "a30e34eb5c": "Đóng bảng workspace",
+          "views": "Chế độ xem sidebar",
+          "addProject": "Thêm dự án"
         },
         "SidebarNav": {
           "80611a8b10": "Tìm kiếm",

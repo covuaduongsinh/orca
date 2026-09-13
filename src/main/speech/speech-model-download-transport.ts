@@ -1,5 +1,8 @@
 import { createHash } from 'node:crypto'
 import { createReadStream, statSync } from 'node:fs'
+import { join } from 'node:path'
+import type { SpeechModelManifest } from '../../shared/speech-types'
+import { validateModelFiles } from './model-dir-resolver'
 import {
   DOWNLOAD_RETRY_DELAYS_MS,
   MAX_NO_PROGRESS_ATTEMPTS,
@@ -170,5 +173,50 @@ export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownlo
       stream.on('error', onError)
       stream.on('end', onEnd)
     })
+  }
+
+  protected async downloadModelFiles(
+    manifest: SpeechModelManifest,
+    stagingDir: string,
+    modelId: string,
+    isAborted: () => boolean,
+    signal: AbortSignal
+  ): Promise<void> {
+    if (!manifest.downloadFiles?.length || !manifest.sizeBytes) {
+      throw new Error(`Model download metadata missing: ${modelId}`)
+    }
+
+    let completedBytes = 0
+    for (const file of manifest.downloadFiles) {
+      if (
+        !file.name ||
+        file.name === '.' ||
+        file.name === '..' ||
+        file.name.includes('/') ||
+        file.name.includes('\\')
+      ) {
+        throw new Error(`Invalid model download filename: ${file.name}`)
+      }
+      const filePath = join(stagingDir, file.name)
+      await this.downloadFileWithRetry(
+        file.url,
+        filePath,
+        file.sizeBytes,
+        modelId,
+        isAborted,
+        signal,
+        completedBytes,
+        manifest.sizeBytes
+      )
+      if (isAborted()) {
+        return
+      }
+      await this.verifyFileSha256(filePath, file.sha256)
+      completedBytes += file.sizeBytes
+    }
+
+    if (!validateModelFiles(manifest, stagingDir)) {
+      throw new Error('Model files missing after download')
+    }
   }
 }
