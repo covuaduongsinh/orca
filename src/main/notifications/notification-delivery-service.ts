@@ -65,7 +65,10 @@ export function createNotificationDeliveryService(
         // the window visible/focused if the user is looking at a different pane/tab.
         const paneNeedsAttentionDespiteVisibleWindow =
           request.source === 'agent-permission-needed' && request.isActivePane === false
-        if (!deps.isWindowVisible(deps.findActiveWindow()) || paneNeedsAttentionDespiteVisibleWindow) {
+        if (
+          !deps.isWindowVisible(deps.findActiveWindow()) ||
+          paneNeedsAttentionDespiteVisibleWindow
+        ) {
           deps.setTrayAttention(true)
         }
       }
