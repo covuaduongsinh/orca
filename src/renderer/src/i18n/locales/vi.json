@@ -15290,6 +15290,8 @@
         "chooseInAgentPicker": "Chọn trong bộ chọn agent…",
         "toggleOption": "Chuyển đổi {{value0}}",
         "pillAccessibleName": "{{value0}} {{value1}}",
+        "valueIsDefault": "Mặc định",
+        "valueNotReported": "Chưa báo cáo",
         "sentNotConfirmed": "Đã gửi cho agent - chưa được xác nhận",
         "setWhenSessionStarts": "Đặt thời điểm phiên bắt đầu.",
         "availableAfterSessionStarts": "Có sẵn sau khi phiên bắt đầu.",
