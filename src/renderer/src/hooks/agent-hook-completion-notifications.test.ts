@@ -3,7 +3,6 @@ import { YOLO_TUI_AGENT_ARGS } from '../../../shared/tui-agent-permissions'
 import { createHookListenerState } from '../../../shared/agent-hook-listener/listener-state'
 import { normalizeHookPayload } from '../../../shared/agent-hook-listener'
 import {
-  CODEX_ATTENTION_QUIET_MS,
   dispatchAgentHookTerminalLifecycle,
   dispatchTerminalNotification,
   HOOK_DONE_QUIET_MS,
@@ -18,8 +17,7 @@ describe('agent hook completion notifications', () => {
   const paneKey = PANE_KEY
   useAgentHookCompletionNotificationsTestLifecycle()
 
-  // Why: the Codex permission-pause tests share a working→pause→quiet-window
-  // sequence; centralizing it keeps the debounce advance (issue #8387) in one spot.
+  // Why: the Codex permission-pause tests share a working→pause sequence.
   async function observeCodexPermissionPause(state: 'waiting' | 'blocked'): Promise<void> {
     const { observeAgentHookCompletionForNotification } =
       await import('./agent-hook-completion-notifications')
@@ -39,7 +37,6 @@ describe('agent hook completion notifications', () => {
         toolInput: 'git status'
       }
     })
-    vi.advanceTimersByTime(CODEX_ATTENTION_QUIET_MS)
   }
 
   it('keeps completion tracking active across desktop notification changes', async () => {
@@ -441,8 +438,8 @@ describe('agent hook completion notifications', () => {
     )
   })
 
-  it('fails open for Codex auto-approved blocked permission requests without launch proof', async () => {
-    seedCodexPaneLaunchConfig(paneKey, YOLO_TUI_AGENT_ARGS.codex ?? '')
+  it('notifies for a blocked Codex permission request', async () => {
+    seedCodexPaneLaunchConfig(paneKey, '')
     await observeCodexPermissionPause('blocked')
 
     expect(dispatchTerminalNotification).toHaveBeenCalledTimes(1)

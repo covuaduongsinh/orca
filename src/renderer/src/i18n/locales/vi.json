@@ -808,7 +808,6 @@
       "useComposerState": {
         "7eb3f44ff7": "Agent được chọn bị vô hiệu hóa. Chọn một agent được kích hoạt trước khi tạo.",
         "b2ead86962": "Không giải quyết được cơ sở PR.",
-        "a9ff236145": "Không thể tải lên một số tệp đính kèm.",
         "3db83fc58a": "Không có đường dẫn dự án nào có sẵn trên máy chủ này cho các tệp đính kèm.",
         "ba6cb77082": "Không thể kết nối với dự án.",
         "chooseOrAddProjectBeforeWorkspace": "Chọn hoặc thêm dự án trước khi tạo workspace.",
@@ -10596,7 +10595,6 @@
           "account": "tài khoản Orca",
           "connected": "Đã kết nối",
           "signInRequired": "Cần phải đăng nhập để tải lên và quản lý các hiện vật.",
-          "signingIn": "Đang đăng nhập…",
           "signIn": "Đăng nhập vào Orca",
           "title": "Hiện vật",
           "description": "Chia sẻ tệp HTML và Markdown với nhóm của bạn và quản lý các liên kết công khai của họ.",
@@ -10633,7 +10631,6 @@
           "checking": "Đang kiểm tra trạng thái tài khoản…",
           "account": "tài khoản Orca",
           "signOut": "Đăng xuất",
-          "signingIn": "Đang đăng nhập…",
           "signInAgain": "Đăng nhập lại",
           "signIn": "Đăng nhập vào Orca",
           "title": "Tài khoản Orca",
@@ -11891,8 +11888,6 @@
             "agentSessionQueued": "{{value0}} phiên đã được xếp hàng đợi",
             "sessionHistory": "Lịch sử phiên agent",
             "agents": "Agent",
-            "shownRecent": "{{value0}} được hiển thị · {{value1}} gần đây",
-            "sessionsShownCompact": "{{value0}} hiển thị",
             "resumePastSessions": "Tiếp tục các phiên trước",
             "refreshSessionHistory": "Làm mới lịch sử phiên",
             "searchSessions": "Phiên tìm kiếm",
@@ -11929,7 +11924,6 @@
             "agents": "Agent",
             "selectAllAgents": "Chọn tất cả",
             "clearAgents": "Xóa",
-            "sort": "Loại",
             "lastUpdated": "Cập nhật lần cuối",
             "created": "Tạo",
             "group": "Nhóm",
@@ -15116,7 +15110,6 @@
           "refresh": "Làm mới",
           "signInHeading": "Đăng nhập vào Orca",
           "signInCopy": "Đăng nhập để xem và quản lý các tạo phẩm được chia sẻ thông qua tài khoản của bạn.",
-          "signingIn": "Đang đăng nhập…",
           "signIn": "Đăng nhập vào Orca",
           "empty": "Không có cấu phần phần mềm nào được chia sẻ",
           "emptyCopy": "Mở tệp HTML hoặc Markdown và chọn Chia sẻ dưới dạng tạo phẩm hoặc yêu cầu agent của bạn chia sẻ tệp đó.",
@@ -15160,7 +15153,6 @@
           "confirmDescription": "Thao tác này sẽ xuất bản tệp hiện tại tại liên kết mà bất kỳ ai có URL đều có thể xem.",
           "accountTitle": "tài khoản Orca",
           "accountDescription": "Đăng nhập để tạo và quản lý liên kết này.",
-          "signingIn": "Đang đăng nhập…",
           "signInAgain": "Đăng nhập lại",
           "signIn": "Đăng nhập",
           "publishingOffTitle": "Tính năng chia sẻ hiện vật đã tắt",
@@ -15298,7 +15290,6 @@
         "chooseInAgentPicker": "Chọn trong bộ chọn agent…",
         "toggleOption": "Chuyển đổi {{value0}}",
         "pillAccessibleName": "{{value0}} {{value1}}",
-        "valueUnknown": "Giá trị hiện tại không xác định - chọn Bật hoặc Tắt",
         "sentNotConfirmed": "Đã gửi cho agent - chưa được xác nhận",
         "setWhenSessionStarts": "Đặt thời điểm phiên bắt đầu.",
         "availableAfterSessionStarts": "Có sẵn sau khi phiên bắt đầu.",
@@ -15311,9 +15302,7 @@
           "high": "Cao",
           "xhigh": "Cực cao",
           "max": "Tối đa",
-          "ultra": "siêu",
-          "on": "Bật",
-          "off": "Tắt"
+          "ultra": "siêu"
         }
       },
       "tool": {
@@ -15601,78 +15590,6 @@
     }
   },
   "dashboardPopout": {
-    "view": {
-      "label": "Chế độ xem trang tổng quan",
-      "board": "Trang tổng quan",
-      "map": "Bản đồ agent"
-    },
-    "map": {
-      "host": {
-        "local": "Địa phương",
-        "ssh": "SSH",
-        "wsl": "WSL",
-        "remote": "Remote"
-      },
-      "filters": {
-        "showStates": "Trạng thái agent",
-        "agentlessWorkspaces": "Workspace không có agent",
-        "orchestrationLinks": "Liên kết phối hợp",
-        "orchestrationLinksHidden": "Liên kết phối hợp bị ẩn",
-        "workspaceVisibility": "Nội dung bản đồ",
-        "title": "Điều khiển bản đồ",
-        "reset": "Đặt lại",
-        "ofTotalAgents": "trong số {{total}} agent được hiển thị",
-        "quickViews": "Xem nhanh",
-        "agents": "Agent",
-        "time": "Thời gian",
-        "lifespan": "Tuổi thọ phiên",
-        "sinceMessage": "Kể từ tin nhắn cuối cùng",
-        "timeInState": "Thời gian ở trạng thái hiện tại",
-        "timeMinimum": "{{label}} tối thiểu",
-        "timeMaximum": "{{label}} tối đa",
-        "timeAny": "bất kì",
-        "timeRangeCount": "phạm vi {{count}}",
-        "resetRanges": "Đặt lại phạm vi",
-        "summaryAll": "Tất cả",
-        "summaryCount": "{{shown}} trong số {{total}}",
-        "summarySelected": "{{count}} đã chọn",
-        "workspace": "Workspace",
-        "stateChip": "Tiểu bang: {{states}}"
-      },
-      "liveContainmentMap": "Bản đồ ngăn chặn trực tiếp",
-      "empty": "Không có agent nào phù hợp với bộ lọc hiện tại.",
-      "canvasLabel": "Dự án lồng nhau, workspace và bản đồ agent",
-      "zoomOut": "Thu nhỏ",
-      "zoomIn": "Phóng to",
-      "fit": "Phù hợp",
-      "openWorktree": "Mở chi tiết worktree {{worktree}}",
-      "openFolderWorkspace": "Mở chi tiết workspace của thư mục {{workspace}}",
-      "worktreeSummary": "{{total}} agent · {{active}} đang hoạt động · {{done}} đã xong",
-      "worktreeSummary_one": "{{total}} agent · {{active}} đang hoạt động · {{done}} đã xong",
-      "worktreeSummary_other": "{{total}} agent · {{active}} đang hoạt động · {{done}} đã xong",
-      "runningAgents": "Agent",
-      "spawnAgent": "Bắt đầu một agent mới",
-      "noLaunchableAgents": "Không phát hiện thấy agent nào được kích hoạt.",
-      "sleepWorkspace": "Ngủ",
-      "projectCount": "{{agents}} agent · {{workspaces}} workspace",
-      "agentCount": "{{count}} agent",
-      "agentCount_one": "{{count}} agent",
-      "agentCount_other": "{{count}} agent",
-      "noWorkspaceAgents": "Không có agent nào trong workspace này.",
-      "status": {
-        "doneSeen": "Xong, đã thấy"
-      },
-      "quickView": {
-        "everything": "Mọi thứ",
-        "attention": "Cần tôi",
-        "stuck": "Mắc kẹt",
-        "unread": "Chưa đọc",
-        "recent": "30 phút qua",
-        "longRunning": "Người chạy dài",
-        "stale": "Cũ > 3d",
-        "orchestration": "Hòa âm"
-      }
-    },
     "placeholder": {
       "title": "Bảng thông tin agent",
       "description": "Đây là nơi tất cả các agent của bạn sẽ xuất hiện trong nháy mắt. Hội đồng quản trị sẽ đến sớm."
@@ -15734,8 +15651,7 @@
       "project": "Dự án",
       "workspaceStatus": "Trạng thái workspace",
       "reviewStatus": "Trạng thái PR/MR",
-      "clearAll": "Xóa tất cả bộ lọc",
-      "removeChip": "Xóa {{filter}}"
+      "clearAll": "Xóa tất cả bộ lọc"
     },
     "search": {
       "placeholder": "Tìm kiếm worktree, dự án hoặc agent…",

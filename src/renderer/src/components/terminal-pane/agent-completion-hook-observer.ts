@@ -23,7 +23,6 @@ type HookObserverOptions = {
   establishAgentEvidence: () => void
   recordPaneActivity: () => void
   clearPendingHookDone: () => void
-  clearPendingCodexAttention: () => void
   dispatchAttention: (payload: AgentCompletionStatusSnapshot) => void
   dispatchCompletion: (source: 'hook', title: string, override?: Record<string, unknown>) => boolean
   scheduleHookDoneCompletion: (title: string, payload: AgentCompletionStatusSnapshot) => void
@@ -55,7 +54,6 @@ export function createAgentCompletionHookObserver({
   establishAgentEvidence,
   recordPaneActivity,
   clearPendingHookDone,
-  clearPendingCodexAttention,
   dispatchAttention,
   dispatchCompletion,
   scheduleHookDoneCompletion,
@@ -77,7 +75,6 @@ export function createAgentCompletionHookObserver({
     if (options.shouldSuppressHookCompletion?.(payload)) {
       if (isAttentionHookState(payload.state)) {
         clearPendingHookDone()
-        clearPendingCodexAttention()
       }
       return
     }
@@ -125,7 +122,6 @@ export function createAgentCompletionHookObserver({
       clearOriginStampedTail()
       recordWorkingBoundary(payload.stateStartedAt)
       clearPendingHookDone()
-      clearPendingCodexAttention()
       state.workingStatusObserved = true
       state.requiresFreshWorking = false
       state.lastCompletionIdentity = null
@@ -146,7 +142,6 @@ export function createAgentCompletionHookObserver({
     if (payload.state !== 'done') {
       return
     }
-    clearPendingCodexAttention()
     const identity = hookCompletionIdentity(payload)
     const turnCompletedAt = isFiniteTurnCompletedAt(payload.turnCompletedAt)
       ? payload.turnCompletedAt

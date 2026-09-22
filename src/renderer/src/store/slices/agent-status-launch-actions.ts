@@ -95,7 +95,6 @@ export function createAgentStatusLaunchActions(
     getAgentLaunchConfigForStatusEntry: (entry) => getLaunchConfigForEntry(get(), entry),
     getAgentLaunchConfigForStatusMetadata: (metadata) =>
       getLaunchConfigForStatusMetadata(get(), metadata),
-
     clearAgentLaunchConfig: (paneKey) => {
       set((s) => {
         if (!(paneKey in s.agentLaunchConfigByPaneKey)) {
