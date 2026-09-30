@@ -208,6 +208,9 @@ export function installTerminalKeydownFit(session: ConnectPanePtySession): void 
         currentAgentForExited !== exited.agent
       )
     },
+    // Why: the pane's only re-derivation of a process read where the shell emits no command marks.
+    onForegroundAgentExited: (exited) =>
+      session.paneForegroundAgentTracker?.onProcessExitConfirmed(exited),
     dispatchCompletion: (title, meta) => {
       if (meta?.source === 'process-exit') {
         session.clearSuppressedTitleSideEffects()
