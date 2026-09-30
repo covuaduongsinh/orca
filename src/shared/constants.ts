@@ -1,14 +1,22 @@
 import type { GlobalSettings } from './global-settings-types'
 import type { RepoHookSettings } from './orca-yaml-hook-types'
 import type { PersistedState } from './persisted-state-types'
+import type { PersistedUIState } from './persisted-ui-state-types'
+import type { AgentActivityDisplayMode } from './ui-chrome-types'
+import type { WorkspaceSessionState } from './workspace-session-state-types'
 import { EMPTY_CODEX_RESET_CREDIT_ATTEMPT_LEDGER } from './codex-reset-credit-attempt-ledger'
+import { DEFAULT_STATUS_BAR_ITEMS } from './status-bar-defaults'
 import type { VoiceSettings } from './speech-types'
+import { cloneDefaultWorkspaceStatuses } from './workspace-statuses'
+import { DEFAULT_WORKTREE_CARD_PROPERTIES } from './worktree/card-properties'
+import { DEFAULT_AGENTS_GROUP_BY, DEFAULT_AGENTS_READ_FILTER } from './agents-view-thread-filters'
+import { DEFAULT_USAGE_PERCENTAGE_DISPLAY } from './usage-percentage-display'
+import { DEFAULT_STATUS_BAR_USAGE_MODE } from './status-bar-usage-mode'
 import { buildDefaultSettings } from './default-global-settings'
 import { DEFAULT_SETUP_AGENT_STARTUP_POLICY } from './setup-agent-startup-policy'
+import { DEFAULT_BROWSER_PAGE_ZOOM_LEVEL } from './browser-page-zoom'
 import { getDefaultNotificationSettings } from './notification-settings-defaults'
 import { getDefaultOnboardingState } from './onboarding-defaults'
-import { getDefaultUIState } from './default-persisted-ui-state'
-import { getDefaultWorkspaceSession } from './default-workspace-session-state'
 import {
   defaultTerminalFontFamily,
   getDefaultPrimarySelectionMiddleClickPaste,
@@ -25,20 +33,17 @@ export {
   isDefaultedCompactWorktreeCardProperties,
   normalizeWorktreeCardProperties
 } from './worktree/card-properties'
-export {
-  DEFAULT_SHOW_SLEEPING_WORKSPACES,
-  DEFAULT_HIDE_SLEEPING_WORKSPACES,
-  DEFAULT_AGENT_ACTIVITY_DISPLAY_MODE,
-  normalizeAgentActivityDisplayMode,
-  getDefaultUIState
-} from './default-persisted-ui-state'
-export { getDefaultWorkspaceSession } from './default-workspace-session-state'
-export { ONBOARDING_FINAL_STEP, ONBOARDING_FLOW_VERSION, getDefaultOnboardingState } from './onboarding-defaults'
-export { getDefaultNotificationSettings } from './notification-settings-defaults'
 
 export const SCHEMA_VERSION = 1
 export const DEFAULT_APP_FONT_FAMILY = 'Geist'
+export const DEFAULT_SHOW_SLEEPING_WORKSPACES = true
+export const DEFAULT_HIDE_SLEEPING_WORKSPACES = false
+export const DEFAULT_AGENT_ACTIVITY_DISPLAY_MODE: AgentActivityDisplayMode = 'compact'
 export const DEFAULT_TERMINAL_INACTIVE_PANE_OPACITY = 0.9
+
+export function normalizeAgentActivityDisplayMode(value: unknown): AgentActivityDisplayMode {
+  return value === 'full' || value === 'compact' ? value : DEFAULT_AGENT_ACTIVITY_DISPLAY_MODE
+}
 
 export const ORCA_BROWSER_PARTITION = 'persist:orca-browser'
 // Why: inert blank-tab URL shared by main/renderer so the attach policy can allow just this one data URL and reject others.
@@ -124,7 +129,7 @@ export function getDefaultVoiceSettings(): VoiceSettings {
     enabled: false,
     sttModel: '',
     modelsDir: '',
-    language: 'auto',
+    language: 'en',
     dictationMode: 'toggle' as const,
     terminalConfirmBeforeInsert: false,
     userModels: [],
@@ -179,5 +184,112 @@ export function getDefaultPersistedState(homedir: string): PersistedState {
     onboarding: getDefaultOnboardingState(),
     featureInteractionTelemetryBuckets: {},
     codexResetCreditAttemptLedger: structuredClone(EMPTY_CODEX_RESET_CREDIT_ATTEMPT_LEDGER)
+  }
+}
+
+/** Creates fresh UI defaults with completed migration markers so new profiles are not treated as legacy installations. */
+export function getDefaultUIState(): PersistedUIState {
+  return {
+    lastActiveRepoId: null,
+    lastActiveWorktreeId: null,
+    activeView: 'terminal',
+    sidebarWidth: 280,
+    rightSidebarOpen: true,
+    rightSidebarTab: 'explorer',
+    rightSidebarExplorerView: 'files',
+    rightSidebarWidth: 350,
+    markdownTocPanelWidth: 240,
+    combinedDiffFileTreeWidth: 256,
+    groupBy: 'repo',
+    sortBy: 'recent',
+    projectOrderBy: 'manual',
+    showActiveOnly: false,
+    hideSleepingWorkspaces: DEFAULT_HIDE_SLEEPING_WORKSPACES,
+    workspaceHostScope: 'all',
+    visibleWorkspaceHostIds: null,
+    workspaceHostOrder: [],
+    automationHostFilter: { kind: 'all' },
+    manualRepoOrder: [],
+    showSleepingWorkspaces: DEFAULT_SHOW_SLEEPING_WORKSPACES,
+    hideDefaultBranchWorkspace: false,
+    hideAutomationGeneratedWorkspaces: false,
+    hideCliCreatedWorkspaces: false,
+    hideDetachedHeadWorkspaces: false,
+    hideWorkspacesFromOtherDevices: false,
+    alwaysShowDefaultBranchWorkspace: true,
+    _explorerDisplayRootMigrated: true,
+    explorerDisplayRootByWorktree: {},
+    showDotfilesByWorktree: {},
+    filterRepoIds: [],
+    agentsVisibleHostIds: null,
+    agentsFilterRepoIds: [],
+    agentsShowChildAgents: false,
+    agentsCompactMode: true,
+    agentsShowSearch: true,
+    agentsReadFilter: DEFAULT_AGENTS_READ_FILTER,
+    agentsGroupBy: DEFAULT_AGENTS_GROUP_BY,
+    collapsedGroups: [],
+    uiZoomLevel: 0,
+    editorFontZoomLevel: 0,
+    worktreeCardProperties: [...DEFAULT_WORKTREE_CARD_PROPERTIES],
+    _worktreeCardModeDefaulted: true,
+    agentActivityDisplayMode: DEFAULT_AGENT_ACTIVITY_DISPLAY_MODE,
+    workspaceStatuses: cloneDefaultWorkspaceStatuses(),
+    workspaceBoardOpacity: 1,
+    workspaceBoardColumnWidth: 308,
+    syncTaskStatusFromWorkspaceBoard: false,
+    _workspaceStatusesDefaultOrderMigrated: true,
+    _workspaceStatusesReorderedDefaultRepaired: true,
+    _workspaceStatusesDefaultWorkflowMigrated: true,
+    _workspaceStatusesDefaultVisualsMigrated: true,
+    statusBarItems: [...DEFAULT_STATUS_BAR_ITEMS],
+    statusBarVisible: true,
+    usagePercentageDisplay: DEFAULT_USAGE_PERCENTAGE_DISPLAY,
+    statusBarUsageMode: DEFAULT_STATUS_BAR_USAGE_MODE,
+    dismissedUpdateVersion: null,
+    dismissedUnexpectedSignoutVersion: null,
+    lastUpdateCheckAt: null,
+    trustedOrcaHooks: {},
+    setupScriptPromptDismissedRepoIds: [],
+    acknowledgedAgentsByPaneKey: {},
+    activityClearedAtByPaneKey: {},
+    manuallyUnreadTurnsByPaneKey: {},
+    setupGuideSidebarDismissed: false,
+    setupGuideBrowserMilestoneMigrated: true,
+    setupGuideBrowserMilestoneLegacyComplete: false,
+    browserImportHintHidden: false,
+    trayMinimizeNoticeShown: false,
+    // Why: fresh profiles start on the new default, so nothing was overridden to report.
+    osc52ClipboardDefaultOnNoticePending: false,
+    mobileEmulatorTabIntroDismissed: false,
+    mobileEmulatorAgentSetupDismissed: false,
+    // Why: only upgraded profiles saw the old ordering, so only they get the one-time notice.
+    projectOrderManualDefaultNoticeDismissed: true,
+    // Why: only upgraded profiles saw the old default, so only they get the one-time change notice.
+    usagePercentageDisplayChangeNoticeDismissed: true,
+    workspaceCleanup: { dismissals: {} },
+    featureTipsSeenIds: [],
+    featureInteractions: {},
+    contextualToursSeenIds: [],
+    browserDefaultZoomLevel: DEFAULT_BROWSER_PAGE_ZOOM_LEVEL
+  }
+}
+
+export function getDefaultWorkspaceSession(): WorkspaceSessionState {
+  return {
+    activeRepoId: null,
+    activeWorktreeId: null,
+    activeTabId: null,
+    tabsByWorktree: {},
+    terminalLayoutsByTabId: {},
+    openFilesByWorktree: {},
+    markdownFrontmatterVisible: {},
+    browserTabsByWorktree: {},
+    browserPagesByWorkspace: {},
+    activeBrowserTabIdByWorktree: {},
+    activeFileIdByWorktree: {},
+    activeTabTypeByWorktree: {},
+    browserUrlHistory: [],
+    defaultTerminalTabsAppliedByWorktreeId: {}
   }
 }

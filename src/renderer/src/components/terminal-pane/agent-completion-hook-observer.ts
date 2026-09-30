@@ -72,12 +72,6 @@ export function createAgentCompletionHookObserver({
 }: HookObserverOptions) {
   function observeHookStatus(payload: AgentCompletionStatusSnapshot): void {
     recordPaneActivity()
-    if (options.shouldSuppressHookCompletion?.(payload)) {
-      if (isAttentionHookState(payload.state)) {
-        clearPendingHookDone()
-      }
-      return
-    }
     if (isRecognizedAgentType(payload.agentType)) {
       establishAgentEvidence()
     }

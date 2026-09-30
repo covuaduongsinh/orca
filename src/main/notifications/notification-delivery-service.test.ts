@@ -12,7 +12,6 @@ function makeSettings(overrides: Partial<NotificationSettings> = {}): Notificati
     enabled: true,
     agentTaskComplete: true,
     terminalBell: true,
-    permissionNeeded: true,
     suppressWhenFocused: false,
     customSoundId: 'system',
     customSoundPath: null,

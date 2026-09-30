@@ -1,16 +1,11 @@
 import { useAppStore } from '@/store'
 import {
   isAgentTaskCompleteOsNotificationEnabledFromState,
-  isAgentTaskCompleteTrackingEnabledFromState,
-  isPermissionNeededOsNotificationEnabledFromState
+  isAgentTaskCompleteTrackingEnabledFromState
 } from '../agent-task-complete-policy'
 
 export function isAgentTaskCompleteNotificationEnabled(): boolean {
   return isAgentTaskCompleteOsNotificationEnabledFromState(useAppStore.getState())
-}
-
-export function isPermissionNeededNotificationEnabled(): boolean {
-  return isPermissionNeededOsNotificationEnabledFromState(useAppStore.getState())
 }
 
 export function isAgentTaskCompleteTrackingEnabled(): boolean {

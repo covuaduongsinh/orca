@@ -180,9 +180,6 @@ export function updateSettings(
   if ('uiLanguage' in updates) {
     sanitizedUpdates.uiLanguage = normalizeUiLanguage(updates.uiLanguage)
   }
-  if ('uiLanguage' in updates || 'uiLanguageDefaultedToVietnamese' in updates) {
-    sanitizedUpdates.uiLanguageDefaultedToVietnamese = true
-  }
   if ('prBotAuthorOverrides' in updates) {
     // Why: every writer (desktop IPC, web RPC, migrations) hits this boundary, so the persisted list stays bounded and well-formed.
     sanitizedUpdates.prBotAuthorOverrides = normalizePRBotAuthorOverrides(

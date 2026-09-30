@@ -14,13 +14,12 @@ export function isOrcaWindowForegroundFocused(): boolean {
   return document.visibilityState === 'visible' && document.hasFocus()
 }
 
-/** Whether `paneKey` is the selected tab/leaf in-app, independent of OS window focus. */
-export function isActiveSelectedPaneKey(
+export function isVisibleForegroundPaneKey(
   state: NotificationPaneVisibilityState,
   worktreeId: string,
   paneKey: string
 ): boolean {
-  if (state.activeWorktreeId !== worktreeId) {
+  if (!isOrcaWindowForegroundFocused() || state.activeWorktreeId !== worktreeId) {
     return false
   }
 
@@ -30,12 +29,4 @@ export function isActiveSelectedPaneKey(
   }
 
   return state.terminalLayoutsByTabId?.[parsed.tabId]?.activeLeafId === parsed.leafId
-}
-
-export function isVisibleForegroundPaneKey(
-  state: NotificationPaneVisibilityState,
-  worktreeId: string,
-  paneKey: string
-): boolean {
-  return isOrcaWindowForegroundFocused() && isActiveSelectedPaneKey(state, worktreeId, paneKey)
 }

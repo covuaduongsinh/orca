@@ -30,7 +30,6 @@ function createSettings(): GlobalSettings {
       enabled: true,
       agentTaskComplete: true,
       terminalBell: true,
-      permissionNeeded: true,
       suppressWhenFocused: true,
       customSoundId: 'system',
       customSoundPath: null,

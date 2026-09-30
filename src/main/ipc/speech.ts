@@ -10,11 +10,6 @@ import {
   hasOpenAiSpeechApiKey,
   saveOpenAiSpeechApiKey
 } from '../speech/openai-api-key-store'
-import {
-  clearGroqSpeechApiKey,
-  hasGroqSpeechApiKey,
-  saveGroqSpeechApiKey
-} from '../speech/groq-api-key-store'
 import type { Store } from '../persistence'
 
 export function registerSpeechHandlers(store: Store): void {
@@ -37,20 +32,6 @@ export function registerSpeechHandlers(store: Store): void {
 
   ipcMain.handle('speech:clearOpenAiApiKey', async () => {
     clearOpenAiSpeechApiKey()
-    return { configured: false }
-  })
-
-  ipcMain.handle('speech:getGroqApiKeyStatus', async () => {
-    return { configured: hasGroqSpeechApiKey() }
-  })
-
-  ipcMain.handle('speech:saveGroqApiKey', async (_event, apiKey: string) => {
-    saveGroqSpeechApiKey(apiKey)
-    return { configured: true }
-  })
-
-  ipcMain.handle('speech:clearGroqApiKey', async () => {
-    clearGroqSpeechApiKey()
     return { configured: false }
   })
 
@@ -197,8 +178,7 @@ export function registerSpeechHandlers(store: Store): void {
             }
           },
           resolvedHotwordsPath,
-          owner,
-          store.getSettings().voice?.language
+          owner
         )
         if (resolvedHotwordsPath) {
           unlink(resolvedHotwordsPath).catch(() => {})

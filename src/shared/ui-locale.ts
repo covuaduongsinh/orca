@@ -11,7 +11,7 @@ import {
   type UiLanguage
 } from './ui-language'
 
-export const SUPPORTED_UI_LOCALES = ['en', 'zh', 'ko', 'ja', 'es', 'vi', 'fr'] as const
+export const SUPPORTED_UI_LOCALES = ['en', 'zh', 'ko', 'ja', 'es', 'fr', 'vi'] as const
 export type SupportedUiLocale = (typeof SUPPORTED_UI_LOCALES)[number]
 
 export const DEFAULT_UI_LOCALE: SupportedUiLocale = 'en'
@@ -56,11 +56,11 @@ export function resolveUiLocale(
   if (language === UI_LANGUAGE_SPANISH) {
     return 'es'
   }
-  if (language === UI_LANGUAGE_VIETNAMESE) {
-    return 'vi'
-  }
   if (language === UI_LANGUAGE_FRENCH) {
     return 'fr'
+  }
+  if (language === UI_LANGUAGE_VIETNAMESE) {
+    return 'vi'
   }
   return normalizeSupportedUiLocale(systemLocale)
 }

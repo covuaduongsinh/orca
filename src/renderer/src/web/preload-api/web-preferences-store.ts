@@ -18,7 +18,7 @@ import {
 } from '../../../../shared/pr-bot-author-overrides'
 import { normalizeTerminalCursorStyleDefault } from '../../../../shared/terminal-cursor-style-settings'
 import { normalizeTerminalCustomThemes } from '../../../../shared/terminal-custom-themes'
-import { normalizeUiLanguageDefaultToVietnamese } from '../../../../shared/ui-language-default-migration'
+import { normalizeUiLanguage } from '../../../../shared/ui-language'
 import { readStoredWebRuntimeEnvironment } from '../web-runtime-environment'
 import { mergeSettings, mergeWebUIState } from './web-preference-normalization'
 import { callRuntimeResult } from './web-runtime-calls'
@@ -39,7 +39,7 @@ export function getStoredSettings(): GlobalSettings {
     ...normalizeTerminalCursorStyleDefault(stored),
     ...normalizeOsc52ClipboardDefaultOn(stored),
     terminalCustomThemes: normalizeTerminalCustomThemes(stored.terminalCustomThemes),
-    ...normalizeUiLanguageDefaultToVietnamese(stored)
+    uiLanguage: normalizeUiLanguage(stored.uiLanguage)
   }
   if (
     rawStoredSettings &&
@@ -55,8 +55,7 @@ export function getStoredSettings(): GlobalSettings {
       stored.terminalAllowOsc52ClipboardDefaultedOnForAllUsers !==
         migratedStored.terminalAllowOsc52ClipboardDefaultedOnForAllUsers ||
       stored.terminalCustomThemes !== migratedStored.terminalCustomThemes ||
-      stored.uiLanguage !== migratedStored.uiLanguage ||
-      stored.uiLanguageDefaultedToVietnamese !== migratedStored.uiLanguageDefaultedToVietnamese)
+      stored.uiLanguage !== migratedStored.uiLanguage)
   ) {
     try {
       const parsed = JSON.parse(rawStoredSettings) as unknown

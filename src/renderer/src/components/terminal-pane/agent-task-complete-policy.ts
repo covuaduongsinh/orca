@@ -28,14 +28,6 @@ export function isAgentTaskCompleteOsNotificationEnabledFromState(
   return notifications?.enabled !== false && notifications?.agentTaskComplete !== false
 }
 
-/** Gates the OS notification for a pane pausing on a permission/tool-approval prompt. */
-export function isPermissionNeededOsNotificationEnabledFromState(
-  state: NotificationSettingsState
-): boolean {
-  const notifications = state.settings?.notifications
-  return notifications?.enabled !== false && notifications?.permissionNeeded !== false
-}
-
 export function isTerminalAttentionEnabledFromState(state: NotificationSettingsState): boolean {
   return state.settings?.experimentalTerminalAttention === true
 }

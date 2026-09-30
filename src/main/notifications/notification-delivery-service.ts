@@ -73,19 +73,8 @@ export function createNotificationDeliveryService(
     dispatch: (request) => {
       // Why: light the tray attention dot before the cooldown/focus/enabled gates so they
       // can't hold it back (clears on window show/restore; see index.ts).
-      if (
-        request.source === 'agent-task-complete' ||
-        request.source === 'terminal-bell' ||
-        request.source === 'agent-permission-needed'
-      ) {
-        // Why: a pane waiting on permission can be starved of attention even with
-        // the window visible/focused if the user is looking at a different pane/tab.
-        const paneNeedsAttentionDespiteVisibleWindow =
-          request.source === 'agent-permission-needed' && request.isActivePane === false
-        if (
-          !deps.isWindowVisible(deps.findActiveWindow()) ||
-          paneNeedsAttentionDespiteVisibleWindow
-        ) {
+      if (request.source === 'agent-task-complete' || request.source === 'terminal-bell') {
+        if (!deps.isWindowVisible(deps.findActiveWindow())) {
           deps.setTrayAttention(true)
         }
       }
@@ -94,8 +83,7 @@ export function createNotificationDeliveryService(
       const desktopAllowed =
         settings.enabled &&
         (request.source !== 'agent-task-complete' || settings.agentTaskComplete) &&
-        (request.source !== 'terminal-bell' || settings.terminalBell) &&
-        (request.source !== 'agent-permission-needed' || settings.permissionNeeded)
+        (request.source !== 'terminal-bell' || settings.terminalBell)
 
       const notificationOptions = buildNotificationOptions(request)
 
@@ -135,14 +123,9 @@ export function createNotificationDeliveryService(
       }
 
       const browserWindow = deps.findActiveWindow()
-      // Why: a permission-needed pane the user isn't currently looking at must still
-      // notify even while the window is focused on a different pane in the same worktree.
-      const isFocusedOnTheTriggeringPane =
-        request.source !== 'agent-permission-needed' || request.isActivePane !== false
       if (
         settings.suppressWhenFocused &&
         request.isActiveWorktree &&
-        isFocusedOnTheTriggeringPane &&
         browserWindow &&
         browserWindow.isFocused()
       ) {

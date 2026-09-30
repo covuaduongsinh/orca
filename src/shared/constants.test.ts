@@ -60,12 +60,8 @@ describe('getDefaultSettings', () => {
     expect(getDefaultSettings('/tmp').skipCloseTerminalWithRunningProcessConfirm).toBe(false)
   })
 
-  it('uses Vietnamese by default', () => {
-    expect(getDefaultSettings('/tmp').uiLanguage).toBe('vi')
-  })
-
-  it('marks the Vietnamese default as already applied so migration runs once', () => {
-    expect(getDefaultSettings('/tmp').uiLanguageDefaultedToVietnamese).toBe(true)
+  it('uses system language by default', () => {
+    expect(getDefaultSettings('/tmp').uiLanguage).toBe('system')
   })
 
   it('defaults the menu bar icon on so the value round-trips across platforms', () => {

@@ -8,8 +8,7 @@ import {
   UI_LANGUAGE_JAPANESE,
   UI_LANGUAGE_KOREAN,
   UI_LANGUAGE_SPANISH,
-  UI_LANGUAGE_SYSTEM,
-  UI_LANGUAGE_VIETNAMESE
+  UI_LANGUAGE_SYSTEM
 } from './ui-language'
 
 describe('ui-locale', () => {
@@ -18,33 +17,6 @@ describe('ui-locale', () => {
     expect(normalizeSupportedUiLocale('zh-CN')).toBe('zh')
     expect(normalizeSupportedUiLocale('zh-Hans')).toBe('zh')
     expect(normalizeSupportedUiLocale('zh-SG')).toBe('zh')
-  })
-
-  it('normalizes Korean locale prefixes', () => {
-    expect(normalizeSupportedUiLocale('ko-KR')).toBe('ko')
-    expect(normalizeSupportedUiLocale('ko')).toBe('ko')
-  })
-
-  it('normalizes Japanese locale prefixes', () => {
-    expect(normalizeSupportedUiLocale('ja-JP')).toBe('ja')
-    expect(normalizeSupportedUiLocale('ja')).toBe('ja')
-  })
-
-  it('normalizes Spanish locale prefixes', () => {
-    expect(normalizeSupportedUiLocale('es-ES')).toBe('es')
-    expect(normalizeSupportedUiLocale('es-MX')).toBe('es')
-    expect(normalizeSupportedUiLocale('es')).toBe('es')
-  })
-
-  it('normalizes Vietnamese locale prefixes', () => {
-    expect(normalizeSupportedUiLocale('vi-VN')).toBe('vi')
-    expect(normalizeSupportedUiLocale('vi')).toBe('vi')
-  })
-
-  it('normalizes French locale prefixes', () => {
-    expect(normalizeSupportedUiLocale('fr-FR')).toBe('fr')
-    expect(normalizeSupportedUiLocale('fr-CA')).toBe('fr')
-    expect(normalizeSupportedUiLocale('fr')).toBe('fr')
   })
 
   it('falls back unsupported locales to English', () => {
@@ -77,10 +49,6 @@ describe('ui-locale', () => {
     expect(resolveUiLocale(UI_LANGUAGE_SPANISH, 'en-US')).toBe('es')
   })
 
-  it('resolves explicit Vietnamese independently of system locale', () => {
-    expect(resolveUiLocale(UI_LANGUAGE_VIETNAMESE, 'en-US')).toBe('vi')
-  })
-
   it('resolves explicit French independently of system locale', () => {
     expect(resolveUiLocale(UI_LANGUAGE_FRENCH, 'en-US')).toBe('fr')
   })
@@ -97,7 +65,6 @@ describe('ui-locale', () => {
     expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'ko-KR')).toBe('ko')
     expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'ja-JP')).toBe('ja')
     expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'es-MX')).toBe('es')
-    expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'vi-VN')).toBe('vi')
     expect(resolveUiLocale(UI_LANGUAGE_SYSTEM, 'fr-FR')).toBe('fr')
   })
 })

@@ -20,7 +20,6 @@ import {
   resolveAgentAttention,
   type AgentAttentionDeliveryRequest
 } from '@/attention/agent-attention-policy'
-import { isActiveSelectedPaneKey } from './terminal-notification-pane-visibility'
 import {
   deliverAgentAttentionNotification,
   readAgentAttentionNotificationSound
@@ -50,20 +49,11 @@ function hasFreshActiveHookStatus(
 }
 
 export type TerminalNotificationEvent = {
-  source: 'terminal-bell' | 'agent-task-complete' | 'agent-permission-needed'
+  source: 'terminal-bell' | 'agent-task-complete'
   terminalTitle?: string
   paneKey?: string
   agentStatusSnapshot?: AgentCompletionStatusSnapshot
   agentCompletionSource?: AgentCompletionDispatchMeta['source']
-}
-
-// Why: 'agent-task-complete' and 'agent-permission-needed' both carry an agent
-// status snapshot and share the same pane-liveness/unread-marking rich path;
-// only 'terminal-bell' (BEL byte detection) skips it.
-function isAgentSnapshotSource(
-  source: TerminalNotificationEvent['source']
-): source is 'agent-task-complete' | 'agent-permission-needed' {
-  return source === 'agent-task-complete' || source === 'agent-permission-needed'
 }
 
 /**
@@ -82,15 +72,15 @@ export function dispatchTerminalNotification(
   // agent, any snapshot from another agent is stale pane-reuse residue and must
   // not lend its prompt/agentType or timing id to this notification.
   const explicitTitleAgentType =
-    isAgentSnapshotSource(event.source) && event.terminalTitle
+    event.source === 'agent-task-complete' && event.terminalTitle
       ? resolveCommittedTitleAgentType(event.terminalTitle)
       : null
   const storedAgentStatus =
-    isAgentSnapshotSource(event.source) && event.paneKey
+    event.source === 'agent-task-complete' && event.paneKey
       ? state.agentStatusByPaneKey[event.paneKey]
       : undefined
   const eventAgentStatusSnapshot =
-    isAgentSnapshotSource(event.source) &&
+    event.source === 'agent-task-complete' &&
     agentSnapshotMatchesExplicitTitle(event.agentStatusSnapshot, explicitTitleAgentType)
       ? event.agentStatusSnapshot
       : undefined
@@ -101,7 +91,7 @@ export function dispatchTerminalNotification(
       ? storedAgentStatus
       : undefined
   if (
-    isAgentSnapshotSource(event.source) &&
+    event.source === 'agent-task-complete' &&
     event.agentCompletionSource !== 'process-exit' &&
     !eventAgentStatusSnapshot &&
     hasFreshActiveHookStatus(storedAgentStatus, explicitTitleAgentType)
@@ -112,13 +102,15 @@ export function dispatchTerminalNotification(
   }
   // Why: a process can die before its hook emits done; do not label the
   // resulting completion notification with that stale active state or prompt.
-  const agentStatus = isAgentSnapshotSource(event.source)
-    ? (eventAgentStatusSnapshot ??
-      (event.agentCompletionSource === 'process-exit' && freshStoredAgentStatus?.state !== 'done'
-        ? undefined
-        : freshStoredAgentStatus))
+  const agentStatus =
+    event.source === 'agent-task-complete'
+      ? (eventAgentStatusSnapshot ??
+        (event.agentCompletionSource === 'process-exit' && freshStoredAgentStatus?.state !== 'done'
+          ? undefined
+          : freshStoredAgentStatus))
+      : undefined
   if (
-    isAgentSnapshotSource(event.source) &&
+    event.source === 'agent-task-complete' &&
     isSupersededAgentCompletionSnapshot(storedAgentStatus, eventAgentStatusSnapshot)
   ) {
     return
@@ -128,10 +120,8 @@ export function dispatchTerminalNotification(
   const attentionDecision = resolveAgentAttention(
     {
       subject: { workspaceId: worktreeId, surfaceKey: event.paneKey },
-      // Why: 'agent-permission-needed' also settles the turn (the agent is waiting on the
-      // user), so it shares agent-completion's pane-admission and unread-write treatment.
-      reason: isAgentSnapshotSource(event.source) ? 'agent-completion' : 'terminal-bell',
-      settlesTurn: isAgentSnapshotSource(event.source),
+      reason: event.source === 'agent-task-complete' ? 'agent-completion' : 'terminal-bell',
+      settlesTurn: event.source === 'agent-task-complete',
       // Why: main-process hook IPC can update inactive worktrees before the renderer's live-PTY
       // map catches up. An accepted fresh hook snapshot is authority that the turn ended;
       // title/BEL-only paths still need surface liveness.
@@ -160,21 +150,17 @@ export function dispatchTerminalNotification(
         agentTurnOutcome: agentMainAgentVerdict(agentStatus) ?? undefined
       }
     : {}
-  const notificationId = isAgentSnapshotSource(event.source)
-    ? buildAgentNotificationId({
-        worktreeId,
-        paneKey: event.paneKey,
-        // Why: delayed hook completions may dispatch after PTY teardown has
-        // removed the live row; carry the hook timing so the OS notification
-        // still has the same dismissible id as the unread agent event.
-        stateStartedAt: agentNotificationStateStartedAt
-      })
-    : null
-  // Why: lets main light the tray/skip suppress-while-focused for a permission
-  // pane the user isn't currently looking at, even if the window/worktree is.
-  const isActivePane = event.paneKey
-    ? isActiveSelectedPaneKey(state, worktreeId, event.paneKey)
-    : undefined
+  const notificationId =
+    event.source === 'agent-task-complete'
+      ? buildAgentNotificationId({
+          worktreeId,
+          paneKey: event.paneKey,
+          // Why: delayed hook completions may dispatch after PTY teardown has
+          // removed the live row; carry the hook timing so the OS notification
+          // still has the same dismissible id as the unread agent event.
+          stateStartedAt: agentNotificationStateStartedAt
+        })
+      : null
 
   const requestDelivery = (request: AgentAttentionDeliveryRequest): void => {
     deliverAgentAttentionNotification(
@@ -186,9 +172,6 @@ export function dispatchTerminalNotification(
         ...getNotificationWorkspaceLabels(state, request.workspaceId, event.terminalTitle),
         terminalTitle: event.terminalTitle,
         isActiveWorktree: request.workspaceIsActive,
-        // Why: lets main light the tray/skip suppress-while-focused for a permission
-        // pane the user isn't currently looking at, even if the window/worktree is.
-        ...(isActivePane !== undefined ? { isActivePane } : {}),
         ...agentSnapshot
       },
       sound
