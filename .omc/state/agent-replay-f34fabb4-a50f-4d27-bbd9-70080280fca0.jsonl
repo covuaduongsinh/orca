@@ -1,0 +1,8 @@
+{"t":0,"agent":"a5a9e99","agent_type":"Explore","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a152275","agent_type":"electron-pro","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"code-review"}
+{"t":0,"agent":"a7391c4","agent_type":"general-purpose","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a49bdfc","agent_type":"general-purpose","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"ad33f26","agent_type":"general-purpose","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a7391c4","agent_type":"general-purpose","event":"agent_stop","success":true,"duration_ms":612230}
+{"t":0,"agent":"ad33f26","agent_type":"general-purpose","event":"agent_stop","success":true,"duration_ms":163393}

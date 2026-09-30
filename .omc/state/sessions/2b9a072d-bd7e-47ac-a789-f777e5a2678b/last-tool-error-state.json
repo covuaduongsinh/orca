@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"git -C /d/code/orca stash list\\necho \\\"---show stat---\\\"\\ngit -C /d/code/orca stash show --stat stash@{0}\\necho \\\"---show full diff---\\\"\\ngit -C /d/code/orca stash show -p stash@{0}\",\"desc...",
+  "error": "Exit code 143\nCommand timed out after 2m 0s\nstash@{0}: lint-staged automatic backup\n---show stat---",
+  "timestamp": "2026-09-03T02:38:25.921Z",
+  "retry_count": 1
+}

@@ -1,0 +1,47 @@
+{
+  "agents": [
+    {
+      "agent_id": "a5a9e9982880c8002",
+      "agent_type": "Explore",
+      "started_at": "2026-09-06T10:26:37.880Z",
+      "parent_mode": "none",
+      "status": "running"
+    },
+    {
+      "agent_id": "a1522753ff6be0596",
+      "agent_type": "electron-pro",
+      "started_at": "2026-09-06T11:24:12.448Z",
+      "parent_mode": "none",
+      "status": "running"
+    },
+    {
+      "agent_id": "a7391c4c2d3d564d0",
+      "agent_type": "general-purpose",
+      "started_at": "2026-09-06T15:42:24.514Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-09-06T15:52:36.744Z",
+      "duration_ms": 612230
+    },
+    {
+      "agent_id": "a49bdfceb1ef47d98",
+      "agent_type": "general-purpose",
+      "started_at": "2026-09-06T15:51:14.831Z",
+      "parent_mode": "none",
+      "status": "running"
+    },
+    {
+      "agent_id": "ad33f26647181ed62",
+      "agent_type": "general-purpose",
+      "started_at": "2026-09-06T15:51:46.031Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-09-06T15:54:29.424Z",
+      "duration_ms": 163393
+    }
+  ],
+  "total_spawned": 5,
+  "total_completed": 2,
+  "total_failed": 0,
+  "last_updated": "2026-09-06T15:54:29.427Z"
+}

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd /d/code/orca\\ngit add src/renderer/src/hooks/agent-hook-completion-notifications-test-harness.ts\\ngit commit -m \\\"$(cat <<'EOF'\\nfix(types): annotate vitest mocks to satisfy portable-ty...",
+  "error": "Exit code 128\n\u001b[33m[STARTED]\u001b[39m Backing up original state...\r\n\u001b[32m[COMPLETED]\u001b[39m Backed up original state (645e58814c)\r\n\u001b[33m[STARTED]\u001b[39m Running tasks for staged files...\r\n\u001b[33m[STARTED]\u001b[39m package.json\u001b[0;90m — 1 file\u001b[0m\r\n\u001b[33m[STARTED]\u001b[39m {*.{ts,tsx,js,jsx,mjs,mts,cts},!(cloud)/**/*.{ts,tsx,js,jsx,mjs,mts,cts}}\u001b[0;90m — 1 file\u001b[0m\r\n\u001b[33m[STARTED]\u001b[39m {*.{json,css},!(cloud)/**/*.{json,css}}\u001b[0;90m — 0 files\u001b[0m\r\n\u001b[33m[SKIPPED]\u001b[39m {*.{json,css},!(cloud)/**/*.{json,css}}\u001b[0;90m — ...",
+  "timestamp": "2026-09-07T09:53:29.878Z",
+  "retry_count": 1
+}
