@@ -1,20 +1,16 @@
 import { createHash } from 'node:crypto'
 import { createReadStream, statSync } from 'node:fs'
-import { join } from 'node:path'
-import type { SpeechModelManifest } from '../../shared/speech-types'
-import { validateModelFiles } from './model-dir-resolver'
 import {
   DOWNLOAD_RETRY_DELAYS_MS,
   MAX_NO_PROGRESS_ATTEMPTS,
   MAX_RETRY_AFTER_MS,
   MAX_TOTAL_DOWNLOAD_REQUESTS,
   describeInterruptedDownload,
-  isRetryableDownloadError,
-  sleepUnlessAborted,
-  type DownloadTotals,
-  type HttpStatusError
+  type DownloadTotals
 } from './speech-model-download-response'
+import { isRetryableDownloadError, type HttpStatusError } from '../network/transient-download-error'
 import { SpeechModelHttpDownload } from './speech-model-http-download'
+import { delayUnlessAborted } from '../../shared/abort-aware-delay'
 
 export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownload {
   protected getPartialDownloadBytes(filePath: string): number {
@@ -76,7 +72,7 @@ export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownlo
             `Model download exceeded its expected size (${receivedBytes} of ${totals.totalBytes} bytes)`
           )
         }
-        const incompleteResponse = new Error(
+        const incompleteResponse: HttpStatusError = new Error(
           `Model download response ended at ${receivedBytes} of ${totals.totalBytes} bytes`
         )
         if (receivedBytes > offset) {
@@ -84,9 +80,8 @@ export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownlo
           noProgressStreak = 0
           continue
         }
-        const retryableIncompleteResponse = incompleteResponse as HttpStatusError
-        retryableIncompleteResponse.retryable = true
-        throw retryableIncompleteResponse
+        incompleteResponse.retryable = true
+        throw incompleteResponse
       } catch (err) {
         if (isAborted() || signal.aborted) {
           throw err
@@ -103,11 +98,11 @@ export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownlo
         if (noProgressStreak >= MAX_NO_PROGRESS_ATTEMPTS) {
           throw describeInterruptedDownload(err, receivedBytes, totals.totalBytes, requestCount)
         }
-        const retryAfterMs = (err as HttpStatusError).retryAfterMs
+        const statusError: HttpStatusError | undefined = err instanceof Error ? err : undefined
+        const retryAfterMs = statusError?.retryAfterMs
         if (retryAfterMs !== undefined && retryAfterMs > MAX_RETRY_AFTER_MS) {
-          const statusCode = (err as HttpStatusError).httpStatusCode
           throw new Error(
-            `HTTP ${statusCode}; server requested retry after ${Math.ceil(retryAfterMs / 1_000)} seconds`
+            `HTTP ${statusError?.httpStatusCode}; server requested retry after ${Math.ceil(retryAfterMs / 1_000)} seconds`
           )
         }
         console.warn(
@@ -115,7 +110,7 @@ export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownlo
           modelId,
           err
         )
-        await sleepUnlessAborted(
+        await delayUnlessAborted(
           retryAfterMs ??
             DOWNLOAD_RETRY_DELAYS_MS[
               Math.min(Math.max(0, noProgressStreak - 1), DOWNLOAD_RETRY_DELAYS_MS.length - 1)
@@ -153,7 +148,7 @@ export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownlo
         cleanup()
         reject(error)
       }
-      const onData = (chunk: Buffer): void => {
+      const onData = (chunk: string | Buffer): void => {
         hash.update(chunk)
       }
       const onError = (error: Error): void => {
@@ -173,50 +168,5 @@ export abstract class SpeechModelDownloadTransport extends SpeechModelHttpDownlo
       stream.on('error', onError)
       stream.on('end', onEnd)
     })
-  }
-
-  protected async downloadModelFiles(
-    manifest: SpeechModelManifest,
-    stagingDir: string,
-    modelId: string,
-    isAborted: () => boolean,
-    signal: AbortSignal
-  ): Promise<void> {
-    if (!manifest.downloadFiles?.length || !manifest.sizeBytes) {
-      throw new Error(`Model download metadata missing: ${modelId}`)
-    }
-
-    let completedBytes = 0
-    for (const file of manifest.downloadFiles) {
-      if (
-        !file.name ||
-        file.name === '.' ||
-        file.name === '..' ||
-        file.name.includes('/') ||
-        file.name.includes('\\')
-      ) {
-        throw new Error(`Invalid model download filename: ${file.name}`)
-      }
-      const filePath = join(stagingDir, file.name)
-      await this.downloadFileWithRetry(
-        file.url,
-        filePath,
-        file.sizeBytes,
-        modelId,
-        isAborted,
-        signal,
-        completedBytes,
-        manifest.sizeBytes
-      )
-      if (isAborted()) {
-        return
-      }
-      await this.verifyFileSha256(filePath, file.sha256)
-      completedBytes += file.sizeBytes
-    }
-
-    if (!validateModelFiles(manifest, stagingDir)) {
-      throw new Error('Model files missing after download')
-    }
   }
 }

@@ -81,7 +81,7 @@ export function createWebSpeechApi(): PreloadApi['speech'] {
         status: 'ready'
       }
     ],
-    getOpenAiApiKeyStatus: async () => ({ configured: false }),
+    getOpenAiApiKeyStatus: async () => ({ configured: false, protection: null }),
     saveOpenAiApiKey: async () => ({ configured: false }),
     clearOpenAiApiKey: async () => ({ configured: false }),
     getGroqApiKeyStatus: async () => ({ configured: false }),

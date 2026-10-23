@@ -1,3 +1,5 @@
+import { UnsealedCredentialNotice } from './UnsealedCredentialNotice'
+import type { SecretAtRestProtection } from '../../../../shared/secret-at-rest-protection'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 import { getDefaultVoiceSettings } from '../../../../shared/constants'
@@ -36,11 +38,12 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
   const [openAiDialogOpen, setOpenAiDialogOpen] = useState(false)
   const [openAiApiKeyDraft, setOpenAiApiKeyDraft] = useState('')
   const [openAiKeyPending, setOpenAiKeyPending] = useState(false)
-
   const [groqDialogOpen, setGroqDialogOpen] = useState(false)
   const [groqApiKeyDraft, setGroqApiKeyDraft] = useState('')
   const [groqKeyPending, setGroqKeyPending] = useState(false)
-
+  const [openAiKeyProtection, setOpenAiKeyProtection] = useState<SecretAtRestProtection | null>(
+    null
+  )
   const [pendingCloudModelId, setPendingCloudModelId] = useState<string | null>(null)
   const mountedRef = useRef(true)
   // Why: every write here is a read-modify-write of the whole voice object, and the
@@ -83,7 +86,11 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
     void window.api.speech
       .getOpenAiApiKeyStatus()
       .then((status) => {
-        if (!cancelled && status.configured !== voiceSettings.openAiApiKeyConfigured) {
+        if (cancelled) {
+          return
+        }
+        setOpenAiKeyProtection(status.protection)
+        if (status.configured !== voiceSettings.openAiApiKeyConfigured) {
           updateVoiceSettings({ openAiApiKeyConfigured: status.configured })
           refreshModelStates()
         }
@@ -326,6 +333,13 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
       {showOpenAiSettingsRow && (
         <>
           <Separator />
+          <UnsealedCredentialNotice
+            protection={openAiKeyProtection}
+            credentialName={translate(
+              'auto.components.settings.VoicePane.openAiKeyName',
+              'Your OpenAI transcription key'
+            )}
+          />
           <OpenAiTranscriptionSettingsRow
             configured={voiceSettings.openAiApiKeyConfigured}
             disabled={openAiKeyPending}
@@ -339,7 +353,7 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
         <>
           <Separator />
           <GroqTranscriptionSettingsRow
-            configured={voiceSettings.groqApiKeyConfigured}
+            configured={voiceSettings.groqApiKeyConfigured ?? false}
             disabled={groqKeyPending}
             onConfigure={() => openGroqDialog(null)}
             onClear={() => void clearGroqApiKey()}
@@ -360,7 +374,7 @@ export function VoicePane({ settings, updateSettings }: VoicePaneProps): React.J
 
       <GroqTranscriptionKeyDialog
         open={groqDialogOpen}
-        configured={voiceSettings.groqApiKeyConfigured}
+        configured={voiceSettings.groqApiKeyConfigured ?? false}
         apiKeyDraft={groqApiKeyDraft}
         pending={groqKeyPending}
         onOpenChange={setGroqDialogOpen}

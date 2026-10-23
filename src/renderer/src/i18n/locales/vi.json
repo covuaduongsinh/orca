@@ -517,13 +517,6 @@
             }
           }
         },
-        "worktree": {
-          "background": {
-            "terminals": {
-              "setupTitle": "Cài đặt"
-            }
-          }
-        },
         "work": {
           "item": {
             "direct": {
@@ -806,7 +799,6 @@
         "3ad7d77f57": "Workspace mục tiêu nằm trên một máy chủ khác với mục tiêu chạy tự động hóa này."
       },
       "useComposerState": {
-        "7eb3f44ff7": "Agent được chọn bị vô hiệu hóa. Chọn một agent được kích hoạt trước khi tạo.",
         "b2ead86962": "Không giải quyết được cơ sở PR.",
         "3db83fc58a": "Không có đường dẫn dự án nào có sẵn trên máy chủ này cho các tệp đính kèm.",
         "ba6cb77082": "Không thể kết nối với dự án.",
@@ -830,19 +822,11 @@
         "0e3cf53060": "Không tìm thấy tab trình duyệt {{value0}}",
         "2f6637fe6c": "Tab trình duyệt {{value0}} đã được ghim",
         "a8d2bf8e9e": "Không có tab trình duyệt đang hoạt động để đóng",
-        "291c8ed902": "Các tab trình duyệt không khả dụng khi runtime từ xa đang hoạt động",
-        "f45fa2b03c": "Hồ sơ trình duyệt không khả dụng khi runtime từ xa đang hoạt động",
         "f000b2ff76": "Không có worktree đang hoạt động",
         "56d3ec4203": "Không tạo được tệp đánh dấu không có tiêu đề.",
         "f6300deb8b": "Tab trình duyệt mới",
         "7a64b31991": "Việc tạo terminal cục bộ không khả dụng khi runtime từ xa đang hoạt động",
         "60428567b4": "Hiển thị terminal cục bộ không khả dụng khi runtime từ xa đang hoạt động",
-        "f8aaf2bde3": "Workspace đã được tải lên",
-        "2fe88c2e06": "Đồng bộ hóa workspace từ xa không khả dụng",
-        "workspaceChangedOnAnotherDevice": "Workspace đã thay đổi trên một thiết bị khác",
-        "2ec42e1c52": "Chưa có workspace từ xa",
-        "88214a785b": "Đồng bộ hóa workspace đang chờ quá trình hydrat hóa phiên cục bộ và hết thời gian chờ",
-        "4f78ba5885": "Đã đồng bộ hóa workspace",
         "ef223fbb6b": "Một thiết bị đã cố gắng kết nối nhưng không được ghép nối",
         "11992d0337": "Nếu đây là điện thoại của bạn hoặc ứng dụng khách Orca khác, hãy ghép nối lại điện thoại đó từ Cài đặt → Di động.",
         "6573cfe955": "Mở Cài đặt di động",
@@ -960,11 +944,7 @@
         "9263e75f49": "Codex đang sử dụng tài khoản trước đó",
         "d3e8a1f4b2": "Đã chuyển tài khoản",
         "9375620cc3": "Khởi động lại phiên này để sử dụng {{value0}}. Nó vẫn ở trên tài khoản trước đó cho đến khi bạn làm như vậy.",
-        "6133594b12": "Giữ tài khoản cũ",
-        "8f0d5c92a1": "Thiết lập Codex đã thay đổi",
-        "3ea91b5c07": "Phiên Codex này đang sử dụng cấu hình lỗi thời",
-        "e6b7139d2a": "Khởi động lại phiên này để tải cấu hình Codex hiện tại của bạn.",
-        "7b1d20f4c8": "Giữ phiên hiện tại"
+        "6133594b12": "Giữ tài khoản cũ"
       },
       "FirstLaunchBanner": {
         "b9e1b966c7": "Loại bỏ thông báo",
@@ -1420,7 +1400,6 @@
         "f0470c7383": "Nâng cao",
         "ba64270bdb": "Cấu hình agent",
         "ab63f25397": "Mở cài đặt agent",
-        "01d1e8f601": "Agent",
         "0c5d6a479c": "[Không bắt buộc]",
         "b5a0796911": "Kết nối",
         "dccd26d4e4": "Chọn dự án",
@@ -1466,7 +1445,6 @@
         "notConnected": "Không được kết nối",
         "notePasteTooLarge": "Dán quá lớn đối với trường ghi chú.",
         "waitForSetupBeforeAgent": "Đợi quá trình thiết lập hoàn tất trước khi bắt đầu agent",
-        "waitForSetupBeforeAgentHelp": "Bật tính năng này khi thiết lập cài đặt các phần phụ thuộc, máy chủ MCP hoặc tệp cấu hình mà agent cần trong quá trình khởi động.",
         "destroyDisabled": "tiêu diệt tàn tật",
         "destroyConfigured": "phá hủy cấu hình",
         "noDestroyConfigured": "không phá hủy",
@@ -1489,8 +1467,7 @@
       },
       "NewWorkspaceComposerModal": {
         "createWorktree": "Tạo worktree",
-        "createWorkspace": "Tạo workspace",
-        "fa90f739a5": "Chọn dự án, tên workspace và agent trước khi tạo workspace."
+        "createWorkspace": "Tạo workspace"
       },
       "PullRequestPage": {
         "2560588245": "Không thể yêu cầu người đánh giá",
@@ -1683,8 +1660,7 @@
         "4725b0e931": "Quét mở nhanh quá lớn (",
         "b227d88520": "Đã tìm thấy tệp {{value0}}",
         "995be8ea22": "Sao chép",
-        "cf144856dc": "Đã sao chép",
-        "344f8a48dd": "trên máy chủ đang chạy quét Mở nhanh để bật danh sách nhanh, nhận biết gitignore:"
+        "cf144856dc": "Đã sao chép"
       },
       "SelectedTextCopyMenu": {
         "9b40d7b018": "Sao chép"
@@ -2655,7 +2631,6 @@
             "efb3843e75": "Lọc và sắp xếp workspace",
             "93b7381d50": "Bộ lọc",
             "a615e24679": "Loại",
-            "4cc5b73efe": "Đang tìm workspace...",
             "5bf2e88480": "{{value0}}/{{value1}} {{value2}} đã quét",
             "searchPlaceholder": "Tìm kiếm workspace",
             "ageFilter": "Tuổi",
@@ -2667,7 +2642,6 @@
             "1d3503357d": "Bạn có thể đóng cái này và quay lại trong khi quá trình xóa vẫn tiếp tục.",
             "4c2990886e": "{{value0}}/{{value1}} đã xóa",
             "86ba852118": "{{value0}}, {{value1}} không thành công",
-            "7b7bde5181": "Đã kiểm tra workspace cho đến nay: {{value0}}",
             "deletingCount": "Đang xóa workspace: {{value0}}",
             "deleteCount": "Xóa workspace: {{value0}}?",
             "selectedForDeletionCount": "Đã chọn để xóa: {{value0}}",
@@ -2826,18 +2800,9 @@
           },
           "MobileDriverOverlay": {
             "c6460cf584": "Lấy lại",
-            "c8f2e1a4b9": "Lấy lại terminal này",
             "c44659e09f": "Lái xe bằng điện thoại",
-            "7cffad954c": "Sụp đổ",
             "3eed73394f": "Bàn phím của bạn bị tạm dừng",
-            "faa367dc74": "Điện thoại của bạn để cái này ở kích thước điện thoại",
-            "54f7d6f69d": "Lấy lại tất cả các terminal",
-            "b3d8e1f42a": "Khôi phục terminal này",
-            "e8c4f2a91b": "Khôi phục tất cả các terminal",
-            "f2a8b9c1d3": "Từ điện thoại của bạn",
-            "c7e4a2b8f1": "Điện thoại của bạn đang được kiểm soát",
-            "d9f3c6e2a4": "Bàn phím máy tính để bàn bị tạm dừng. Hãy lấy lại terminal này để nhập vào đây, lấy lại tất cả các terminal điều khiển điện thoại của bạn hoặc thu gọn để tiếp tục xem.",
-            "a6b1d8f3e2": "Phiên điện thoại của bạn đã kết thúc. Khôi phục về kích thước màn hình cho terminal này hoặc cho tất cả các terminal, điện thoại của bạn vẫn ở kích thước điện thoại."
+            "c7e4a2b8f1": "Điện thoại của bạn đang được kiểm soát"
           },
           "TerminalAgentSessionForkDialog": {
             "17fc841e59": "Sao chép ngữ cảnh",
@@ -3069,7 +3034,6 @@
         "bar": {
           "BrowserTab": {
             "6e0bc8f3a8": "Mở trong trình duyệt",
-            "9dd880bd56": "Đóng các tab bên phải",
             "1611a1324b": "Đóng",
             "5d6e89891f": "Tab trùng lặp",
             "966feb9ad5": "Chia phải",
@@ -3086,7 +3050,6 @@
             "52ce4f4605": "Sao chép đường dẫn tương đối",
             "5b85754786": "Sao chép đường dẫn",
             "bfd5797ef4": "Mở bản xem trước Markdown",
-            "e5ff31ccaf": "Đóng các tab bên phải",
             "ba1369dd24": "Đóng tất cả các tab soạn thảo",
             "1ba8492c5b": "Đóng",
             "68cc610e7f": "Đổi tên",
@@ -3117,7 +3080,6 @@
           "SortableTabContextMenu": {
             "35e8892fd0": "Màu tab",
             "2f697b3c31": "Thay đổi tiêu đề",
-            "c1ee099c7e": "Đóng các tab bên phải",
             "8d16f9cd30": "Đóng phần khác",
             "89359a36f7": "Đóng",
             "21132389e9": "Chia phải",
@@ -3381,9 +3343,7 @@
             "runtime_workspace_window_closed": "Cửa sổ workspace đã đóng",
             "connectedHostCount_one": "{{count}} máy chủ",
             "connectedHostCount_other": "{{count}} máy chủ",
-            "connecting": "Đang kết nối…",
-            "workspaceConflict": "Xung đột workspace",
-            "workspaceSyncError": "Lỗi đồng bộ hóa workspace"
+            "connecting": "Đang kết nối…"
           },
           "StatusBar": {
             "9659e38343": "Cổng",
@@ -3408,7 +3368,6 @@
             "54e8d6bb2d": "Fable",
             "d79c3362c4": "5 giờ",
             "a79c64f87e": "Fable",
-            "8295903d17": "Khởi động lại terminal Claude trực tiếp trước khi tiếp tục các cuộc trò chuyện cũ sau khi chuyển đổi.",
             "c98ea88392": "Không có tài khoản nào khác",
             "9332ba8684": "Chuyển sang",
             "d450654fa2": "Tài khoản Claude",
@@ -3462,13 +3421,7 @@
             "successLabel": "Đã cập nhật kỹ năng",
             "successOne": "Đã cập nhật {{value0}}",
             "successMany": "Đã cập nhật kỹ năng {{value0}}",
-            "successAria": "Đã cập nhật kỹ năng. Bấm để mở chi tiết.",
-            "errorLabel": "Cập nhật không thành công",
-            "errorTooltip": "Cập nhật kỹ năng không thành công - nhấp để xem chi tiết",
-            "errorAria": "Cập nhật kỹ năng không thành công. Bấm để mở chi tiết.",
-            "stoppingLabel": "Đang dừng cập nhật",
-            "stoppingTooltip": "Đang dừng cập nhật kỹ năng…",
-            "stoppingAria": "Dừng cập nhật kỹ năng. Bấm để mở chi tiết."
+            "successAria": "Đã cập nhật kỹ năng. Bấm để mở chi tiết."
           },
           "UpdateStatusSegment": {
             "5cd13105a3": "Cập nhật không thành công. Nhấp để mở rộng.",
@@ -3888,7 +3841,6 @@
           "444585cb41": "với dữ liệu",
           "ecb0cd8a4c": "đã bật -",
           "33f7b043d2": "Nhà cung cấp",
-          "60002bb22f": "Chưa tìm thấy cách sử dụng Claude, Codex hoặc OpenCode cục bộ nào. Phần tổng quan sẽ hiển thị sau phiên agent tiếp theo ghi nhật ký token.",
           "70f36452d4": "Chia sẻ bộ nhớ đệm",
           "327603fe8b": "Ngày hoạt động",
           "0eaf937335": "Ước tính. trị giá",
@@ -3956,7 +3908,6 @@
               "1dd166c920": "Ít hơn",
               "52d9221dc0": "Bản đồ nhiệt hoạt động token gần đây",
               "c424eb3f8e": "Tốt nhất:",
-              "f28ff1f852": "Hoạt động kết hợp token Claude, Codex và OpenCode gần đây.",
               "69e2b50427": "Cường độ hàng ngày",
               "3a795542fa": "Hỗn hợp token kết hợp",
               "e65084cb4b": "lý luận",
@@ -4044,89 +3995,27 @@
           "updateOne": "Cập nhật kỹ năng",
           "updateMany": "Cập nhật kỹ năng"
         },
-        "SkillFreshnessRow": {
-          "statusUpdateAvailable": "Đã có bản cập nhật",
-          "statusCantUpdate": "Đã bỏ qua",
-          "cantUpdateReason": "Orca đã loại bỏ kỹ năng này khỏi lệnh cập nhật.",
-          "skippedReasonUnrecognized": "Bản sao ở đây không khớp với phiên bản chính thức - nó có thể đã được sửa đổi hoặc một kỹ năng khác có cùng tên. Orca đã loại nó ra khỏi bản cập nhật để nó không ghi đè lên nó. Hãy loại bỏ nó nếu bạn muốn Orca cập nhật kỹ năng này.",
-          "skippedReasonReadOnly": "Bản sao này nằm ở vị trí chỉ đọc nên Orca đã loại nó ra khỏi bản cập nhật. Thay đổi quyền của nó để cho phép Orca cập nhật nó.",
-          "skippedReasonInaccessible": "Orca không thể đọc được bản sao này nên kỹ năng này không được cập nhật.",
-          "skippedReasonInRepo": "Đây là kỹ năng dự án, không phải kỹ năng toàn cầu - Orca chỉ cập nhật các kỹ năng toàn cầu của bạn, vì vậy nó không đưa phần này vào bản cập nhật.",
-          "skippedReasonPluginCache": "Một plugin quản lý kỹ năng này, vì vậy Orca đã loại bỏ nó khỏi bản cập nhật - thay vào đó hãy cập nhật plugin.",
-          "skippedReasonExternalLink": "Bản sao này là một lối tắt trỏ ra ngoài thư mục kỹ năng của Orca, vì vậy Orca đã loại nó ra khỏi bản cập nhật.",
-          "skippedReasonBrokenLink": "Bản sao này là lối tắt đến nội dung không còn tồn tại nên Orca đã bỏ nó đi — bạn có thể xóa nó một cách an toàn.",
-          "chipCurrent": "Hiện hành",
-          "chipUnrecognized": "Không được công nhận",
-          "chipInaccessible": "Không thể truy cập",
-          "chipDuplicate": "Nhân bản",
-          "chipExternalLink": "Liên kết ngoài",
-          "chipBrokenLink": "Liên kết bị hỏng",
-          "chipReadOnly": "Chỉ đọc",
-          "chipInRepo": "Trong một repo",
-          "chipPluginCache": "Bộ đệm plugin",
-          "tipCurrent": "Bản sao này phù hợp với phiên bản chính thức hiện tại.",
-          "tipUnrecognized": "Bản sao này không khớp với bất kỳ phiên bản chính thức nào - nó có thể được sửa đổi hoặc một kỹ năng khác có cùng tên.",
-          "tipInaccessible": "Orca không thể đọc bản sao này (lỗi về quyền hoặc tệp).",
-          "tipDuplicate": "Một bản sao riêng của kỹ năng này, được cài đặt ngoài bản chính.",
-          "tipExternalLink": "Một phím tắt trỏ bên ngoài thư mục kỹ năng của Orca.",
-          "tipBrokenLink": "Một lối tắt đến một cái gì đó không còn tồn tại.",
-          "tipReadOnly": "Bản sao này nằm ở vị trí chỉ đọc.",
-          "tipInRepo": "Bản sao này tồn tại bên trong một dự án chứ không phải các kỹ năng toàn cầu của bạn.",
-          "tipPluginCache": "Bản sao này được quản lý bởi một plugin.",
-          "skippedReasonDuplicate": "Đây là một bản sao riêng biệt nên bản cập nhật sẽ không đến được - lệnh chỉ làm mới bản sao chính. Xóa bản sao này, sau đó cài đặt lại kỹ năng để vị trí này tuân theo vị trí chính.",
-          "skippedReasonNewer": "Bản sao này là phiên bản mới hơn so với phiên bản đóng tàu Orca này, vì vậy Orca đã để nó yên thay vì cuộn nó lại. Cập nhật Orca sẽ đưa cả hai trở lại thẳng hàng.",
-          "skippedReasonStaleRecord": "Trình cập nhật kỹ năng không có bản ghi có thể sử dụng được của bản sao này, vì vậy nó báo cáo kỹ năng là đã cập nhật và không có gì thay đổi. Cài đặt lại để đưa bản ghi trở lại đúng hàng: {{value0}}",
-          "chipNewer": "Mới hơn",
-          "tipNewer": "Bản sao này là phiên bản mới hơn phiên bản này của tàu Orca."
-        },
+        "SkillFreshnessRow": {},
         "SkillFreshnessUpdateDialog": {
           "title": "Cập nhật kỹ năng",
           "checking": "Đang kiểm tra các kỹ năng Orca đã cài đặt…",
           "none": "Không tìm thấy kỹ năng Orca đã cài đặt.",
           "updateOne": "Có 1 bản cập nhật",
           "updateMany": "{{value0}} có bản cập nhật",
-          "blockedOne": "1 kỹ năng không thể được cập nhật tự động.",
-          "blockedMany": "{{value0}} kỹ năng không thể được cập nhật tự động.",
           "success": "Tất cả các kỹ năng Orca được cài đặt đều được cập nhật.",
-          "attention": "Một số kỹ năng Orca đã cài đặt đã bị loại khỏi bản cập nhật.",
-          "runningOne": "Đang cập nhật 1 kỹ năng…",
-          "runningMany": "Đang cập nhật kỹ năng {{value0}}…",
-          "runningDescription": "Bạn có thể đóng cửa sổ này - nó vẫn chạy ở chế độ nền.",
           "progressAria": "Cập nhật kỹ năng",
           "updatedOne": "Đã cập nhật 1 kỹ năng",
           "updatedMany": "Đã cập nhật kỹ năng {{value0}}",
-          "updatedPartial": "Đã cập nhật {{value0}} của {{value1}} kỹ năng",
           "errorTitle": "Cập nhật chưa kết thúc",
-          "retry": "Thử lại",
-          "copyCommand": "Sao chép lệnh",
-          "copied": "Đã sao chép",
-          "showLog": "Hiển thị nhật ký",
           "updating": "Đang cập nhật…",
           "updateActionOne": "Cập nhật 1 kỹ năng",
           "updateActionMany": "Cập nhật kỹ năng {{value0}}",
           "checkNow": "Kiểm tra lại",
           "done": "Xong",
-          "close": "Đóng",
-          "stop": "Dừng lại",
-          "stopping": "Đang dừng…",
-          "stoppingHeadline": "Đang dừng cập nhật…",
-          "scanIncomplete": "Orca không thể hoàn thành việc kiểm tra các kỹ năng do plugin quản lý.",
-          "scanDepthLimit": "Orca đã đạt đến giới hạn độ sâu quét plugin trước khi kiểm tra thư mục này.",
-          "scanEntryLimit": "Orca đã đạt đến giới hạn mục nhập quét plugin trước khi kiểm tra phần còn lại của bộ đệm này.",
-          "scanCandidateLimit": "Orca đã tìm thấy nhiều thư mục kỹ năng có cùng tên hơn mức có thể kiểm tra một cách an toàn.",
-          "scanManifestLimit": "Orca đã bỏ qua bảng kê khai plugin này vì nó vượt quá giới hạn an toàn.",
-          "scanOutsideRoot": "Orca đã bỏ qua đường dẫn plugin này vì nó trỏ ra ngoài bộ đệm của plugin.",
-          "scanIoErrorWithCode": "Orca không thể đọc được đường dẫn plugin này ({{value0}}).",
-          "scanIoError": "Orca không thể đọc được đường dẫn plugin này.",
-          "scanIssueLimit": "Orca nhận thấy có quá nhiều thư mục plugin bị bỏ qua để liệt kê riêng lẻ."
+          "close": "Đóng"
         },
-        "SkillUpdateResultRows": {
-          "stillOutdated": "Vẫn lỗi thời sau khi chạy bản cập nhật."
-        },
-        "SkillUpdateRow": {
-          "oneLocation": "1 địa điểm",
-          "manyLocations": "{{value0}} địa điểm"
-        },
+        "SkillUpdateResultRows": {},
+        "SkillUpdateRow": {},
         "SkillFreshnessStatusPill": {
           "updateAvailable": "Đã có bản cập nhật",
           "upToDate": "Cập nhật",
@@ -4160,8 +4049,7 @@
         "AddProjectFromFolderDialog": {
           "7d1f51678c": "Thêm dự án",
           "7726a16374": "Hủy",
-          "046751dbfb": "Thêm thư mục này dưới dạng một dự án Orca riêng biệt.",
-          "e643b30398": "Dự án được thêm vào máy chủ SSH"
+          "046751dbfb": "Thêm thư mục này dưới dạng một dự án Orca riêng biệt."
         },
         "AddRepoCreateStep": {
           "0ae45b8238": "my-project",
@@ -4178,7 +4066,6 @@
           "5e97f0c4b9": "Dự án đã được tạo",
           "2c12db1511": "Dự án đã được thêm",
           "875dda0995": "Nhập đường dẫn cha mẹ của máy chủ.",
-          "ssh_parent_manual": "Nhập đường dẫn mẹ SSH.",
           "45b7c26034": "Tạo dự án",
           "85085d74d2": "Đang tạo…"
         },
@@ -4220,21 +4107,14 @@
           "e52454b7f6": "Mở dưới dạng thư mục"
         },
         "AddRepoRemoteStep": {
-          "5b205b5281": "Dừng quét",
           "6680289908": "/home/user/project",
           "ef410aa881": "Đường dẫn máy chủ",
-          "0416bde073": "Thêm vào Cài đặt",
-          "df6fbcf880": "Không có mục tiêu SSH nào được định cấu hình.",
           "44637f43bd": "Mục tiêu SSH",
-          "80557be85a": "Chọn mục tiêu SSH được kết nối và nhập đường dẫn đến repo Git.",
           "91b93a90a4": "Mở dự án trên máy chủ SSH",
           "007651bdf9": "Điều hướng đến một thư mục và nhấp vào Chọn để chọn nó.",
           "dd3ff65486": "Duyệt hệ thống tập tin từ xa",
           "36d427bb66": "Thêm dự án trên máy chủ SSH",
-          "35831a7312": "Đang thêm...",
-          "lockedDescription": "Nhập đường dẫn đến repo Git trên {{value0}}.",
-          "lockedDisconnected": "{{value0}} bị ngắt kết nối.",
-          "93e0221434": "Kết nối"
+          "35831a7312": "Đang thêm..."
         },
         "AddRepoServerStartStep": {
           "ae990c86a0": "Quay lại để thêm tùy chọn",
@@ -4619,8 +4499,6 @@
           "680043342f": "nhỏ gọn",
           "c7591b6014": "repo",
           "2d4f0eb933": "Mặc định",
-          "1a0eec0d35": "Trạng thái",
-          "b5536d5a88": "Nhiệm vụ",
           "8d62c68b35": "Ghi chú",
           "2d74665a56": "Cổng",
           "65a9820bd1": "trạng thái agent",
@@ -4942,12 +4820,8 @@
                   "5f9ffac036": "Clone repo Git từ xa",
                   "7edb8ebe24": "Clone từ URL",
                   "a6c20dca96": "Mở một dự án từ mục tiêu SSH",
-                  "sshCreateUnavailable": "Chưa có sẵn cho máy chủ SSH",
-                  "3d162cc76f": "Dự án trên máy chủ SSH",
                   "fb4fc5380e": "Dự án cục bộ, repo Git hoặc thư mục có nhiều repo",
                   "2281fdc8c7": "Duyệt thư mục",
-                  "sshBrowseTitle": "Mở dự án trên máy chủ SSH",
-                  "sshBrowseDescription": "Repo hoặc thư mục Git hiện có trên máy chủ SSH này",
                   "runtimeBrowseDescription": "Repo hoặc thư mục Git hiện có trên máy chủ này"
                 }
               }
@@ -5151,13 +5025,10 @@
           "6e7f8a9b0c": "Xóa máy chủ…"
         },
         "LinearAgentSkillSetupPrompt": {
-          "missingCliAndSkill": "Thiếu kỹ năng của agent Linear và Orca CLI.",
           "modalTitle": "Cho phép truy cập vé Linear",
-          "modalDescription": "Cài đặt kỹ năng Linear từ terminal.",
           "modalPrompt": "Cho phép các agent đọc và chỉnh sửa vé Linear đính kèm.",
           "dontShowAgain": "Không hiển thị lại",
           "missingBoth": "Thiếu kỹ năng của agent Linear và Orca CLI.",
-          "missingCli": "Orca CLI bị thiếu.",
           "missingSkill": "Kỹ năng agent Linear bị thiếu.",
           "title": "Thiết lập kỹ năng agent Linear",
           "remoteCopy": "Điều này cài đặt thiết lập máy chủ; môi trường agent từ xa có thể cần thiết lập riêng.",
@@ -5167,9 +5038,6 @@
           "recheck": "Kiểm tra lại",
           "panelTitle": "Kỹ năng agent Linear",
           "panelDescription": "Cài đặt kỹ năng agent máy chủ để chuyển giao nhiệm vụ Linear được liên kết.",
-          "terminalTitle": "Cài đặt kỹ năng agent Linear",
-          "terminalAria": "Terminal cài đặt kỹ năng agent Linear",
-          "install": "Cài đặt CLI & Skill",
           "successTitle": "Truy cập vé Linear đã sẵn sàng",
           "successDescription": "Giờ đây, agent có thể đọc và cập nhật các vé Linear được liên kết từ workspace này.",
           "successDescriptionWsl": "Các agent WSL hiện có thể sử dụng vé Linear được liên kết từ workspace này.",
@@ -5178,11 +5046,7 @@
           "done": "Xong",
           "wslCopy": "Cài đặt nó để chuyển giao agent WSL từ công việc Linear được liên kết.",
           "wslLabel": "mặc định WSL",
-          "toastMissingCliAndSkill": "Thiếu kỹ năng Orca CLI và Linear",
-          "toastMissingCli": "Orca CLI bị thiếu",
           "toastMissingSkill": "Thiếu kỹ năng Linear",
-          "toastInstallCliAndSkillDescription": "Cài đặt Orca CLI và kỹ năng Linear để cho phép agent của bạn đọc và chỉnh sửa các tác vụ Linear.",
-          "toastInstallCliDescription": "Cài đặt Orca CLI để cho phép agent của bạn đọc và chỉnh sửa các tác vụ Linear.",
           "toastInstallSkillDescription": "Cài đặt kỹ năng Linear để cho phép agent của bạn đọc và chỉnh sửa các tác vụ Linear thông qua Orca CLI.",
           "toastRemoteDescription": "{{value0}} Môi trường agent từ xa có thể cần thiết lập riêng.",
           "toastWslDescription": "{{value0}} Thiết lập này chạy trong runtime agent WSL đã chọn."
@@ -5253,7 +5117,6 @@
         "AddRemoteHostDialog": {
           "sshHostRequired": "Cần có bí danh cấu hình máy chủ hoặc SSH.",
           "sshPortInvalid": "Cổng phải nằm trong khoảng từ 1 đến 65535.",
-          "sshRelayGraceInvalid": "Thời gian chờ của terminal phải nằm trong khoảng từ 60 đến {{value0}} giây.",
           "sshSaved": "Đã thêm máy chủ SSH.",
           "sshSaveFailed": "Không thêm được máy chủ SSH.",
           "serverFieldsRequired": "Tên máy chủ và mã ghép nối là bắt buộc.",
@@ -5331,15 +5194,14 @@
         },
         "MarkdownImageLightbox": {
           "image": "Hình ảnh",
-          "expand": "Mở rộng hình ảnh",
-          "close": "Đóng"
+          "expand": "Mở rộng hình ảnh"
         },
         "WorktreeDeveloperMenu": {
           "developer": "Nhà phát triển",
           "parkTerminal": "Terminal công viên"
         },
         "SidebarFeedbackImageAttachments": {
-          "screenshotsHint": "Đính kèm tối đa {count} ảnh chụp màn hình",
+          "screenshotsHint": "Đính kèm tối đa {{count}} ảnh chụp màn hình, tổng cộng {{maxSize}}",
           "attachImages": "Gắn",
           "removeImage": "Xóa {{fileName}}"
         },
@@ -5489,7 +5351,6 @@
           "SetupGuideModal": {
             "3598a3ca0c": "Hoàn thành các quy trình công việc cốt lõi giúp Orca trở nên hữu ích cho công việc của agent song song.",
             "48a9e5ef2d": "Bắt đầu",
-            "28cf59fcb4": "Điều này sẽ ẩn danh sách kiểm tra khỏi sidebar",
             "f3b5ffb2a6": "Ẩn danh sách kiểm tra khỏi sidebar"
           },
           "SetupGuideProgressRing": {
@@ -5516,7 +5377,6 @@
         "AccountsPane": {
           "c2d2751587": "Xóa tài khoản",
           "dbb9626ed1": "Hủy",
-          "854ebbcc45": "Orca sẽ xóa xác thực Claude được quản lý cho tài khoản đã lưu này. Nếu nó hiện đang hoạt động, Orca sẽ quay lại thông tin đăng nhập Claude mặc định của hệ thống.",
           "63843e37e2": "Xóa tài khoản Claude?",
           "380a7736cc": "Việc xóa tài khoản này sẽ xóa vĩnh viễn trang chủ Codex được quản lý của nó, bao gồm tất cả lịch sử phiên Codex và thông tin đăng nhập MCP được lưu trữ bên trong. Điều này không thể hoàn tác được. Nếu tài khoản hiện đang hoạt động, Orca sẽ quay lại thông tin đăng nhập Codex mặc định của hệ thống.",
           "0d47394635": "Xóa tài khoản Codex?",
@@ -5564,12 +5424,10 @@
           "3fe7862418": "Không có tài khoản Claude nào được quản lý cho {{value0}}. Orca sẽ sử dụng thông tin đăng nhập Claude mặc định của hệ thống của môi trường đó cho đến khi bạn thêm một thông tin đăng nhập vào đây.",
           "3455cf43fa": "Claude đăng nhập.",
           "fcc4093fc1": "Sử dụng thông tin đăng nhập {{value0}} Codex hiện tại của bạn.",
-          "79e484c3b2": "Trình chuyển đổi tài khoản tùy chọn cho các tệp xác thực Claude được chia sẻ.",
           "8bbfd74556": "Tài khoản Claude",
           "72b36ea174": "Không bắt buộc. Orca có thể sử dụng thông tin đăng nhập Claude bình thường của bạn; chỉ thêm tài khoản nếu bạn muốn chuyển đổi nhanh mà không cần di chuyển phiên trò chuyện.",
           "26ef4b55be": "Claude",
           "2743cdc0af": "Cập nhật tài khoản Claude không thành công.",
-          "b15ce90870": "{{value0}} -> {{value1}}. Khởi động lại terminal Claude trực tiếp trước khi tiếp tục các phiên cũ.",
           "f921d32606": "Tài khoản Claude được cập nhật.",
           "5bf8764953": "Cập nhật tài khoản Codex không thành công.",
           "9baf45d071": "Thiết bị này",
@@ -5632,7 +5490,6 @@
           "4e32e030b2": "Được lưu trữ cục bộ. Orca chỉ gửi nó tới platform.minimax.io để làm mới cách sử dụng.",
           "remoteServerFallback": "máy chủ từ xa",
           "loadAccountsFailed": "Không thể tải tài khoản nhà cung cấp.",
-          "remoteScopeAccounts": "Hiển thị các tài khoản được quản lý bởi {{value0}}. Thêm hoặc xác thực lại tài khoản trên máy chủ đó.",
           "accountScopePrefix": "Phạm vi tài khoản",
           "accountScopeRemoteServerUnnamed": "Máy chủ từ xa",
           "remoteScopeLocalAccountsKept": "Các tài khoản được quản lý trên máy tính để bàn này không thay đổi. Chuyển runtime mặc định trở lại Máy tính để bàn cục bộ để xem chúng.",
@@ -5698,7 +5555,6 @@
           "remoteDetectionFailed": "Không thể phát hiện các agent đã cài đặt. Hãy kiểm tra kết nối máy chủ và thử lại.",
           "retryDetection": "Thử lại",
           "02e0143be5": "Đã cài đặt",
-          "110b74b022": "Không có agent (terminal trống)",
           "92033495ff": "Tự động",
           "9b175d0f5e": "Agent được chọn trước khi mở workspace mới.",
           "385212c7a1": "Agent mặc định",
@@ -5715,21 +5571,15 @@
           "0d9e293a02": "Làm mới",
           "c9b33eb5c0": "Đang làm mới…",
           "13647f9f80": "Đọc lại shell PATH của bạn và phát hiện lại các agent đã cài đặt",
-          "dc4a2ffdc0": "Ghi đè lệnh mở rộng",
-          "cea7d97be1": "Ghi đè lệnh thu gọn",
           "db9e9e5887": "Tùy chỉnh lệnh",
           "959b67385b": "Đặt mặc định",
           "24e032fa34": "Mặc định",
           "5f986a9b92": "Đặt làm mặc định",
-          "d7625cf8b2": "Agent mặc định",
           "cfb3f35775": "Đối số",
           "6f99bf5dd0": "Không có đối số mặc định",
           "8fbe1f37c1": "Môi trường",
           "2d133152fa": "Không có môi trường mặc định",
           "agentPermissions": "Quyền của agent",
-          "agentPermissionsInfo": "Thông tin quyền của agent",
-          "agentPermissionsTooltip": "Không áp dụng cho các agent mà bạn đã ghi đè các đối số khởi chạy.",
-          "agentPermissionsDescription": "Chọn xem Orca có khởi chạy các agent với ít prompt về quyền hơn hay kiểm tra thủ công hay không.",
           "agentPermissionsYolo": "Yolo",
           "agentPermissionsManual": "Thủ công",
           "3f1bdf3cb4": "Văn bản môi trường quá lớn để phân tích cú pháp một cách an toàn.",
@@ -5808,14 +5658,6 @@
           "1626524572": "Nautilus",
           "0de9fda203": "Loại bỏ",
           "c71770c455": "{basePrompt}",
-          "f19a56498d": "; cài đặt tiền tố branch của bạn vẫn được áp dụng.",
-          "800edb1e54": "fix-login-flow",
-          "5d569f5199": ". Orca chỉ tạo phân đoạn cuối cùng, như",
-          "570817d126": "Và",
-          "56580dcf60": ". Bạn cũng có thể tham khảo",
-          "9c9b54e4ea": "prompt tên branch tích hợp",
-          "69bf4830c2": "bao gồm cả Orca",
-          "9241b59bf5": "Sử dụng",
           "a869d0edd8": "Mẫu lệnh tên branch",
           "e784ea62dc": "Nâng cao",
           "d9b65054ef": ") thành một tên ngắn gọn tóm tắt nhiệm vụ. Chỉ các branch Orca tự đặt tên mới được đổi tên và không bao giờ được đổi tên sau khi chúng bị push.",
@@ -5825,9 +5667,7 @@
           "ec3e0c388e": "Lưu",
           "cfd82406dd": "Đang lưu...",
           "40e7be7850": "Đã lưu",
-          "7c7e34a66d": "Những thay đổi chưa được lưu",
-          "a4fa380b67": "{assistantMessage}",
-          "2ee2779c05": "{firstPrompt}"
+          "7c7e34a66d": "Những thay đổi chưa được lưu"
         },
         "AutoRenameBranchPromptEditor": {
           "63121132c0": "Loại bỏ",
@@ -5860,8 +5700,6 @@
           "ee110e1830": "Không có tham chiếu cơ sở mặc định"
         },
         "BrowserDefaultZoomSetting": {
-          "2622126877": "Mức thu phóng được áp dụng cho các tab trình duyệt mới mở.",
-          "bbeec087d3": "Áp dụng cho các tab trình duyệt mới mở.",
           "265597101f": "Thu phóng mặc định"
         },
         "BrowserHomePageSetting": {
@@ -5939,22 +5777,12 @@
           "af8c83ed61": "Nhập cookie từ Chrome, Edge hoặc các trình duyệt khác để agent có thể sử dụng lại thông tin đăng nhập của bạn.",
           "68ea76eb71": "Cài đặt kỹ năng Sử dụng trình duyệt để các agent có thể vận hành trình duyệt của Orca.",
           "2d6ead9ab2": "Cài đặt kỹ năng sử dụng trình duyệt",
-          "e9f3f3b488": "Được cài đặt tại",
-          "9fca1f7f5d": "Đăng ký lệnh Orca CLI để các agent có thể điều phối trình duyệt từ shell của họ.",
-          "c6065d205d": "Kích hoạt Orca CLI",
-          "c79eff0213": "Đăng ký Orca CLI để các agent có thể điều khiển trình duyệt.",
-          "702488a5f7": "Hãy để các agent mã hóa điều khiển trình duyệt này bằng thông tin đăng nhập của bạn. Hoàn thành ba bước dưới đây.",
           "b8a1f2d84d": "Sử dụng trình duyệt agent",
           "96b91c6349": "Hãy để các agent mã hóa điều khiển trình duyệt này bằng thông tin đăng nhập của bạn.",
           "2ea4617e3a": "Đã nhập {{value0}} cookie từ {{value1}}_{{value2}}.",
-          "721aee31b4": "Đã đăng ký Orca CLI trong PATH.",
-          "180a9abf3a": "Không tải được trạng thái CLI.",
           "2ccfc9cff8": "Nhập khẩu",
           "0462565413": "Nhập lại",
           "de9b2f32f3": "Bật",
-          "ad8cb0ee22": "Sửa đường dẫn",
-          "0289434ed6": "Đã bật",
-          "8b3054dac7": "Đang đăng ký...",
           "8f2675c2f3": "Đã nhập {{value0}} cookie từ tệp.",
           "5301857d88": "Từ {{value0}}"
         },
@@ -5975,7 +5803,6 @@
           "5dae812f50": "Làm mới",
           "52e640f3a0": "Làm mới trạng thái CLI",
           "38edbb5721": "Lệnh shell",
-          "6930feda9e": "Sử dụng Orca từ terminal của bạn để mở ứng dụng, quản lý worktree và tương tác với terminal Orca.",
           "c5c0f2641d": "Orca CLI",
           "d77352f2df": "Không xóa được `{{value0}}` khỏi PATH.",
           "af5540930c": "Đã xóa `{{value0}}` khỏi PATH.",
@@ -6001,16 +5828,10 @@
         "CliSkillRuntimeSetup": {
           "04325573f8": "WSL",
           "a58ba464ad": "Vị trí kỹ năng",
-          "0ed08febc5": "Không thể đăng ký lệnh shell WSL.",
-          "3728a94fb6": "Lệnh shell WSL cần được chú ý",
-          "775a4cfbb8": "Đăng ký lệnh shell WSL không khả dụng",
           "c47127f222": "mặc định WSL",
           "0c9f3cf9da": "Chọn nơi Orca kiểm tra và cài đặt các kỹ năng của agent toàn cầu.",
           "f00d6aa9b5": "WSL không có sẵn trên máy này.",
-          "7c776ff9d8": "wsl",
-          "fc0fcf72fd": "Đăng ký lệnh shell WSL trước khi thiết lập kỹ năng.",
-          "windowsPathUnknown": "Không thể kiểm tra lệnh shell WSL PATH",
-          "refreshCliRegistration": "Hãy làm mới trạng thái đăng ký CLI và thử lại."
+          "7c776ff9d8": "wsl"
         },
         "CommitMessageAiPane": {
           "841ed9884a": "Được sử dụng bởi các repo chưa tùy chỉnh AI kiểm soát nguồn.",
@@ -6172,12 +5993,7 @@
             "title": "Giao diện người dùng trò chuyện",
             "description": "Xem trước bề mặt trò chuyện trên máy tính để bàn để biết các phiên terminal của agent được hỗ trợ.",
             "copy": "Thêm chế độ xem Giao diện người dùng trò chuyện mà bạn có thể chuyển sang từ bảng terminal của agent được hỗ trợ. Thử nghiệm trong khi chúng tôi điều chỉnh độ trung thực của bản ghi, phát trực tuyến và tính chẵn lẻ của terminal.",
-            "toggleLabel": "Chuyển đổi giao diện người dùng trò chuyện",
-            "defaultTitle": "Chế độ xem mặc định",
-            "defaultCopy": "Chọn cách mở các tab terminal của agent được hỗ trợ mới.",
-            "defaultViewLabel": "Chế độ xem giao diện người dùng trò chuyện mặc định",
-            "defaultViewTerminal": "Trò chuyện trên terminal",
-            "defaultViewNative": "Giao diện người dùng trò chuyện"
+            "toggleLabel": "Chuyển đổi giao diện người dùng trò chuyện"
           },
           "agentDashboard": {
             "title": "Bảng điều khiển agent",
@@ -6404,13 +6220,6 @@
           "aa204f185f": "Giới hạn tốc độ GitHub CLI REST, Tìm kiếm và GraphQL hiện tại.",
           "612a440e57": "Ngân sách API GitHub",
           "2cde9044a8": "graphql",
-          "36e3de3619": "từ việc so sánh với lịch sử cũ. Orca bỏ qua bản cập nhật nếu branch đó có những thay đổi chưa được commit hoặc các commit chỉ cục bộ.",
-          "d072a12995": "git diff main...HEAD",
-          "db3a127eb1": ". Điều này giữ các lệnh như",
-          "3ae3de8898": "master",
-          "5bf885be48": "hoặc",
-          "ffba483bae": "main",
-          "976afc6b3e": "Khi bạn tạo một workspace, Orca sẽ làm mới cơ sở từ xa và chuyển tiếp nhanh branch cục bộ phù hợp của bạn một cách an toàn, chẳng hạn như",
           "1ec5c91e1d": "Chọn xem tên branch sử dụng tên người dùng Git, tiền tố tùy chỉnh hay không có tiền tố.",
           "330f584b50": "Tiền tố branch",
           "1ffaadf0a0": "Tiền tố được thêm vào tên branch khi tạo worktree.",
@@ -6590,15 +6399,9 @@
           "c7f3fe0a6e": "Các lệnh mô phỏng phổ biến",
           "d94ca6a623": "Cho phép các agent sử dụng lệnh Orca CLI, bao gồm cả điều khiển trình mô phỏng di động.",
           "67e19ee03c": "Kỹ năng Orca CLI",
-          "aaf62a3dd2": "Được cài đặt tại",
-          "2fef055608": "Đăng ký lệnh Orca CLI để các agent có thể điều khiển trình mô phỏng hoạt động từ shell của chúng.",
-          "4f2205f3b6": "Kích hoạt Orca CLI",
           "ff4b7e65d6": "Cho phép các agent mã hóa điều khiển trình mô phỏng di động đang hoạt động bằng các lệnh Orca CLI.",
           "2a674aa810": "Kiểm soát trình mô phỏng di động agent",
-          "cdeaed9e37": "Đã đăng ký Orca CLI trong PATH.",
-          "3d34423e88": "Đăng ký Orca CLI",
-          "3be27641c9": "vì vậy các lệnh của trình mô phỏng có thể chạy từ shell agent.",
-          "3941719a56": "Kiểm tra Orca CLI trước khi mở thiết lập kỹ năng."
+          "cdeaed9e37": "Đã đăng ký Orca CLI trong PATH."
         },
         "MobileEmulatorExamples": {
           "edf13dd03b": "Sao chép",
@@ -6648,7 +6451,6 @@
         },
         "MobilePane": {
           "dd3cd78d04": "Quét bằng Orca Mobile",
-          "35100bca5d": "Khi bạn đang sử dụng terminal trên điện thoại, Orca sẽ thu nhỏ terminal để vừa với màn hình điện thoại của bạn. Khi bạn đóng ứng dụng hoặc chuyển đi, điều này sẽ kiểm soát việc ứng dụng vẫn ở kích thước điện thoại (để các công cụ CLI tương tác không chỉnh lại) hay đổi kích thước trở lại màn hình của bạn. Bạn luôn có thể sử dụng Khôi phục terminal này hoặc Khôi phục tất cả terminal trên biểu ngữ để thay đổi kích thước theo cách thủ công.",
           "ee56f1c7e4": "Khi bạn rời khỏi ứng dụng di động",
           "3939fd062c": "Việc thu hồi một thiết bị sẽ ngắt kết nối thiết bị đó ngay lập tức.",
           "254a6d09e4": "Đã ghép nối",
@@ -6760,7 +6562,6 @@
           "52e0634e2c": "Yêu cầu một agent điều phối sử dụng sự phối hợp để chuyển giao, chuyển giao worktree và các agent con tuần tự hoặc song song.",
           "ae79504732": "Cách sử dụng nó",
           "7bc082f4de": "Sao chép lệnh cài đặt",
-          "832f1f3ee6": "Thích terminal của riêng bạn?",
           "9bedd2a6e5": "Cho phép các agent chuyển ngữ cảnh và điều phối công việc thông qua Orca.",
           "07641b9768": "Kỹ năng hòa âm",
           "2aacdb0517": "Phối hợp các agent mã hóa trong quá trình chuyển giao, chuyển giao worktree và công việc của agent con.",
@@ -6869,18 +6670,13 @@
         },
         "RepositoryHooksSection": {
           "af49e2a19e": "Tệp hiện có nhưng Orca không thể tìm thấy các định nghĩa `scripts` hoặc `issueCommand` hợp lệ.",
-          "3397879bee": "và các lệnh cục bộ tồn tại, hãy chọn lệnh chạy nào.",
           "39da2ae12f": "orca.yaml",
-          "ac9038d2cc": "Khi cả hai",
           "32fec28f5b": "Nguồn lệnh",
           "bbbd6e0bc4": "Nguồn lệnh & orca.yaml",
           "c9bc1bfd8f": "Nâng cao",
           "610d90fdbd": "Nguồn lệnh và chi tiết orca.yaml.",
-          "52aef29e69": "Để trống để sử dụng mặc định repo từ",
           "4084720f47": "Hoàn thành {{artifact_url}}",
           "13394103bd": "Lệnh phát hành GitHub tùy chỉnh",
-          "70ad20f883": "cho vấn đề được liên kết hoặc URL PR.",
-          "b997331366": "Ghi đè tùy chọn. Sử dụng",
           "2cc27dc12b": "Ghi đè tùy chọn cho mỗi người dùng đối với lệnh vấn đề được liên kết.",
           "b91a0f297d": "Các tập lệnh cục bộ và tập lệnh chia sẻ chạy trước khi worktree được lưu trữ.",
           "9a100323ff": "Tập lệnh lưu trữ",
@@ -6939,8 +6735,6 @@
           "e03d9a8f38": "Hỏi mọi lúc",
           "8dbe6bedf5": "không hợp lệ",
           "0e0dd5b9a5": "đã nạp",
-          "9b12f15b1e": "khi một cái tồn tại.",
-          "c85c2c88a2": "{{artifact_url}}",
           "fac13f8c1e": "có thẩm quyền",
           "0518758f38": "cả hai",
           "d2b3016c20": "đã chia sẻ",
@@ -6953,8 +6747,7 @@
           "81057d5f71": "Đang lưu...",
           "da37d6f10e": "Sao chép",
           "3149964b66": "Đã sao chép",
-          "waitForSetupBeforeAgent": "Đợi quá trình thiết lập hoàn tất trước khi bắt đầu agent",
-          "waitForSetupBeforeAgentHelp": "Bật tính năng này khi thiết lập cài đặt các phần phụ thuộc, máy chủ MCP hoặc tệp cấu hình mà agent cần trong quá trình khởi động."
+          "waitForSetupBeforeAgent": "Đợi quá trình thiết lập hoàn tất trước khi bắt đầu agent"
         },
         "RepositoryIconPicker": {
           "2b7d27b93c": "Sử dụng màu repo {{value0}}",
@@ -7156,7 +6949,6 @@
           "b5b5114cb0": "Đã xóa {{value0}}.",
           "6cb6eae14f": "Không lưu được môi trường runtime.",
           "7b5986c8df": "Đã lưu {{value0}}. Sử dụng Active Server để chuyển đổi khi sẵn sàng.",
-          "5ef712f407": "Máy chủ có tên \"{{value0}}\" đã tồn tại.",
           "0c55a47480": "Tên và mã ghép nối là bắt buộc.",
           "e6410d72c3": "Không tải được môi trường runtime.",
           "6ef71985da": "Không có điểm cuối",
@@ -7477,13 +7269,8 @@
           "a7d28dff81": "Thêm máy chủ từ xa để kết nối với nó trong Orca.",
           "94c5284560": "Mục tiêu",
           "f495689b82": "Nhập không thành công",
-          "f8050f6307": "Đã đồng bộ hóa {{value0}} máy chủ{{value1}}",
           "68c13b4589": "Kiểm tra không thành công",
           "81d08bcddf": "Kết nối thành công",
-          "2c4ee7332b": "Không thể thiết lập lại rơle từ xa",
-          "db2e48975e": "Đặt lại rơle từ xa",
-          "025e107643": "Không thể kết thúc terminal từ xa",
-          "90e308c98b": "Terminal từ xa đã kết thúc",
           "a43de1d3ee": "Ngắt kết nối không thành công",
           "e95d5ae10e": "Kết nối không thành công",
           "c2a69510e3": "Không thể loại bỏ mục tiêu",
@@ -7491,7 +7278,6 @@
           "2227ce47b6": "Không lưu được mục tiêu",
           "f602009125": "Đã thêm mục tiêu",
           "b4ba0ce33d": "Đã cập nhật mục tiêu",
-          "3879cbaa52": "Thời gian chờ của terminal phải nằm trong khoảng từ 60 đến {{value0}} giây hoặc giữ cho terminal hoạt động cho đến khi đặt lại.",
           "4db9afce1c": "Cổng phải nằm trong khoảng từ 1 đến 65535",
           "0e5aa04161": "Cần có bí danh cấu hình máy chủ hoặc SSH",
           "f1fc50dad2": "Không tải được mục tiêu SSH",
@@ -7513,8 +7299,6 @@
           "106bd57f4a": "Mật khẩu SSH"
         },
         "SshTargetCard": {
-          "a883f5a00f": "hết thời gian chờ của terminal: {{value0}}",
-          "8ce71262f4": "terminal cho đến khi thiết lập lại",
           "ec6543cee9": "Kết nối",
           "0e53e9f8e8": "Bài kiểm tra",
           "1810b51482": "Đang kết nối",
@@ -7522,30 +7306,17 @@
           "7f7b3d7ab4": "Xóa mục tiêu",
           "3d21a22d0e": "Loại bỏ mục tiêu",
           "3d8af2949f": "Chỉnh sửa mục tiêu",
-          "762a48c662": "Đặt lại rơle từ xa",
-          "97dea4e8cf": "Đặt lại rơle từ xa",
-          "da16e108e6": "Kết thúc terminal từ xa",
-          "c77f1abfe3": "Kết thúc terminal từ xa",
           "18968ede9e": "Lỗi",
           "f0871e6bfb": "kết nối",
           "47e94bd6ba": "đã kết nối"
         },
         "SshTargetDestructiveActions": {
-          "7e66942808": "Điều này sẽ dừng các phiên terminal hoạt động trên mục tiêu SSH này. Kết nối lại sẽ không khôi phục chúng.",
-          "accf177a03": "Kết thúc terminal từ xa?",
-          "26be00392d": "Điều này buộc dừng chuyển tiếp từ xa cho mục tiêu SSH này. Các terminal từ xa hoạt động và chuyển tiếp cổng cho mục tiêu này sẽ kết thúc.",
-          "570a7a0574": "Đặt lại Rơle từ xa?",
           "3bb0cf0ee4": "Điều này sẽ loại bỏ mục tiêu và kết thúc mọi terminal từ xa đang hoạt động.",
           "4808966c41": "Xóa mục tiêu SSH"
         },
         "SshTargetForm": {
           "fea9cb402e": "Hủy",
-          "1b19b00e93": "Thời gian chờ giới hạn phải từ 60 giây đến 7 ngày.",
-          "7c13f58c91": "Cho đến khi đặt lại",
-          "55c56cf2c7": "Thời gian chờ sau khi ngắt kết nối (giây)",
           "137e88ce8d": "Terminal từ xa tiếp tục chạy sau khi Orca ngắt kết nối khỏi máy chủ này.",
-          "b574994adc": "Sử dụng End Remote Terminals hoặc Reset Relay khi bạn muốn dừng chúng.",
-          "71fc546097": "Giữ terminal tồn tại cho đến khi thiết lập lại",
           "92f80edbfd": "Sự kiên trì của terminal từ xa",
           "feae1d1e69": "Không bắt buộc. Tương đương với ProxyJump/ssh -J.",
           "11bcb4507a": "bastion.example.com",
@@ -7705,7 +7476,6 @@
           "6e6480a7df": "Cho phép các chương trình trong terminal (Zellij, tmux, Neovim, fzf, Grok, SSH) sao chép vào bảng tạm hệ thống của bạn.",
           "3338dcf8c1": "Cho phép ghi vào bảng tạm TUI (OSC 52)",
           "69c64a479c": "Cho phép Zellij, tmux, Neovim, fzf và Grok sao chép vào bảng tạm hệ thống qua PTY (bao gồm cả qua SSH).",
-          "4729c645fc": "Tự động sao chép các lựa chọn terminal vào bảng tạm.",
           "902f5dee1f": "Sao chép vào Chọn",
           "9129b7e805": "Di chuột vào pane terminal sẽ kích hoạt nó mà không cần phải nhấp vào.",
           "8eefeaa3da": "Tập trung theo dõi chuột",
@@ -7869,13 +7639,8 @@
           "1ba81c0ff0": "khuyến khích",
           "cfde55c7b0": "Không thể tải xuống mô hình.",
           "43fd4f454b": "Mẫu lời nói",
-          "7cf715f891": "được tổ chức.",
-          "295d84b849": "một lần để bắt đầu, một lần nữa để dừng lại. Giữ: ra lệnh trong khi",
-          "ff9a680010": "Chuyển đổi: nhấn",
           "ba4a900d1d": "Chế độ đọc chính tả",
           "0121960365": "Bật Đọc chính tả bằng giọng nói",
-          "366e1b4f36": "để đọc chính tả văn bản vào bất kỳ pane tập trung nào.",
-          "4465596675": "Nhấn",
           "62d2a84d31": "Không xóa được khóa API OpenAI",
           "37aba8bb63": "Đã xóa khóa API OpenAI",
           "8572bbb537": "Không lưu được khóa API OpenAI",
@@ -8067,7 +7832,6 @@
             "a79d266f71": "phiên họp",
             "afbf35be68": "phiên ổn định",
             "agentPermissions": "Quyền của agent",
-            "agentPermissionsDescription": "Chuyển đổi mặc định quyền của agent giữa Yolo và Thủ công.",
             "agentRuntime": "Runtime agent",
             "agentRuntimeDescription": "Chọn xem các agent được phát hiện và khởi chạy trên Windows hay trong WSL theo mặc định."
           }
@@ -8335,22 +8099,12 @@
               "614c756ab1": "Nhập cookie trình duyệt",
               "cee44fb442": "tự động hóa",
               "a57c2172dc": "trình duyệt agent",
-              "6ea88e5206": "npx",
               "f5b8fdddf5": "orca-cli",
               "e5a784bc54": "cài đặt",
               "9d97446873": "agent",
               "a2d489263e": "kỹ năng",
               "a7e82445fa": "Cài đặt kỹ năng Sử dụng trình duyệt để các agent có thể vận hành trình duyệt của Orca.",
-              "a1414dcefb": "Cài đặt kỹ năng sử dụng trình duyệt",
-              "e56c7b55c9": "cài đặt",
-              "034c5e8d7f": "cho phép",
-              "7e0dcb257a": "shell",
-              "3ffafc9b95": "yêu cầu",
-              "30c74aaa1f": "con đường",
-              "ff05cbc344": "cá kình",
-              "85fab5e12c": "cli",
-              "890ddf943d": "Đăng ký Orca CLI để các agent có thể điều khiển trình duyệt.",
-              "50f0860e18": "Kích hoạt Orca CLI"
+              "a1414dcefb": "Cài đặt kỹ năng sử dụng trình duyệt"
             }
           }
         },
@@ -8585,7 +8339,6 @@
             "f89a94773c": "cập nhật",
             "79ff46776e": "Kiểm tra các bản cập nhật ứng dụng và cài đặt phiên bản Orca mới hơn.",
             "e15af4eb64": "Kiểm tra cập nhật",
-            "6382fe9724": "npx",
             "baa263d6d8": "agent",
             "bda108e66c": "kỹ năng",
             "244e3fb4c8": "Cài đặt kỹ năng Orca để agent biết cách sử dụng Orca CLI.",
@@ -9294,7 +9047,6 @@
               "664789b73a": "tự động",
               "c38c18be15": "lựa chọn",
               "797fdfe4ca": "lựa chọn",
-              "603818e8d8": "Tự động sao chép các lựa chọn terminal vào bảng nhớ tạm ngay khi thực hiện lựa chọn.",
               "3bdc84f059": "Sao chép vào Chọn"
             }
           },
@@ -9655,14 +9407,12 @@
                 "60996beda6": "Thêm trang Jira",
                 "7ca5ffffdb": "Duyệt, tạo và bắt đầu công việc từ các vấn đề của Jira Cloud.",
                 "a1093a06c7": "Kiểm tra quyền truy cập Jira trước khi hiển thị các hành động thiết lập.",
-                "9fa04a032e": "{{value0}} trang web{{value1}} đã kết nối",
                 "cef18762a2": "Thêm quyền truy cập bằng khóa API cá nhân từ cài đặt Linear của bạn. Các khóa có toàn quyền truy cập có thể xem mọi nhóm mà chủ sở hữu khóa có thể tiếp cận.",
                 "6224fe9d34": "Mỗi workspace Linear được kết nối có một khóa được lưu trữ trong runtime đang hoạt động. Khóa toàn quyền truy cập có thể bao gồm tất cả các nhóm mà chủ sở hữu khóa có thể truy cập; các phím bị hạn chế có thể được thay thế bất cứ lúc nào.",
                 "1a12e33fe5": "Thêm truy cập Linear",
                 "622c224082": "Thêm quyền truy cập workspace",
                 "eae4a9f16b": "Thêm quyền truy cập Linear để giải quyết các vấn đề về duyệt và liên kết.",
                 "fe9231215b": "Kiểm tra quyền truy cập Linear trước khi hiển thị các hành động thiết lập.",
-                "e1f5e6424c": "{{value0}} workspace{{value1}} đã kết nối",
                 "disconnect_all": "Ngắt kết nối",
                 "account_scope_prefix": "Phạm vi tài khoản",
                 "2d60ec7921": "Kết nối trang web Jira Cloud với token API hoặc Jira tự lưu trữ với token truy cập cá nhân hoặc tên người dùng và mật khẩu. Thông tin xác thực được gửi đến runtime từ xa đã chọn và được lưu trữ ở đó bằng mã hóa được hỗ trợ runtime.",
@@ -9988,9 +9738,7 @@
           "checking": "Đang kiểm tra công thức nấu ăn...",
           "none": "Chưa tìm thấy công thức nấu ăn nào.",
           "cloudVmSkillTitle": "Kỹ năng thiết lập Cloud VM",
-          "cloudVmRefresh": "Làm mới công thức của Cloud VM",
-          "cloudVmTerminalTitle": "Thiết lập máy ảo đám mây",
-          "cloudVmTerminalAriaLabel": "Terminal cài đặt kỹ năng Cloud VM"
+          "cloudVmRefresh": "Làm mới công thức của Cloud VM"
         },
         "ephemeralVmsExperimentalSetting": {
           "description": "Hiển thị các điều khiển thiết lập và mục tiêu chạy workspace cho các môi trường theo yêu cầu, thuộc sở hữu của repo.",
@@ -10082,7 +9830,6 @@
           "pathGroup": "Làm thế nào điện thoại đến được máy tính này",
           "anywhereTitle": "Tiếp sức Orca",
           "anywhereDescription": "Điện thoại có thể kết nối di động hoặc bất kỳ Wi‑Fi nào. Chỉ cần đăng nhập cho Relay.",
-          "signInRequired": "Chỉ chuyển tiếp - LAN không cần tài khoản.",
           "relayUnavailable": "Orca Relay không có sẵn trong bản dựng này. Sử dụng mạng LAN.",
           "signIn": "Đăng nhập vào Rơle",
           "signInAgain": "Đăng nhập lại vào Relay",
@@ -10122,8 +9869,6 @@
           "skillTitle": "Kỹ năng Linear",
           "howToUse": "Prompt ví dụ",
           "howToUseDescription": "Bấm vào một thẻ để sao chép prompt. Sử dụng những thứ này trong worktree được liên kết Linear sau khi kỹ năng được cài đặt.",
-          "terminalTitle": "Thiết lập kỹ năng Linear",
-          "terminalAriaLabel": "Terminal cài đặt kỹ năng Linear",
           "manageConnectionHint": "Xem lại các workspace Linear và khóa API được kết nối trong",
           "manageConnectionLink": "Tích hợp"
         },
@@ -10197,8 +9942,7 @@
           "descriptionOrca": "Liên kết mở trong trình duyệt hệ thống của bạn. Thay vào đó, khi được bật, {{chord}}+click sẽ mở một tệp trong trình duyệt tích hợp của Orca."
         },
         "BrowserTerminalLinkActionsSetting": {
-          "title": "Hiển thị các hành động liên kết terminal",
-          "description": "Hiển thị các hành động khả dụng khi bạn nhấp vào liên kết terminal. Tắt tính năng này để yêu cầu {{modifier}} nhấp chuột."
+          "title": "Hiển thị các hành động liên kết terminal"
         },
         "PluginConsentDialog": {
           "workerTrust": "Nhân viên nền - chạy quy trình riêng của mình",
@@ -10487,8 +10231,6 @@
           "skillDescription": "Cung cấp cho các agent /orca-tuyến tính để đọc vé, đăng thông tin cập nhật, di chuyển trạng thái và đính kèm các yêu cầu pull hoặc merge.",
           "skillBlocked": "Kết nối Linear trước, sau đó cài đặt kỹ năng cho agent.",
           "skillPanelTitle": "Kỹ năng Linear",
-          "terminalTitle": "Thiết lập kỹ năng Linear",
-          "terminalAriaLabel": "Terminal cài đặt kỹ năng Linear",
           "showDescription": "Bao gồm Linear trong bộ chọn nguồn trang Nhiệm vụ và các phím tắt trên sidebar."
         },
         "TaskSourceProviderCard": {
@@ -11252,7 +10994,6 @@
             "ea4788705e": "Hủy",
             "7ec6abbf2a": "Đặt lại",
             "f4f3c9ca4a": "Mẫu prompt",
-            "1bc0bdbb5e": "Phóng:",
             "fe119187bb": "--model sonnet",
             "bc8dc39f4b": "đối số CLI",
             "b99c33cec5": "Cài đặt",
@@ -11334,7 +11075,6 @@
                 "fd46a70f1a": "Đã bắt đầu",
                 "a54ae21c6f": "Trạng thái:",
                 "e4e3af15ee": "Xem chi tiết đầy đủ",
-                "b8c4e2a1f7": "Xem nhật ký đầy đủ",
                 "a2fb3f4408": "Hiển thị 100 việc làm đầu tiên",
                 "df137989b3": "Hiển thị 20 chú thích đầu tiên",
                 "1f2b980522": "Đang tải chi tiết kiểm tra…",
@@ -12109,7 +11849,6 @@
           },
           "aiVaultSessionLogOpen": {
             "workspaceGone": "Không thể mở nhật ký - workspace không còn khả dụng.",
-            "notAuthorized": "Không thể mở nhật ký - đường dẫn không được phép.",
             "alreadyEditable": "Nhật ký đã được mở để chỉnh sửa."
           },
           "github": {
@@ -12267,10 +12006,7 @@
           "69af7e9c1c": "chưa có trên PATH của bạn. Orca sẽ đặt nó làm mặc định và bạn có thể cài đặt nó bất cứ lúc nào.",
           "1eee1c7bd8": "Không có agent nào được phát hiện trên PATH của bạn. Chọn một cái để cài đặt sau hoặc tiếp tục với một terminal trống.",
           "hideAgents": "Ẩn agent",
-          "showMoreAgents": "Hiển thị thêm {{value0}} agent→",
-          "yoloPermissionsLabel": "Yolo / Bỏ qua quyền một cách nguy hiểm",
-          "yoloPermissionsInfo": "Thông tin cho phép agent",
-          "yoloPermissionsTooltip": "Bỏ qua việc kiểm tra quyền cho các agent để ít bị gián đoạn hơn"
+          "showMoreAgents": "Hiển thị thêm {{value0}} agent→"
         },
         "FeatureSetupInlineTerminal": {
           "789b59936e": "Nhấn Enter để chạy lệnh và xác nhận npx nếu được hỏi. Bạn cũng có thể thiết lập tính năng này sau trong Cài đặt.",
@@ -12305,7 +12041,6 @@
         "NotificationStep": {
           "3bede04483": "Gửi thông báo kiểm tra",
           "dc897423e1": "Chọn âm thanh thông báo",
-          "53aaffe49a": "Âm thanh thông báo",
           "0fe570690c": "Chọn cảnh báo Orca phát sau khi gửi thông báo trên màn hình.",
           "0af746e41f": "Chọn một âm thanh",
           "8124d085a6": "Mở cài đặt Mac",
@@ -12768,18 +12503,11 @@
             "88ffb502e5": "Mở ghi chú đánh dấu",
             "629528690b": "Ghi chú đánh dấu mới",
             "3215fc73e9": "Terminal mới",
-            "da508bd7f5": "Lưu",
-            "918c2139f3": "Không lưu",
-            "e7bf09d4d4": "Hủy",
-            "690b6fb98a": "Những thay đổi chưa được lưu",
             "bbc177f98f": "Bật",
             "adc281394d": "Bỏ qua",
             "8cf80db43b": "Thiết lập Orca CLI và kỹ năng của agent để các agent có thể phối hợp thông qua Orca.",
             "2a3c5ddf5e": "Bật điều phối",
-            "d6b563ae24": "Đang tải trình chỉnh sửa...",
             "8b14ba6c17": "Tab trình duyệt mới",
-            "b085fb58b5": "Tập tin này có những thay đổi chưa được lưu.",
-            "5ddc688c52": "\"{{value0}}\" có các thay đổi chưa được lưu. Bạn có muốn lưu trước khi đóng không?",
             "25d7817f79": "terminal"
           },
           "FloatingTerminalToggleButton": {
@@ -12812,10 +12540,8 @@
             "c61c91e642": "Hãy để các agent phối hợp thông qua Orca để tiếp tục hoàn thành các nhiệm vụ lớn, gồm nhiều bước.",
             "ac07f8887f": "Điều phối agent",
             "e9eb197e12": "Đã mở quyền sử dụng máy tính",
-            "3a59452a67": "Lệnh kỹ năng được sao chép và chèn bên dưới để xem xét.",
             "c605f51f2b": "Thiết lập khả năng đã sẵn sàng",
-            "1aa657d8f4": "Một số khả năng thiết lập cần chú ý",
-            "c89534cbe9": "Cài đặt CLI & Kỹ năng"
+            "1aa657d8f4": "Một số khả năng thiết lập cần chú ý"
           },
           "AiCommitPrSettingsCard": {
             "8d4152701a": "ví dụ. ollama chạy llama3.1 {{value0}}",
@@ -12908,7 +12634,6 @@
             "1a6a7d6c80": "Cài đặt",
             "713cc529a5": "Các mốc quan trọng",
             "b1f1981c5e": "Xem nhiệm vụ",
-            "0235b268b2": "Chưa xong",
             "13294d3405": "Xong"
           },
           "FeatureWallSetupWorkflowActions": {
@@ -13019,12 +12744,9 @@
               "setup": {
                 "status": {
                   "8eccfcb314": "Đã cài đặt",
-                  "21d4f79c93": "nhấp vào Cài đặt CLI & Kỹ năng để mở cài đặt truy cập macOS",
                   "5c9293e51a": "kiểm tra quyền truy cập ứng dụng",
-                  "aae94eeb52": "Nhấp vào Cài đặt CLI & Kỹ năng",
                   "aa8e143a2f": "Không thể kiểm tra cài đặt",
                   "9b33e7fb13": "Kiểm tra cài đặt",
-                  "4c8e1f92a7": "mở Orca Desktop trên máy Mac này",
                   "6d2b0a84e1": "Không có sẵn trong bản dựng này"
                 }
               }
@@ -13047,23 +12769,6 @@
                 "shared": {
                   "e7894927a2": "Codex",
                   "9deecb021c": "Claude"
-                },
-                "notes": {
-                  "styles": {
-                    "db6691aa0a": ".ravs-window { position: absolute; inset: 0; --ravs-soft-surface: color-mix(in srgb, var(--foreground) 2%, var(--card)); --ravs-soft-fill: color-mix(in srgb, var(--foreground) 6%, transparent); --ravs-panel-border: color-mix(in srgb, var(--foreground) 18%, var(--border)); --ravs-emphasis-border: color-mix(in srgb, var(--foreground) 44%, var(--border)); --ravs-floating-shadow: 0 14px 30px rgb(0 0 0 / 0.22), 0 2px 6px rgb(0 0 0 / 0.12); background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 1px 2px rgb(0 0 0 / 0.08); } .ravs-difftoolbar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--border); background: var(--ravs-soft-surface); font-size: 11px; color: var(--muted-foreground); } .ravs-diff-path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--foreground); } .ravs-ai-chip { margin-left: auto; display: inline-flex; align-items: stretch; overflow: hidden; border-radius: 6px; border: 1px solid var(--border); background: var(--ravs-soft-surface); opacity: 0; transform: translateY(-2px); transition: opacity 320ms ease, transform 320ms ease; } .ravs-ai-chip.is-visible { opacity: 1; transform: none; } .ravs-ai-chip .ravs-count-btn, .ravs-ai-chip .ravs-send-btn { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; font-size: 11px; color: var(--muted-foreground); background: transparent; line-height: 1; } .ravs-ai-chip .ravs-count-btn { border-right: 1px solid var(--border); } .ravs-ai-chip .ravs-send-btn { padding: 3px 7px; position: relative; } .ravs-send-glow { position: absolute; inset: 0; background: rgba(34, 197, 94, 0.18); opacity: 0; transition: opacity 280ms ease; pointer-events: none; } .ravs-ai-chip .ravs-send-btn.is-flash .ravs-send-glow { opacity: 1; } .ravs-count-num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--foreground); font-weight: 600; } .ravs-diffbody { flex: 1; min-height: 0; position: relative; background: var(--editor-surface, var(--card)); } .ravs-diffscroll { position: absolute; inset: 0; overflow: hidden; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; line-height: 1.55; color: var(--foreground); padding: 4px 0 8px; transition: opacity 240ms ease; } .ravs-diffscroll.is-hidden { opacity: 0; pointer-events: none; } .ravs-term { position: absolute; inset: 0; background: var(--editor-surface, var(--card)); color: var(--foreground); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; line-height: 1.45; overflow: hidden; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 240ms ease; z-index: 4; } .ravs-term.is-visible { opacity: 1; } .ravs-term-body { flex: 1; min-height: 0; padding: 10px 12px; overflow: hidden; display: flex; flex-direction: column; gap: 6px; } .ravs-term-line { white-space: pre-wrap; word-break: break-word; line-height: 1.45; } .ravs-term-muted { color: var(--muted-foreground); } .ravs-term-glyph { color: rgb(217 119 6); margin-right: 6px; } .ravs-term-check { color: rgb(16 185 129); font-weight: 700; margin-right: 6px; } .ravs-term-spinner { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 999px; border: 1.5px solid color-mix(in srgb, var(--foreground) 20%, transparent); border-top-color: var(--foreground); vertical-align: -1px; animation: ravs-term-spin 0.9s linear infinite; } @keyframes ravs-term-spin { to { transform: rotate(360deg) } } .ravs-hunk-header { display: grid; grid-template-columns: 36px 36px 16px minmax(0,1fr); align-items: center; padding: 1px 8px 1px 0; background: rgba(99, 102, 241, 0.06); color: var(--muted-foreground); font-size: 10.5px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); } .ravs-hunk-header .ravs-text { grid-column: 4 / -1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: rgb(99 102 241); font-size: 10.5px; } .ravs-diff-line { display: grid; grid-template-columns: 36px 36px 16px minmax(0,1fr); align-items: stretch; position: relative; } .ravs-ln { text-align: right; padding: 0 6px 0 0; color: var(--muted-foreground); font-size: 10.5px; user-select: none; opacity: 0.85; } .ravs-marker { text-align: center; color: var(--muted-foreground); font-weight: 700; opacity: 0.7; } .ravs-text-cell { padding-right: 8px; white-space: pre; overflow: hidden; } .ravs-tok-kw { color: #a855f7; } .ravs-tok-id { color: #2563eb; } .ravs-tok-str { color: #16a34a; } .ravs-diff-line.is-add { background: color-mix(in srgb, var(--git-decoration-added) 14%, transparent); } .ravs-diff-line.is-add .ravs-marker { color: color-mix(in srgb, var(--git-decoration-added) 72%, transparent); opacity: 1; } .ravs-diff-line.is-rem { background: color-mix(in srgb, var(--git-decoration-deleted) 14%, transparent); } .ravs-diff-line.is-rem .ravs-marker { color: color-mix(in srgb, var(--git-decoration-deleted) 72%, transparent); opacity: 1; } .ravs-add-note-btn { position: absolute; left: 4px; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 1px solid color-mix(in srgb, currentColor 22%, var(--border)); border-radius: 4px; background: var(--ravs-soft-fill); color: var(--foreground); z-index: 5; opacity: 0; box-shadow: 0 1px 2px rgb(0 0 0 / 0.14); pointer-events: none; transition: opacity 160ms ease; } .ravs-add-note-btn.is-visible { opacity: 1; } .ravs-note-row { padding: 4px 8px 4px 0; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 360ms cubic-bezier(.4,0,.2,1), opacity 280ms ease 60ms, padding 360ms cubic-bezier(.4,0,.2,1); } .ravs-note-row.is-visible { max-height: 90px; opacity: 1; } .ravs-note-card { margin: 0 12px; position: relative; border: 1px solid var(--ravs-panel-border); border-left: 3px solid var(--ravs-emphasis-border); border-radius: 6px; background-color: var(--card); padding: 5px 8px 5px 10px; box-shadow: 0 1px 2px rgb(0 0 0 / 0.16); } .ravs-note-meta { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); } .ravs-note-body { font-size: 11.5px; color: var(--foreground); line-height: 1.35; margin-top: 2px; } .ravs-popover { position: absolute; left: 12px; right: 12px; max-width: none; z-index: 20; padding: 8px 10px; border: 1px solid var(--ravs-panel-border); border-left: 3px solid var(--ravs-emphasis-border); border-radius: 6px; background-color: var(--card); color: var(--foreground); box-shadow: var(--ravs-floating-shadow); display: flex; flex-direction: column; gap: 6px; opacity: 0; transform: translateY(-4px) scale(0.985); pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; } .ravs-popover.is-visible { opacity: 1; transform: none; pointer-events: auto; } .ravs-pop-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted-foreground); } .ravs-pop-input { min-height: 38px; max-height: 80px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--editor-surface, var(--card)); font-size: 12px; line-height: 1.4; color: var(--foreground); white-space: pre-wrap; word-break: break-word; overflow: hidden; } .ravs-pop-footer { display: flex; justify-content: flex-end; gap: 6px; } .ravs-pop-btn { font-size: 11px; font-weight: 500; padding: 4px 9px; border-radius: 5px; line-height: 1; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 5px; } .ravs-pop-btn.is-cancel { color: var(--muted-foreground); background: transparent; } .ravs-pop-btn.is-add { color: var(--primary-foreground); background: var(--primary); } .ravs-send-menu { position: absolute; z-index: 30; right: 8px; top: 6px; min-width: 200px; background: var(--popover); color: var(--popover-foreground); border: 1px solid var(--border); border-radius: 8px; padding: 4px; box-shadow: var(--ravs-floating-shadow); opacity: 0; transform: translateY(-4px) scale(0.985); pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; } .ravs-send-menu.is-visible { opacity: 1; transform: none; pointer-events: auto; } .ravs-menu-section { padding: 4px 8px 2px; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); } .ravs-menu-row { display: grid; grid-template-columns: 16px minmax(0,1fr); align-items: center; gap: 8px; padding: 6px 8px; border-radius: 5px; font-size: 12px; color: var(--popover-foreground); } .ravs-menu-row.is-hot { background: var(--accent); box-shadow: inset 0 0 0 1px var(--border); } .ravs-cursor { position: absolute; z-index: 40; pointer-events: none; transition: transform 600ms cubic-bezier(.45,.05,.2,1), opacity 200ms ease; transform: translate(-30px, 220px); opacity: 0; } .ravs-cursor.is-visible { opacity: 1; } .ravs-cursor .ravs-ripple { position: absolute; left: -6px; top: -6px; width: 28px; height: 28px; border-radius: 999px; border: 2px solid color-mix(in srgb, var(--foreground) 52%, transparent); opacity: 0; } .ravs-cursor.is-clicking .ravs-ripple { animation: ravs-ripple 460ms ease-out forwards; } @keyframes ravs-ripple { 0% { transform: scale(0.4); opacity: 0.9; } 100% { transform: scale(1.4); opacity: 0; } } .ravs-caret { display: inline-block; width: 1.5px; height: 1em; background: currentColor; vertical-align: -2px; margin-left: 1px; animation: ravs-caret-blink 1.05s steps(1) infinite; } @keyframes ravs-caret-blink { 0%, 50% { opacity: 1 } 51%, 100% { opacity: 0 } }"
-                  }
-                },
-                "pr": {
-                  "view": {
-                    "styles": {
-                      "fc9a23c83d": ".ravpr-stage { position: absolute; inset: 0; overflow: hidden; } .ravpr-stack { position: absolute; inset: 0; display: flex; justify-content: flex-end; padding: 4px 34px 4px 2px; overflow: hidden; } .ravpr-sidebar, .ravpr-card { position: absolute; top: 4px; right: 2px; width: 464px; height: calc(100% - 8px); background: var(--card, #fff); border: 1px solid var(--border); border-radius: 10px; color: var(--foreground, #18181b); overflow: hidden; box-shadow: 0 1px 2px rgba(24,24,27,0.04); } .ravpr-sidebar { opacity: 0; transition: opacity 220ms ease; } .ravpr-sidebar.is-visible { opacity: 1; } .ravpr-sidebar.is-hiding { opacity: 0; } .ravpr-card { display: flex; flex-direction: column; min-width: 0; opacity: 0; transition: opacity 260ms ease; } .ravpr-card.is-visible { opacity: 1; } .ravpr-tabs { position: relative; display: flex; align-items: center; gap: 14px; height: 36px; padding: 0 14px; background: rgba(24,24,27,0.015); color: var(--muted-foreground, #71717a); } .ravpr-tab { position: relative; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--muted-foreground, #71717a); } .ravpr-tab.is-active, .ravpr-tab.is-hovered { color: var(--foreground, #18181b); } .ravpr-tab.is-active::after { content: ''; position: absolute; left: -5px; right: -5px; bottom: -10px; height: 1px; background: var(--foreground, #18181b); } .ravpr-tooltip { position: absolute; top: 34px; left: 106px; z-index: 6; padding: 7px 11px; border-radius: 8px; background: var(--card, #fff); color: var(--foreground, #18181b); font-size: 12px; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,0.22); opacity: 0; transform: translateY(-3px); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; } .ravpr-tooltip.is-visible { opacity: 1; transform: translateY(0); } .ravpr-explorer { padding: 10px 12px 12px; } .ravpr-heading { color: var(--muted-foreground, #71717a); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; } .ravpr-file-list { margin-top: 8px; display: flex; flex-direction: column; gap: 2px; } .ravpr-file { display: grid; grid-template-columns: 14px minmax(0,1fr) 22px; align-items: center; gap: 8px; min-height: 28px; padding: 4px 6px; border-radius: 6px; } .ravpr-file.is-active { background: rgba(24,24,27,0.06); box-shadow: inset 0 0 0 1px rgba(24,24,27,0.06); } .ravpr-file-icon { width: 12px; height: 12px; border-radius: 3px; background: rgba(24,24,27,0.14); } .ravpr-file-name { height: 8px; border-radius: 999px; background: rgba(24,24,27,0.14); } .ravpr-file-status { width: 14px; height: 8px; border-radius: 999px; background: rgba(24,24,27,0.12); } .ravpr-body { padding: 10px 12px 18px; display: flex; flex-direction: column; gap: 5px; min-height: 0; } .ravpr-number-row { display: flex; align-items: center; gap: 7px; } .ravpr-number { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; font-weight: 700; } .ravpr-open { display: inline-flex; align-items: center; justify-content: center; height: 18px; padding: 0 7px; border-radius: 5px; background: rgba(16,185,129,0.10); border: 1px solid rgba(16,185,129,0.28); color: rgb(4 120 87); font-size: 9px; font-weight: 700; line-height: 1; } .ravpr-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--foreground, #18181b); margin-bottom: 2px; } .ravpr-merge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 30px; min-height: 30px; flex: 0 0 30px; border-radius: 7px; background: rgb(22 163 74); color: #fff; font-size: 11.5px; font-weight: 700; margin-bottom: 2px; box-shadow: 0 1px 2px rgba(22,163,74,0.18); transition: box-shadow 220ms ease, filter 220ms ease; } .ravpr-merge.is-ready { box-shadow: 0 0 0 3px rgba(34,197,94,0.22), 0 1px 2px rgba(22,163,74,0.18); } .ravpr-section-row, .ravpr-check-row { display: grid; grid-template-columns: 18px minmax(0,1fr) auto; align-items: center; gap: 7px; padding: 5px 0; font-size: 11.5px; color: var(--foreground, #18181b); } .ravpr-check-row { padding: 5px 7px; font-size: 10.5px; } .ravpr-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ravpr-meta, .ravpr-check-state { color: var(--muted-foreground, #71717a); font-size: 10.5px; } .ravpr-check-state { font-size: 10px; } .ravpr-ring { display: inline-block; width: 14px; height: 14px; border-radius: 999px; border: 2px solid rgba(245,158,11,0.35); border-top-color: rgb(245 158 11); animation: ravpr-spin 1.1s linear infinite; } .ravpr-check { width: 15px; height: 15px; border-radius: 999px; display: none; align-items: center; justify-content: center; background: rgba(34,197,94,0.14); color: rgb(22 163 74); } .ravpr-section-row.is-done .ravpr-ring, .ravpr-check-row.is-done .ravpr-ring { display: none; } .ravpr-section-row.is-done .ravpr-check, .ravpr-check-row.is-done .ravpr-check { display: inline-flex; } .ravpr-reveal { display: flex; flex-direction: column; gap: 3px; opacity: 0; transform: translateY(4px); transition: opacity 260ms ease, transform 260ms ease; pointer-events: none; } .ravpr-reveal.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; } .ravpr-check-list, .ravpr-comment-list { display: flex; flex-direction: column; gap: 4px; min-height: 0; } .ravpr-comment-card { border: 1px solid var(--border); border-radius: 8px; background: var(--card, #fff); overflow: hidden; opacity: 0; transform: translateY(4px); transition: opacity 260ms ease, transform 260ms ease; } .ravpr-comment-card.is-visible { opacity: 1; transform: translateY(0); } .ravpr-comment-head { display: grid; grid-template-columns: 18px minmax(0,1fr) auto; align-items: center; gap: 7px; padding: 5px 7px; background: rgba(24,24,27,0.015); } .ravpr-avatar { width: 16px; height: 16px; border-radius: 999px; background: rgba(24,24,27,0.16); } .ravpr-author { width: 78px; height: 8px; border-radius: 999px; background: rgba(24,24,27,0.18); } .ravpr-comment-path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.5px; color: var(--muted-foreground, #71717a); } .ravpr-comment-body { padding: 5px 7px 6px; font-size: 11px; line-height: 1.32; color: var(--foreground, #18181b); } .ravpr-comment-body code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; padding: 1px 4px; border-radius: 4px; background: rgba(24,24,27,0.06); } .ravpr-cursor { position: absolute; z-index: 40; pointer-events: none; transition: transform 600ms cubic-bezier(.45,.05,.2,1), opacity 200ms ease; transform: translate(-30px, 220px); opacity: 0; } .ravpr-cursor.is-visible { opacity: 1; } .ravpr-ripple { position: absolute; left: -6px; top: -6px; width: 28px; height: 28px; border-radius: 999px; border: 2px solid rgba(24,24,27,0.5); opacity: 0; } .ravpr-cursor.is-clicking .ravpr-ripple { animation: ravpr-ripple 460ms ease-out forwards; } @keyframes ravpr-ripple { 0% { transform: scale(0.4); opacity: 0.9; } 100% { transform: scale(1.4); opacity: 0; } } @keyframes ravpr-spin { to { transform: rotate(360deg); } }"
-                    }
-                  }
-                },
-                "ship": {
-                  "styles": {
-                    "90cdcd2ecc": ".ravs-ship-root { position: absolute; inset: 0; } .ravs-ship-stack { position: absolute; inset: 0; display: grid; grid-template-columns: 232px minmax(0,1fr); gap: 14px; padding: 4px 2px; /* Why: cards size to their content rather than stretch to the parent's full height, so the two cards don't show empty space below their content. */ align-items: start; } /* Source Control mini-sidebar — ahead-count header, commit textarea + split Commit button, then a CHANGES section with file rows. The file rows are the surface the \"reading\" pulse animates over. */ .ravs-sc-card { display: flex; flex-direction: column; background: var(--card, #fff); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(24,24,27,0.04); } /* Both card headers share the same fixed height so the SC card and PR dialog align across the top edge regardless of header content. */ .ravs-sc-header, .ravs-pr-head { height: 36px; box-sizing: border-box; } .ravs-sc-header { display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-bottom: 1px solid var(--border); } .ravs-sc-ahead { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; color: var(--foreground, #18181b); } .ravs-sc-ahead svg { color: var(--muted-foreground, #71717a); } .ravs-sc-commit-area { display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; } .ravs-sc-textarea { position: relative; border: 1px solid var(--border); border-radius: 6px; background: var(--editor-surface, var(--card)); padding: 6px 26px 6px 8px; min-height: 56px; font-size: 12px; line-height: 1.45; color: var(--foreground, #18181b); white-space: pre-wrap; word-break: break-word; overflow: hidden; } .ravs-sc-textarea .ravs-placeholder { color: rgba(113,113,122,0.7); } .ravs-sc-sparkle { position: absolute; right: 6px; top: 6px; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; color: var(--muted-foreground, #71717a); background: transparent; transition: color 160ms ease, background 160ms ease; } .ravs-sc-sparkle.is-scanning { color: rgb(109 40 217); background: color-mix(in srgb, rgb(139 92 246) 18%, transparent); } .ravs-sc-split { display: flex; align-items: stretch; } /* Why: Commit + Create PR are surrounding chrome — the violet AI affordances are the focal points. Render them as quiet secondary buttons so they don't compete with the sparkle/scan signals. */ .ravs-sc-split .ravs-primary { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; background: var(--secondary, #f5f5f5); color: var(--secondary-foreground, #171717); font-size: 11px; font-weight: 500; border-radius: 6px 0 0 6px; border: 1px solid var(--border); transition: background 240ms ease, border-color 240ms ease, color 240ms ease; } .ravs-sc-split .ravs-chev { display: inline-flex; align-items: center; justify-content: center; width: 22px; background: var(--secondary, #f5f5f5); color: var(--muted-foreground, #71717a); border-radius: 0 6px 6px 0; border: 1px solid var(--border); border-left: 1px solid var(--border); transition: background 240ms ease, border-color 240ms ease, color 240ms ease; } /* Why: when AI has filled the commit message, tint the Commit button green to signal \"ready to commit\". Uses the same success-green family as the PR flash so the two beats rhyme. Mix is intentionally strong (~28%) — at 14% it disappeared next to the violet sparkle and PR flash, so users only saw the PR change color. */ .ravs-sc-split.is-ready .ravs-primary, .ravs-sc-split.is-ready .ravs-chev { background: color-mix(in srgb, rgb(34 197 94) 28%, var(--secondary, #f5f5f5)); border-color: rgb(34 197 94); color: rgb(21 128 61); transition: background 220ms ease, border-color 220ms ease, color 220ms ease; } .ravs-sc-split.is-ready .ravs-chev { border-left-color: rgba(34, 197, 94, 0.55); } .ravs-sc-changes-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground, #71717a); } .ravs-sc-changes-count { color: var(--foreground, #18181b); font-weight: 600; margin-left: 2px; } .ravs-sc-view-all { font-size: 10px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--muted-foreground, #71717a); } .ravs-sc-files { display: flex; flex-direction: column; padding: 2px 6px 8px; flex: 1; min-height: 0; overflow: hidden; } .ravs-sc-file { display: grid; grid-template-columns: 14px minmax(0,1fr) 12px; align-items: center; gap: 6px; padding: 3px 6px; border-radius: 4px; font-size: 11px; line-height: 1.35; color: var(--foreground, #18181b); position: relative; transition: background 220ms ease; } .ravs-sc-ficon { color: rgb(180 83 9); display: inline-flex; } .ravs-sc-fname { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ravs-sc-fmark { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; text-align: right; color: rgb(180 83 9); } .ravs-sc-file.is-reading { background: color-mix(in srgb, rgb(139 92 246) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, rgb(139 92 246) 28%, transparent); } /* PR dialog — matches the .ravs-sc-card chrome (same border, radius, elevation) so the two cards read as one design language. */ .ravs-pr-dialog { background: var(--card, #fff); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 1px 2px rgba(24,24,27,0.04); display: flex; flex-direction: column; min-width: 0; overflow: hidden; } .ravs-pr-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 10px; border-bottom: 1px solid var(--border); } .ravs-pr-title-text { font-size: 11px; font-weight: 500; color: var(--foreground, #18181b); } /* Icon-only AI-assist chip — mirrors .ravs-sc-sparkle so the affordance reads identically across both cards. */ .ravs-pr-gen-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; padding: 0; border-radius: 4px; color: var(--muted-foreground, #71717a); background: transparent; border: 0; cursor: pointer; transition: color 160ms ease, background 160ms ease; } .ravs-pr-gen-btn:hover { background: rgba(24,24,27,0.06); color: var(--foreground, #18181b); } .ravs-pr-gen-btn.is-scanning { color: rgb(109 40 217); background: color-mix(in srgb, rgb(139 92 246) 18%, transparent); } .ravs-pr-body { display: flex; flex-direction: column; gap: 8px; padding: 10px; } .ravs-pr-field { display: flex; flex-direction: column; gap: 4px; } .ravs-pr-field-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground, #71717a); } .ravs-pr-base { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--foreground, #18181b); background: var(--editor-surface, var(--card)); align-self: flex-start; } .ravs-pr-base svg { color: var(--muted-foreground, #71717a); } .ravs-pr-input { position: relative; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--editor-surface, var(--card)); min-height: 28px; font-size: 12px; line-height: 1.45; color: var(--foreground, #18181b); white-space: pre-wrap; word-break: break-word; overflow: hidden; } .ravs-pr-input.is-body { min-height: 50px; font-size: 11px; line-height: 1.4; } .ravs-pr-input .ravs-placeholder { color: rgba(113,113,122,0.7); } .ravs-pr-footer { display: flex; align-items: center; gap: 6px; justify-content: flex-end; margin-top: 2px; } .ravs-pr-btn { font-size: 11px; font-weight: 500; padding: 5px 10px; border-radius: 6px; line-height: 1; border: 1px solid transparent; outline: none; } .ravs-pr-btn:focus, .ravs-pr-btn:focus-visible { outline: none; } /* Cancel reads as a quiet ghost button so it doesn't compete with the affirmative Create PR action. */ .ravs-pr-btn.is-outline { background: transparent; color: var(--muted-foreground, #71717a); border-color: transparent; } .ravs-pr-btn.is-outline:hover { background: rgba(24,24,27,0.05); color: var(--foreground, #18181b); } /* Quiet secondary fill — see the .ravs-sc-split note above. The flash ring still uses success-green so the \"PR created\" beat reads. The Create-PR button is slightly larger than Cancel so the affirmative action remains the bigger target. */ .ravs-pr-btn.is-solid { background: var(--secondary, #f5f5f5); color: var(--secondary-foreground, #171717); border-color: var(--border); font-size: 12px; padding: 7px 14px; transition: background 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 220ms ease; } .ravs-pr-btn.is-solid.is-ready { background: color-mix(in srgb, rgb(34 197 94) 28%, var(--secondary, #f5f5f5)); border-color: rgb(34 197 94); color: rgb(21 128 61); } .ravs-pr-btn.is-solid.is-flash { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.30); } .ravs-cursor { position: absolute; z-index: 40; pointer-events: none; transition: transform 600ms cubic-bezier(.45,.05,.2,1), opacity 200ms ease; transform: translate(-30px, 220px); opacity: 0; } .ravs-cursor.is-visible { opacity: 1; } .ravs-cursor .ravs-ripple { position: absolute; left: -6px; top: -6px; width: 28px; height: 28px; border-radius: 999px; border: 2px solid rgba(24,24,27,0.5); opacity: 0; } .ravs-cursor.is-clicking .ravs-ripple { animation: ravs-ripple 460ms ease-out forwards; } @keyframes ravs-ripple { 0% { transform: scale(0.4); opacity: 0.9; } 100% { transform: scale(1.4); opacity: 0; } } .ravs-caret { display: inline-block; width: 1.5px; height: 1em; background: currentColor; vertical-align: -2px; margin-left: 1px; animation: ravs-caret-blink 1.05s steps(1) infinite; } @keyframes ravs-caret-blink { 0%, 50% { opacity: 1 } 51%, 100% { opacity: 0 } }"
-                  }
                 }
               }
             },
@@ -13143,11 +12848,9 @@
             "c9728107c5": "Hãy thử nó",
             "25dd101f15": "Thiết lập trình duyệt cần chú ý",
             "e02b11e6b0": "Thiết lập trình duyệt đã sẵn sàng",
-            "d6d15077df": "Lệnh kỹ năng được sao chép và chèn bên dưới để xem xét.",
             "78e65f19d9": "Thiết lập trình duyệt không thành công",
             "b7345c18db": "Đã xảy ra lỗi không mong muốn.",
-            "5f97caf76b": "Đang cài đặt…",
-            "c2df599513": "Cài đặt CLI & Skill"
+            "5f97caf76b": "Đang cài đặt…"
           },
           "ConnectIntegrationsList": {
             "3dddb2d565": "kết nối cho nhiệm vụ",
@@ -13289,17 +12992,8 @@
                 "agent": {
                   "setup": {
                     "state": {
-                      "fdcca1ec75": "Đang đăng ký...",
-                      "69fb2c2289": "Đã bật",
-                      "c6705092ba": "Sửa đường dẫn",
-                      "7c1b6bdb1e": "Bật",
-                      "51074ccb05": "Không tải được trạng thái CLI.",
                       "35dea1ae12": "Kiểm soát agent đã sẵn sàng.",
-                      "9dff3a6338": "Kỹ năng được cài đặt. Kích hoạt Orca CLI để hoàn tất thiết lập.",
-                      "15986a1080": "Orca CLI đã sẵn sàng. Cài đặt kỹ năng để hoàn tất thiết lập.",
-                      "4c26913def": "Vẫn chưa được thiết lập. Hoàn thành cả hai bước để kích hoạt tính năng kiểm soát agent.",
-                      "c94ff11e91": "Không thể kiểm tra lại trạng thái thiết lập.",
-                      "2b519eed94": "Đã đăng ký Orca CLI trong PATH."
+                      "c94ff11e91": "Không thể kiểm tra lại trạng thái thiết lập."
                     }
                   }
                 },
@@ -13317,7 +13011,6 @@
             "2fda9ff015": "Thiết lập kiểm soát agent",
             "0ac0fef514": "Kiểm soát agent đã sẵn sàng.",
             "2bdfff8763": "Kiểm soát agent (tùy chọn).",
-            "72736b051f": "Thiết lập kỹ năng Orca CLI + khi bạn muốn các agent lái trình mô phỏng này.",
             "d10ae98046": "Xong",
             "3756cbeca7": "Không phải bây giờ",
             "6d950431d2": "Trốn",
@@ -13325,15 +13018,8 @@
             "3f003507f4": "Mở thiết lập đầy đủ trong Cài đặt"
           },
           "MobileEmulatorAgentSetupGuideSteps": {
-            "9b49d892e3": "Kích hoạt Orca CLI",
-            "3d8dc52c93": "Đăng ký lệnh orca để điều khiển trình mô phỏng trong hệ shell agent.",
             "21f5687c07": "Kỹ năng Orca CLI",
-            "64fb057667": "Hướng dẫn các agent các lệnh mô phỏng orca cho worktree này.",
-            "5c59ea96ca": "Trình mô phỏng di động Thiết lập kỹ năng Orca CLI",
-            "bff5341ac3": "Trình mô phỏng di động Terminal cài đặt kỹ năng Orca CLI",
-            "3d34423e88": "Đăng ký Orca CLI",
-            "3be27641c9": "vì vậy các lệnh của trình mô phỏng có thể chạy từ shell agent.",
-            "3941719a56": "Kiểm tra Orca CLI trước khi mở thiết lập kỹ năng."
+            "64fb057667": "Hướng dẫn các agent các lệnh mô phỏng orca cho worktree này."
           },
           "MobileEmulatorTabIntroCallout": {
             "1924982130": "Bỏ qua",
@@ -13543,8 +13229,6 @@
           "10ed04a685": "Các ô sổ ghi chép thực thi Python cục bộ trên máy này từ thư mục sổ ghi chép. Chỉ chạy các ô từ các tệp bạn tin cậy.",
           "9e06ae5d36": "Chạy mã Notebook?",
           "d6f37a640b": "sổ tay trống",
-          "8c3b21369a": "nbformat",
-          "329764e9fc": "THỬ NGHIỆM",
           "15ec40a735": "Lưu sổ tay",
           "07e7d96612": "tế bào",
           "c1601b23b2": "Không thể hiển thị sổ tay",
@@ -13558,9 +13242,7 @@
           "fd8ac707bc": "Di chuyển ô lên",
           "3e4cbf15ea": "thô",
           "1833dbbc43": "Markdown",
-          "7005960d73": "Mã số",
-          "59b6cd874b": "mã số",
-          "ba149053d5": "markdown"
+          "7005960d73": "Mã số"
         },
         "MarkdownPreview": {
           "e4683f70c4": "Hủy",
@@ -14218,7 +13900,6 @@
             "95af781091": "Gửi phản hồi cho agent",
             "ac39b9366b": "Gửi",
             "a3508d7e6e": "{{value0}} chú thích{{value1}} đã sẵn sàng. Chọn một yếu tố khác hoặc sao chép tất cả phản hồi.",
-            "f796c774a4": "Nhập URL ở trên để bắt đầu duyệt.",
             "366bf5d62c": "Tab mới",
             "1c78adc73d": "Mở bên ngoài",
             "da68d35f7b": "Mở trang bị lỗi trong trình duyệt mặc định",
@@ -14232,7 +13913,6 @@
             "ec75d0c412": "Mở devtools của trình duyệt",
             "fc9be38f6f": "Chú thích phần tử trang",
             "fdfc7fe0ef": "Lấy phần tử trang",
-            "a8f37f70c3": "Kiểm tra trang",
             "1b179ab561": "Sao chép URL trang",
             "f7ab83f7ed": "Mở trang trong trình duyệt mặc định",
             "0e080d820e": "Tải lại",
@@ -14251,7 +13931,6 @@
             "deb5293610": "Chú thích trình duyệt không có sẵn trong runtime từ xa",
             "90d021f2ad": "Thêm",
             "0cb3bd6221": "Mục đích chú thích",
-            "8f87e6c2e5": "ý định",
             "532bac48c5": "Mô tả những gì agent nên thay đổi ở đây...",
             "d2a7092e6e": "Chú thích bình luận",
             "b472c5fe03": "Thêm chú thích trình duyệt",
@@ -14414,13 +14093,9 @@
         },
         "AutomationEditorDialogHeader": {
           "31f9253920": "Sử dụng mẫu",
-          "7e35393632": "Hermes",
-          "6f309eef8d": "Orca",
           "58f56b73d9": "Tên tự động hóa",
           "1d9826933e": "Kiểm toán repo ngày trong tuần",
           "4133d33862": "Tạo tự động hóa",
-          "0a75e5e2fa": "Tạo tự động hóa Hermes",
-          "03142e7721": "Chỉnh sửa tự động hóa Hermes",
           "17086b48ee": "Chỉnh sửa tự động hóa"
         },
         "AutomationMissedRunGraceField": {
@@ -14489,7 +14164,6 @@
           "295698292f": "Chạy lại",
           "0e110a3469": "Chạy",
           "bb1b2cd31e": "Tổng quan",
-          "97ff587ee3": "Kết nối nguồn này để kiểm tra hoạt động tự động hóa của Hermes trong hồ sơ từ xa.",
           "aaa007846f": "nguồn không có sẵn",
           "25060635c6": "Thêm mới",
           "d207ab4c25": "Bắt đầu từ một mẫu",
@@ -14528,9 +14202,6 @@
           "b11170a008": "Không lưu được tự động hóa.",
           "2a20596d6b": "Đã lưu tự động hóa.",
           "244727e655": "Tự động hóa được cập nhật.",
-          "77b81bc4ac": "Tự động hóa Hermes được tạo ra.",
-          "08efc3ae12": "Cập nhật tự động hóa của Hermes.",
-          "e431bb85d4": "Chọn một workspace trên cùng một máy chủ với hệ thống tự động hóa Hermes này.",
           "32534e7c9c": "Chọn một workspace có sẵn trước khi lưu.",
           "2360ffc956": "Chọn một agent được kích hoạt trước khi lưu.",
           "6e91dab317": "Nhập lịch trình nâng cao hợp lệ trước khi lưu.",
@@ -14541,7 +14212,6 @@
           "8705757e27": "công việc",
           "376631ef2b": "Bản tóm tắt",
           "b457436d6a": "Tạm dừng",
-          "0ae52dd760": "Hermes",
           "e059042585": "Chỉ đọc",
           "aecdc3681f": "Có thể quản lý được",
           "8500baacb4": "nguồn bên ngoài",
@@ -14596,17 +14266,11 @@
           "a42bf2b27e": "Xóa tự động hóa bên ngoài",
           "1c3bfd38fe": "Tiếp tục tự động hóa bên ngoài",
           "0def1693bb": "Tạm dừng tự động hóa bên ngoài",
-          "1df491fd00": "Chỉnh sửa tự động hóa bên ngoài",
           "cc77ba88ff": "Chạy tự động hóa bên ngoài",
           "5820648765": "Cuối cùng",
-          "844f1acb72": "thành lập",
           "20fd7a3a15": "Kế tiếp",
           "c6695e6fbd": "Tự động hóa bên ngoài",
           "5524365227": "OpenClaw",
-          "766abf833c": "Hermes",
-          "bf5f67b590": "Hermes",
-          "e66091daf4": "chạy",
-          "8e9165af08": "chạy",
           "2b0adbce21": "Đã tạm dừng",
           "b3feba84c7": "Tích cực",
           "92405f1431": "Không có sẵn",
@@ -14615,25 +14279,6 @@
           "330b3c32e8": "có sẵn",
           "e2532150ed": "tự động hóa",
           "701515f010": "tự động hóa"
-        },
-        "ExternalAutomationRunTable": {
-          "0ba9c0a95c": "Trang chạy tiếp theo",
-          "52d468a0b8": "Trang chạy trước",
-          "7475c0ce96": "của",
-          "be551397ca": "Trạng thái",
-          "a813df9808": "Xem trước",
-          "d4b34feb66": "Thời gian chạy",
-          "2d4388a908": "Chạy",
-          "9c080765ff": "Chưa có sản phẩm Hermes nào được tìm thấy.",
-          "8ea934cacf": "Đang tải các lượt chạy...",
-          "d5527d8fe7": "chạy",
-          "872d032d05": "chạy"
-        },
-        "HermesCronOutputView": {
-          "e27c716b43": "Prompt",
-          "4557213074": "Phản ứng",
-          "05affc68e3": "Lỗi",
-          "88d48157fc": "mặc định"
         },
         "WorkspaceCombobox": {
           "ee5b280eba": "Không tìm thấy workspace.",
@@ -15255,7 +14900,6 @@
         "noPty": "Không có terminal trực tiếp - chuyển trở lại để kết nối lại.",
         "locked": "Đầu vào được giữ bởi một thiết bị khác.",
         "placeholder": "Gửi tin nhắn…",
-        "mentionHint": "Tập tin tham khảo:",
         "attach": "Đính kèm tập tin",
         "startDictation": "Bắt đầu đọc chính tả",
         "stopDictation": "Dừng đọc chính tả",
@@ -15280,18 +14924,14 @@
         "pastedImageLabel": "Đã dán hình ảnh",
         "imagePasteFailed": "Dán hình ảnh không thành công.",
         "worktreeNotReady": "Worktree chưa sẵn sàng — hãy thử lại sau giây lát.",
-        "uploadingAttachments": "Đang tải (các) tệp {{value0}} lên remote…",
         "model": "Người mẫu",
         "effort": "Cố gắng",
         "fastMode": "Chế độ nhanh",
         "thinking": "suy nghĩ",
-        "options": "Tùy chọn",
         "sessionOptions": "Tùy chọn phiên",
         "chooseInAgentPicker": "Chọn trong bộ chọn agent…",
         "toggleOption": "Chuyển đổi {{value0}}",
         "pillAccessibleName": "{{value0}} {{value1}}",
-        "valueIsDefault": "Mặc định",
-        "valueNotReported": "Chưa báo cáo",
         "sentNotConfirmed": "Đã gửi cho agent - chưa được xác nhận",
         "setWhenSessionStarts": "Đặt thời điểm phiên bắt đầu.",
         "availableAfterSessionStarts": "Có sẵn sau khi phiên bắt đầu.",
@@ -15318,8 +14958,7 @@
       },
       "jumpToLatest": "Chuyển đến mới nhất",
       "toggle": {
-        "showTerminal": "Hiển thị terminal",
-        "showChat": "Hiển thị chế độ xem trò chuyện"
+        "showTerminal": "Hiển thị terminal"
       },
       "state": {
         "loading": {
@@ -15369,16 +15008,13 @@
       "bar": {
         "SortableTabContextMenu": {
           "switchToTerminalView": "Chuyển sang chế độ xem terminal",
-          "switchToChatView": "Chuyển sang chế độ xem trò chuyện",
-          "closeTabsToLeft": "Đóng các tab ở bên trái"
+          "switchToChatView": "Chuyển sang chế độ xem trò chuyện"
         },
         "BrowserTab": {
-          "closeOthers": "Đóng phần khác",
-          "closeTabsToLeft": "Đóng các tab ở bên trái"
+          "closeOthers": "Đóng phần khác"
         },
         "EditorFileTabContextMenu": {
-          "closeOthers": "Đóng phần khác",
-          "closeTabsToLeft": "Đóng các tab ở bên trái"
+          "closeOthers": "Đóng phần khác"
         }
       }
     },
@@ -15558,7 +15194,6 @@
       }
     },
     "agentSessionContinuation": {
-      "continueInNewSession": "Tiếp tục trong phiên mới…",
       "dialogTitle": "Tiếp tục trong phiên mới",
       "dialogDescription": "Bắt đầu phiên Agent mới từ điểm dừng này. Phiên ban đầu không thay đổi.",
       "untitledSession": "Phiên hiện tại",

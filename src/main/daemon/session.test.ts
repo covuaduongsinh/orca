@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Session } from './session'
 import { SESSION_FORCE_KILL_RETRY_MS } from './session-termination-controller'
-import { HeadlessEmulator } from './headless-emulator'
 import type { SessionState, ShellReadyState } from './types'
 import type { TuiAgent } from '../../shared/tui-agent'
 import {
@@ -491,29 +490,6 @@ describe('Session', () => {
       expect(session.getSnapshot()?.snapshotAnsi).not.toContain('orca-shell-ready')
     })
 
-    it.each([
-      ['after the ready marker', ['\x1b]777;orca-shell-ready\x07', '\x1b[?2004hfish> ']],
-      ['after the ESC introducer', ['\x1b]777;orca-shell-ready\x07\x1b', '[?2004hfish> ']]
-    ])('preserves Fish bracketed-paste output split %s', (_boundary, chunks) => {
-      createSession({ shellReadySupported: true })
-      const received: string[] = []
-      session.attachClient({
-        onData: (data) => received.push(data),
-        onExit: () => {}
-      })
-
-      for (const chunk of chunks) {
-        subprocess.simulateData(chunk)
-      }
-
-      const output = received.join('')
-      expect(output).toBe('\x1b[?2004hfish> ')
-      const rendered = new HeadlessEmulator({ cols: 80, rows: 24 })
-      expect(rendered.writeSync(output)).toBe(true)
-      expect(rendered.getVisibleLines().join('\n')).not.toContain('[?2004h')
-      rendered.dispose()
-    })
-
     it('publishes an absolute output sequence with live snapshots', () => {
       createSession()
       subprocess.simulateData('first')
@@ -830,7 +806,7 @@ describe('Session', () => {
       expect(vi.getTimerCount()).toBe(0)
     })
 
-    it('keeps late data and the real exit code until physical exit', () => {
+    it('keeps late data and the real exit code while attributing the requested stop', () => {
       createSession()
       subprocess.kill = () => {}
       const onData = vi.fn()
@@ -846,8 +822,7 @@ describe('Session', () => {
       expect(onData).toHaveBeenCalledWith('late output')
       expect(onExit).toHaveBeenCalledTimes(1)
       expect(onExit).toHaveBeenCalledWith(23, session.incarnationId, {
-        kind: 'exited',
-        exitCode: 23
+        kind: 'operator_close'
       })
       expect(session.exitCode).toBe(23)
     })

@@ -20,7 +20,7 @@ vi.mock('react-native-safe-area-context', mocks['react-native-safe-area-context'
 vi.mock('expo-router', mocks['expo-router'])
 vi.mock('../../modules/orca-mobile-web-shell/src', mocks['../../modules/orca-mobile-web-shell/src'])
 vi.mock('../app-update/use-wall-app-update', mocks['../app-update/use-wall-app-update'])
-vi.mock('../transport/client-context', mocks['../transport/client-context'])
+vi.mock('../transport/host-client-hooks', mocks['../transport/host-client-hooks'])
 vi.mock('./use-page-host-snapshot', mocks['./use-page-host-snapshot'])
 vi.mock('./use-mobile-web-shell-session', mocks['./use-mobile-web-shell-session'])
 
@@ -30,7 +30,6 @@ import { bridgeId, clientFrame, createFakeRpcClient } from './bridge-host-test-f
 import {
   byName,
   trackRenderedScreen,
-  NativeFallback,
   SCREEN_BUILD_ID as BUILD_ID,
   SCREEN_DIRECTORY as DIRECTORY,
   hostParentOf,
@@ -47,8 +46,30 @@ import {
   readBridgeHostMessage
 } from './bridge/bridge-envelope'
 import { MobileWebShellScreen } from './MobileWebShellScreen'
+import { connectionLogStore } from '../transport/persisted-connection-log-store'
 import type { MobileWebShellSessionState } from './mobile-web-shell-session-contract'
 import type { ReactTestInstance, ReactTestRenderer } from 'react-test-renderer'
+
+const fetching = (receivedBytes: number, totalBytes: number): MobileWebShellSessionState => ({
+  kind: 'fetching',
+  completedAssets: 0,
+  totalAssets: 128,
+  receivedBytes,
+  totalBytes
+})
+
+/** How far the bar's fill is scaled across the track, which is what the native driver moves. */
+function fillScaleOf(tree: ReactTestRenderer): unknown {
+  return fillOf(tree).value
+}
+
+function fillOf(tree: ReactTestRenderer): { readonly value: unknown } {
+  const bar = tree.root.find(
+    (node) => node.props.testID === 'mobile-web-shell-progress-bar' && String(node.type) === 'View'
+  )
+  const [fill] = bar.findAll((node) => String(node.type) === 'Animated.View')
+  return fill.props.style[1].transform[0].scaleX
+}
 
 const renderScreen = (state: MobileWebShellSessionState): Promise<ReactTestRenderer> =>
   mountScreen(MobileWebShellScreen, dependencies, state)
@@ -92,7 +113,7 @@ describe('the hybrid shell screen', () => {
       reason: 'document-load-failed',
       retriedOnce: true
     })
-    expect(textOf(tree)).toContain('The downloaded workspace could not be opened.')
+    expect(textOf(tree)).toContain('The downloaded app could not be opened.')
     const retry = tree.root.findAll((node) => node.props.testID === 'mobile-web-shell-retry')
     expect(retry).toHaveLength(1)
     await act(async () => {
@@ -123,20 +144,92 @@ describe('the hybrid shell screen', () => {
 
   it('names what is missing when the host is unreachable and nothing is cached', async () => {
     expect(textOf(await renderScreen({ kind: 'offline' }))).toContain(
-      'Connect to this host to download the workspace'
+      'Connect to this host to download the latest app'
     )
   })
 
-  it('counts assets and bytes while downloading', async () => {
+  it('shows the download as a progress bar with megabytes from the paired host', async () => {
     const tree = await renderScreen({
       kind: 'fetching',
-      completedAssets: 2,
-      totalAssets: 4,
-      receivedBytes: 2048,
-      totalBytes: 4096
+      completedAssets: 0,
+      totalAssets: 128,
+      receivedBytes: 2_020_592,
+      totalBytes: 8_082_368
     })
-    expect(textOf(tree)).toContain('2/4 files')
-    expect(textOf(tree)).toContain('2048/4096 bytes')
+    expect(textOf(tree)).toContain('Downloading the latest app')
+    expect(textOf(tree)).toContain('from Host One · 2.0 of 8.1 MB')
+    const bar = tree.root.findAll(
+      (node) =>
+        node.props.testID === 'mobile-web-shell-progress-bar' && String(node.type) === 'View'
+    )
+    expect(bar).toHaveLength(1)
+    expect(bar[0].props.accessibilityRole).toBe('progressbar')
+    expect(bar[0].props.accessibilityValue).toEqual({ min: 0, max: 100, now: 25 })
+    expect(fillScaleOf(tree)).toBe(0.25)
+    expect(byName(tree, 'ActivityIndicator')).toEqual([])
+  })
+
+  it('moves the fill with the download feed, without a render to carry it', async () => {
+    const tree = await renderScreen(fetching(2_020_592, 8_082_368))
+    expect(fillScaleOf(tree)).toBe(0.25)
+    dependencies.downloadProgress.publish(0.5)
+    expect(fillScaleOf(tree)).toBe(0.5)
+    expect(textOf(tree)).toContain('2.0 of 8.1 MB')
+  })
+
+  it('starts one ease per window toward the latest value, and lands full at once', async () => {
+    const tree = await renderScreen(fetching(0, 8_082_368))
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+    try {
+      dependencies.downloadProgress.publish(0.1)
+      dependencies.downloadProgress.publish(0.2)
+      dependencies.downloadProgress.publish(0.3)
+      expect(fillScaleOf(tree)).toBe(0.1)
+      vi.advanceTimersByTime(50)
+      expect(fillScaleOf(tree)).toBe(0.3)
+      dependencies.downloadProgress.publish(0.4)
+      dependencies.downloadProgress.publish(1)
+      expect(fillScaleOf(tree)).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('starts nothing after unmount for a value still waiting on its window', async () => {
+    const tree = await renderScreen(fetching(0, 8_082_368))
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+    try {
+      dependencies.downloadProgress.publish(0.1)
+      dependencies.downloadProgress.publish(0.5)
+      const fill = fillOf(tree)
+      act(() => tree.unmount())
+      vi.advanceTimersByTime(50)
+      expect(fill.value).toBe(0.1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('caps the bar at full when more bytes arrive than the total named', async () => {
+    const tree = await renderScreen(fetching(9_000_000, 8_082_368))
+    expect(fillScaleOf(tree)).toBe(1)
+  })
+
+  it('reads an empty download as no progress rather than dividing by zero', async () => {
+    const tree = await renderScreen({
+      kind: 'fetching',
+      completedAssets: 0,
+      totalAssets: 0,
+      receivedBytes: 0,
+      totalBytes: 0
+    })
+    const bar = tree.root.findAll(
+      (node) =>
+        node.props.testID === 'mobile-web-shell-progress-bar' && String(node.type) === 'View'
+    )
+    expect(bar[0].props.accessibilityValue).toEqual({ min: 0, max: 100, now: 0 })
+    expect(fillScaleOf(tree)).toBe(0)
+    expect(textOf(tree)).toContain('0.0 of 0.0 MB')
   })
 
   it('hands the shell view the generation path and the session id', async () => {
@@ -197,8 +290,12 @@ describe('the hybrid shell screen', () => {
     // page re-posting `ready` on its backoff for as long as the screen is open.
     dependencies.snapshotUnreadable = true
     const warned = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const logged = () => connectionLogStore.get('host-1').map((entry) => entry.message)
+    const before = logged().length
     await renderScreen(readyState('session-one'))
     expect(dependencies.reportShellFailure.mock.calls).toEqual([['document-load-failed']])
+    // Named in the exported log, not only as the generic failure it causes.
+    expect(logged().slice(before)).toEqual(['Web shell: host profile unreadable'])
     warned.mockRestore()
   })
 
@@ -230,8 +327,7 @@ describe('the hybrid shell screen', () => {
     const element = (next: Record<string, string>) =>
       createElement(MobileWebShellScreen, {
         hostId: 'host-1',
-        route: { pathname: '/h/host-1', params: next },
-        fallback: createElement(NativeFallback)
+        route: { pathname: '/h/host-1', params: next }
       })
     dependencies.state = readyState('session-one')
     const rendered: { tree: ReactTestRenderer | null } = { tree: null }
@@ -360,7 +456,7 @@ describe('the hybrid shell screen', () => {
       textOf(
         await renderScreen({ kind: 'failed', reason: 'document-load-failed', retriedOnce: true })
       )
-    ).toContain('The downloaded workspace could not be opened.')
+    ).toContain('The downloaded app could not be opened.')
   })
 
   it('reports a URL nothing on this phone could open, which is the dead tap that survives', async () => {
@@ -476,10 +572,10 @@ describe('the hybrid shell screen', () => {
   })
 })
 
-describe('the route the shell was not asked to render', () => {
-  it('hands the screen back to the caller rather than painting anything of its own', async () => {
-    const tree = await renderScreen({ kind: 'native-route' })
-    expect(tree.root.findAllByType(NativeFallback)).toHaveLength(1)
+describe('a route the page does not serve and no side can be blamed for', () => {
+  it('paints the unavailable screen itself, with no view and no spinner', async () => {
+    const tree = await renderScreen({ kind: 'route-unavailable' })
+    expect(textOf(tree)).toContain('This workspace screen is not available on this host.')
     expect(byName(tree, 'ShellViewProbe')).toEqual([])
     expect(byName(tree, 'ActivityIndicator')).toEqual([])
   })
@@ -584,7 +680,7 @@ describe('a refused update is said beside the page, not in front of it', () => {
     const tree = await renderScreen(readyState('session-one'))
     expect(byName(tree, 'ShellViewProbe')).toHaveLength(1)
     const text = textOf(tree)
-    expect(text).toContain("Couldn't update the workspace from this host")
+    expect(text).toContain("Couldn't download the latest app from this host")
     expect(text).toContain('Showing the last version that worked')
     expect(text).not.toContain('Try again')
   })
