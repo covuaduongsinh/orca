@@ -3,8 +3,8 @@ import { beforeEach, expect, it, vi } from 'vitest'
 import filesystem from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { buildAgentResumeStartupPlan } from '../../shared/tui-agent-startup'
-import { buildAiVaultResumeShellCommand } from '../../shared/ai-vault-resume-command'
+import { buildAgentResumeStartupPlan } from '../../shared/agent-launch/startup/tui-agent-resume-startup'
+import { buildAiVaultResumeShellCommand } from '../../shared/ai-vault/resume/ai-vault-resume-command'
 
 await import('./orca-runtime-test-mocks.spec')
 await import('./orca-runtime-test-lifecycle.spec')
@@ -273,7 +273,7 @@ it('reconciles after the reply-cache expires and isolates deliberate forks and p
   const { TEST_WORKTREE_ID } = await import('./orca-runtime-test-fixtures.spec')
   vi.useFakeTimers()
   try {
-    // Why a copy: main's layout binds panes in this store's session; the shared store stays clean.
+    // Copy the fixture store so main-owned bindings cannot leak into shared tests.
     const runtime = new OrcaRuntimeService({ ...store })
     runtime.syncWindowGraph(0, { tabs: [], leaves: [] })
     const live: {

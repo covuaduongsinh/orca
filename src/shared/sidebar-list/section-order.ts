@@ -4,6 +4,7 @@ import type { ProjectSectionModel } from '../project-section-grouping'
 import { ALL_GROUP_KEY } from './group-keys'
 import type { SidebarPRGroupReader, WorktreeGroupBy } from './row-types'
 import { getGroupKeyForWorktree } from './worktree-group-keys'
+import type { WorkspaceSortBy } from '../workspace-view/workspace-row-sort'
 
 export function getRenderedNaturalAnchorRepoIds({
   groupBy,
@@ -53,17 +54,17 @@ export function getRenderedNaturalAnchorRepoIds({
   return renderedRepoIds
 }
 
-export function orderMainWorktreeFirst(worktrees: Worktree[]): Worktree[] {
+export function orderMainWorktreeFirst<T extends { isMainWorktree?: boolean }>(
+  worktrees: T[],
+  sortBy: WorkspaceSortBy
+): T[] {
+  if (sortBy === 'manual') {
+    return worktrees
+  }
   const mainWorktrees = worktrees.filter((worktree) => worktree.isMainWorktree)
   if (mainWorktrees.length === 0) {
     return worktrees
   }
-  // Why: project groups are scanned by repo; keep the repo's canonical
-  // workspace anchored even when dynamic sorts rank a child workspace first.
+  // Keep canonical workspaces first for repo-scanned project groups despite dynamic child ranking.
   return [...mainWorktrees, ...worktrees.filter((worktree) => !worktree.isMainWorktree)]
 }
-
-/**
- * Build the flat row list consumed by the virtualizer.
- * Extracted here to keep WorktreeList.tsx under the line-count lint limit.
- */

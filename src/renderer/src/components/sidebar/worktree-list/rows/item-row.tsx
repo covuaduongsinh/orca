@@ -6,7 +6,8 @@ import type { ExecutionHostId } from '../../../../../../shared/execution-host'
 import type { Worktree } from '../../../../../../shared/worktree/types'
 import { getWorktreeHostIdentity } from '../../../../../../shared/worktree/host-qualified-identity'
 import { isActiveSidebarWorkspace } from '../../../../../../shared/sidebar-list/active-workspace'
-import WorktreeCard, { type ActiveSurfaceVariant } from '../../WorktreeCard'
+import WorktreeCard from '../../workspace-card/surface/WorktreeCard'
+import type { ActiveSurfaceVariant } from '../../workspace-card/controller/worktree-card-model'
 import { PINNED_GROUP_KEY } from '../../../../../../shared/sidebar-list/group-keys'
 import type { WorktreeGroupBy } from '../../../../../../shared/sidebar-list/row-types'
 import {
@@ -18,7 +19,7 @@ import {
   LINEAGE_CHILDREN_INLINE_OFFSET,
   LINEAGE_NESTED_ROW_SURFACE_INSET
 } from './indentation'
-import type { LineageToggleHandler } from '../../worktree-lineage-toggle-handler-cache'
+import type { LineageToggleHandler } from '../../workspace-card/identity/worktree-lineage-toggle-handler-cache'
 import { stopNestedWorktreeCardBubble } from './header-event-guards'
 import type { WorktreeItemRow } from '../listing/renderable-rows'
 import { forwardOptionPressToCardSurface, getWorktreeOptionId } from './option-dom'
@@ -62,8 +63,7 @@ export type WorktreeItemRowContext = {
   onCardDragEnd: () => void
 }
 
-// Geometry differs three ways: a plain grouped row, a lineage child inheriting its parent's
-// surface, and a row inside a folder-backed project group.
+// Handle plain rows, inherited lineage offsets and folder-backed project geometry separately.
 function getWorktreeItemRowGeometry(
   ctx: WorktreeItemRowContext,
   itemRow: WorktreeItemRow,
@@ -118,6 +118,7 @@ export function renderWorktreeItemRow(
     : undefined
   const worktreeDragGroupKey = ctx.groupKeyByRowKey.get(itemRow.rowKey)
   const worktreeIdentity = getWorktreeHostIdentity(itemRow.worktree)
+  const isMultiSelected = ctx.selectedWorktreeIds.has(worktreeIdentity)
   const isLineageDropTarget =
     ctx.worktreeDragState.draggingWorktreeId &&
     (ctx.worktreeDragState.lineageDropTargetId === itemRow.worktree.id ||
@@ -131,7 +132,7 @@ export function renderWorktreeItemRow(
       key={itemRow.rowKey}
       id={getWorktreeOptionId(itemRow.rowKey)}
       role="option"
-      aria-selected={ctx.selectedWorktreeIds.has(worktreeIdentity)}
+      aria-selected={isMultiSelected}
       aria-current={isActiveWorktree ? 'page' : undefined}
       data-worktree-id={itemRow.worktree.id}
       data-worktree-host-identity={worktreeIdentity}
@@ -143,7 +144,7 @@ export function renderWorktreeItemRow(
       className={cn(
         // Why: don't transition 'transform' — it lags/flashes when TanStack Virtual repositions adjacent rows.
         'relative transition-[opacity,filter] duration-150 ease-out',
-        ctx.worktreeDragState.draggingWorktreeId === itemRow.worktree.id &&
+        ctx.worktreeDragState.draggingWorktreeId === worktreeIdentity &&
           // Why: the fixed drag preview is the affordance; a translucent source row would bleed through sticky headers/footers.
           'pointer-events-none opacity-0'
       )}
@@ -180,12 +181,13 @@ export function renderWorktreeItemRow(
         activeSurfaceVariant={
           isActiveWorktree && !forceActiveSurface ? ctx.getActiveSurfaceVariant(itemRow) : 'primary'
         }
-        isMultiSelected={ctx.selectedWorktreeIds.has(worktreeIdentity)}
+        isMultiSelected={isMultiSelected}
         revealHighlight={ctx.highlightedRevealRowKey === itemRow.rowKey}
         revealHighlightTone={
           ctx.agentSendTargetWorktreeId === itemRow.worktree.id ? 'ai' : 'default'
         }
-        selectedWorktrees={ctx.selectedWorktrees}
+        // Only selected rows act on the selection; passing it to the rest would re-render every card per click.
+        selectedWorktrees={isMultiSelected ? ctx.selectedWorktrees : undefined}
         nativeDragEnabled={false}
         isLineageDropTarget={Boolean(isLineageDropTarget)}
         contentIndent={cardContentIndent}

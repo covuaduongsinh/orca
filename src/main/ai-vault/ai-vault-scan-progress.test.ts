@@ -2,7 +2,7 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { AiVaultScanWork } from '../../shared/ai-vault-scan-progress'
+import type { AiVaultScanWork } from '../../shared/ai-vault/scanning/ai-vault-scan-progress'
 import {
   AI_VAULT_SCAN_PROGRESS_INTERVAL_MS,
   noteAiVaultScanFileFound,
@@ -12,7 +12,7 @@ import {
   trackAiVaultScanProgress
 } from './ai-vault-scan-progress'
 import { scanAiVaultSessions } from './session-scanner'
-import { resetSessionParseCacheForTests } from './session-scanner-parse-cache'
+import { resetSessionParseCacheForTests } from './parse-cache/session-parse-cache-store'
 import { isolatedScanRoots, writeJsonlFile } from './session-scanner-test-fixtures'
 
 let tempRoots: string[] = []
@@ -84,7 +84,6 @@ describe('scan progress reporting', () => {
       () => (now += AI_VAULT_SCAN_PROGRESS_INTERVAL_MS)
     )
 
-    // Same readers, another owner's signal (the index loop or an interactive read).
     await scanAiVaultSessions({
       ...roots,
       platform: 'darwin',

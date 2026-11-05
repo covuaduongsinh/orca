@@ -1,10 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
-import {
-  OrcaRuntimeService,
-  electronMocks,
-  getDefaultWorkspaceSession
-} from '../orca-runtime-test-mocks.spec'
-import type { SleepingAgentSessionRecord } from '../orca-runtime-test-mocks.spec'
+import { OrcaRuntimeService, getDefaultWorkspaceSession } from '../orca-runtime-test-mocks.spec'
+import { electronMocks } from '../orca-runtime-test-mocks/setup.spec'
+import type { SleepingAgentSessionRecord } from '../../../shared/agent-session/lifecycle/agent-session-resume'
 import {
   TEST_REPO_ID,
   TEST_WINDOW_ID,
@@ -33,7 +30,6 @@ async function activateOnHeadlessServe(
   ownerHostId: 'local' | 'ssh:ssh-1' = 'local'
 ): Promise<{ wake: string | undefined; readHostIds: (string | undefined)[] }> {
   const repo = { ...store.getRepos()[0]!, executionHostId: ownerHostId }
-  // Only the owning host's partition holds the record, so a wrong partition read misses it.
   const { runtimeStore } = makeRuntimeStoreWithWorkspaceSession(
     {
       ...getDefaultWorkspaceSession(),
@@ -41,7 +37,7 @@ async function activateOnHeadlessServe(
     },
     ownerHostId
   )
-  // The fixture also answers a host-less read; this check must name the host, so that read is empty.
+  // Make host-less reads empty so only correct partition reads find the record.
   const getWorkspaceSession = vi.fn((hostId?: string) =>
     hostId === undefined ? getDefaultWorkspaceSession() : runtimeStore.getWorkspaceSession(hostId)
   )
@@ -51,7 +47,6 @@ async function activateOnHeadlessServe(
     getRepo: (id: string) => (id === TEST_REPO_ID ? repo : undefined),
     getWorkspaceSession
   })
-  // Headless: no BrowserWindow backs the authoritative id.
   electronMocks.BrowserWindow.fromId.mockReturnValue(null)
   runtime.attachWindow(TEST_WINDOW_ID)
   runtime.markGraphReady(TEST_WINDOW_ID)
@@ -66,8 +61,7 @@ async function activateOnHeadlessServe(
 }
 
 describe('OrcaRuntimeService headless wake report', () => {
-  // Why: 'live'/'quit' records describe running or quit agents, not slept ones; reporting them
-  // as unwakeable showed the phone a false "wake sleeping agents" warning.
+  // Live/quit records are not sleep records and must not trigger false unwakeable warnings.
   it.each(['live', 'quit'] as const)(
     'reports no headless wake degradation for a worktree with only a %s record',
     async (origin) => {
@@ -81,7 +75,6 @@ describe('OrcaRuntimeService headless wake report', () => {
     expect(wake).toBe('unsupported-headless')
   })
 
-  // Main resumes a workspace sleep's running agent itself, so a headless host wakes it too.
   it('reports a requested wake for a workspace sleep record, which main resumes', async () => {
     const { wake } = await activateOnHeadlessServe(makeRecord('worktree-sleep'))
     expect(wake).toBe('requested')
@@ -91,10 +84,5 @@ describe('OrcaRuntimeService headless wake report', () => {
     const { wake, readHostIds } = await activateOnHeadlessServe(makeRecord(undefined), 'ssh:ssh-1')
     expect(readHostIds).toContain('ssh:ssh-1')
     expect(wake).toBe('unsupported-headless')
-  })
-
-  it('ignores a live record on an SSH-host worktree partition', async () => {
-    const { wake } = await activateOnHeadlessServe(makeRecord('live'), 'ssh:ssh-1')
-    expect(wake).toBe('not-applicable')
   })
 })

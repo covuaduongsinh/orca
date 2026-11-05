@@ -14,7 +14,11 @@ import {
   createPane,
   createManager
 } from './pty-connection-test-pane-fixtures'
-import { buildPaneConnectionDeps } from './pty-connection-test-deps'
+import {
+  buildPaneConnectionDeps,
+  type PtyConnectionAgentTitleMocks,
+  bindPaneAgentTitleMocks
+} from './pty-connection-test-deps'
 import { createInitialStoreState } from './pty-connection-test-store-fixtures'
 import type { StoreState } from './pty-connection-test-store-state'
 import type { MockTransport } from './pty-connection-test-pane-fixtures'
@@ -22,6 +26,7 @@ import {
   installTerminalTestGlobals,
   restoreTerminalTestGlobals
 } from './pty-connection-test-environment'
+import { mockPanePtyArgs } from './pty-connection-test-connect-mock-pane'
 
 export function registerPtyConnectionRestartReplacementTests(): void {
   let mockStoreState: StoreState
@@ -60,6 +65,8 @@ export function registerPtyConnectionRestartReplacementTests(): void {
     /** A pane running an agent, with the live recovery record the app keeps for every agent turn. */
     async function connectWithAgent(opts: { visible: boolean; turnDone?: boolean }) {
       const { connectPanePty } = await import('./pty-connection')
+      const agentTitleMocks =
+        await vi.importMock<PtyConnectionAgentTitleMocks>('@/lib/agent-status')
       const { deliverPtyExitToHandlers } = await import('./pty-exit-delivery')
       const transport = createMockTransport('pty-pane-2')
       transportFactoryQueue.push(transport)
@@ -86,8 +93,9 @@ export function registerPtyConnectionRestartReplacementTests(): void {
         ptyId: 'pty-main',
         bind: bindsPaneInStore(() => mockStoreState, 'tab-1', leafIdForPane(2))
       })
-      // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the fixtures implement the pane, manager and deps members connectPanePty reads.
-      const args = [pane, createManager(1), deps] as unknown as Parameters<typeof connectPanePty>
+      const args = mockPanePtyArgs(pane, createManager(1), deps)
+      bindPaneAgentTitleMocks(args[2], agentTitleMocks)
+
       const binding = connectPanePty(...args)
       await flushAsyncTicks()
       const onPtyExit = createdTransportOptions[0]?.onPtyExit

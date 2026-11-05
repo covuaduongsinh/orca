@@ -9,9 +9,9 @@ import { OrcaRuntimeService } from './orca-runtime'
 import {
   buildAgentPromptPasteBytes,
   getTerminalPasteIngestMs
-} from '../../shared/agent-prompt-injection'
+} from '../../shared/agent-launch/startup/agent-prompt-injection'
 import { getDefaultWorkspaceSession } from '../../shared/constants'
-import { makePaneKey } from '../../shared/stable-pane-id'
+import { makePaneKey } from '../../shared/workspace-layout/stable-pane-id'
 import type { LayoutCommand } from '../../shared/workspace-layout/workspace-layout-command-types'
 import { applyCommandToSession } from '../persistence/terminal-topology/terminal-pane-admission'
 import { resolveHostId } from '../persistence/loading-store/session-host-partitions'
@@ -19,21 +19,19 @@ import { toComparableRelaySshPtyId } from '../../shared/ssh-pty-id'
 import { spawnedPtyEnv } from './spawned-pty-env-fixtures'
 import {
   computeWorktreePathMock,
-  ensurePathWithinWorkspaceMock
+  ensurePathWithinWorkspaceMock,
+  type ProjectGroup,
+  type RpcRequest,
+  type WorktreeMeta
 } from './orca-runtime-test-mocks.spec'
+import type { TerminalLayoutSnapshot } from '../../shared/workspace-layout/terminal-tab-types'
+import type { WorkspaceSessionState } from '../../shared/workspace-session/workspace-session-state-types'
 
-import type {
-  FolderWorkspace,
-  ProjectGroup,
-  RpcRequest,
-  TerminalLayoutSnapshot,
-  WorkspaceSessionState,
-  WorktreeMeta
-} from './orca-runtime-test-mocks.spec'
+import type { FolderWorkspace } from '../../shared/folder-workspaces/folder-workspace-types'
 import { InMemoryOrchestrationMessages } from './orca-runtime-test-orchestration-messages.spec'
 import type { OrchestrationDb } from './orchestration/db'
-import type { PtyProcessInspection } from '../providers/pty-process-inspection'
-import type { Store } from '../persistence'
+import type { TerminalProcessInspection as PtyProcessInspection } from '../../shared/terminal/pty/lifecycle/terminal-process-inspection'
+import type { Store } from '../persistence/loading-store/store'
 import type { HostWorktreeTarget } from '../../shared/worktree/host-qualified-identity'
 
 type RuntimeService = InstanceType<typeof OrcaRuntimeService>
@@ -127,15 +125,13 @@ async function referenceStatusFrameLines(
 }
 
 const TEST_WINDOW_ID = 1
-// The inventory refresh forwards its own budget so a relay cannot outlive it (STA-517).
-// These assertions are about which provider scope was asked, so the deadline stays loose.
+// STA-517: inventory forwards its deadline; scope assertions accept any budget to avoid timing coupling.
 const LIST_PROVIDER_DEADLINE = expect.objectContaining({ deadlineMs: expect.any(Number) })
 const TEST_REPO_ID = 'repo-1'
 const TEST_REPO_PATH = '/tmp/repo'
 const TEST_WORKTREE_PATH = '/tmp/worktree-a'
 const TEST_WORKTREE_ID = `${TEST_REPO_ID}::${TEST_WORKTREE_PATH}`
-/** The render gate's hard cap bounds the wait *after* the paste lands, so it carries the
- *  payload's ingest bound on top of the flat 8 s settlement budget. */
+/** Render settlement starts after paste, adding payload ingest time to the 8s cap. */
 function renderGateCapMs(prompt: string): number {
   return (
     8_000 +
@@ -207,7 +203,7 @@ function antigravityPromptBeforeModelReadyScreen(model = 'Gemini 3.5 Flash (High
   ].join('\n')
 }
 
-// Why: verbatim cursor-agent 2026.07 idle screen; the matcher keys on the "→" glyph, not the placeholder (which changes after the first turn).
+// Captured Cursor 2026.07 idle screen: readiness keys on →, never its changing placeholder.
 function cursorReadyScreen(): string {
   return [
     'Cursor Agent',
@@ -454,8 +450,7 @@ const store = {
   getProjects: () => []
 }
 
-// Callers pass the pane's APP-form pty id; the lease stores RELAY form, exactly as the relay-era
-// writer did through toStoredPtyId. Non-SSH ids pass through untouched.
+// Callers use app-form SSH ids; leases store relay-form ids via toStoredPtyId. Other ids pass unchanged.
 function createRuntimeWithSshLease(
   ptyId: string,
   tabId: string,
@@ -571,8 +566,7 @@ function makeHeadlessTerminalLayout(
 
 function makeRuntimeStoreWithWorkspaceSession(
   initialSession: WorkspaceSessionState,
-  // Why: sessions are partitioned by execution host, so the stub must answer for
-  // one partition only — a loose stub lets a hardcoded host id pass unnoticed.
+  // Session fixtures must answer only their host partition so hardcoded host ids fail.
   ownerHostId = 'local'
 ): {
   runtimeStore: typeof store & {
@@ -580,6 +574,8 @@ function makeRuntimeStoreWithWorkspaceSession(
     getWorkspaceSession: (hostId?: string) => WorkspaceSessionState
     setWorkspaceSession: ReturnType<typeof vi.fn<Store['setWorkspaceSession']>>
     flushOrThrow: ReturnType<typeof vi.fn<() => void>>
+    runDurableMutation: Store['runDurableMutation']
+    applyLayoutCommand: ReturnType<typeof vi.fn<Store['applyLayoutCommand']>>
     persistPtyBinding: ReturnType<typeof vi.fn<Store['persistPtyBinding']>>
   }
   getSession: () => WorkspaceSessionState
@@ -595,9 +591,7 @@ function makeRuntimeStoreWithWorkspaceSession(
       getWorkspaceSession: (hostId?: string) =>
         hostId === undefined || hostId === ownerHostId ? session : getDefaultWorkspaceSession(),
       setWorkspaceSession: vi.fn(setSession),
-      // As a profile store: the partitions it holds, which main's layout index reads.
       getWorkspaceSessionHostIds: () => [ownerHostId],
-      // Main's `layout.apply` on this partition, as the Store applies it (switch-on writes).
       applyLayoutCommand: vi.fn(
         async (
           command: LayoutCommand,
@@ -625,8 +619,7 @@ function makeRuntimeStoreWithWorkspaceSession(
           return change.value
         }
       ),
-      // Headless close is a durable transaction; keep the in-memory fixture's
-      // persistence contract equivalent to the production store.
+      // Match durable headless-close persistence even in this in-memory store.
       flushOrThrow: vi.fn(),
       persistPtyBinding: vi.fn<Store['persistPtyBinding']>(async (input) => {
         const args = typeof input === 'function' ? input() : input
@@ -693,8 +686,7 @@ function makeWorkspaceSessionWithHeadlessTerminal(
   }
 }
 
-// Layout-owner tests bind panes into the shared store, which announces its writes as a profile
-// Store does; each test starts without them.
+// Main-owned layout writes notify shared-store listeners; clear them between tests.
 beforeEach(() => {
   if (ORCA_LAYOUT_OWNER_IS_MAIN) {
     announceSessionWrites(store)

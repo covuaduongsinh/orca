@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest'
-import { WSL_FAMILIES, wslOrcadQualification } from './wsl-orcad-qualification.mjs'
+import { wslOrcadQualification } from './wsl-orcad-qualification.mjs'
 
+const fullFamilies = ['ubuntu-24.04', 'debian-12', 'fedora-41']
 const runtime = 'src/main/runtime/rpc/methods/session-title.ts'
 const events = Array.from({ length: 100 }, (_, index) => ({
   name: 'pull_request',
@@ -25,7 +26,7 @@ it('canaries a minority of stable source identities while preserving full refere
 })
 
 it.each([
-  'src/main/wsl/wsl-orcad-deploy.ts',
+  'src/main/wsl/orcad/wsl-orcad-deploy.ts',
   'src/main/managed-server/install/remote-install-transport.ts',
   'src/main/orcad/main.ts',
   'src/packages/process-host/src/run-process.ts',
@@ -33,7 +34,7 @@ it.each([
   'src/main/runtime/windows-firewall.ts',
   'src/main/runtime/remote-transport.ts',
   'src/main/runtime/terminal-environment.ts',
-  'src/main/wsl/wsl-orcad-real-distro-lane.test.ts',
+  'src/main/wsl/orcad/wsl-orcad-real-distro-lane.test.ts',
   'native/addon.cc',
   'package.json',
   'pnpm-lock.yaml',
@@ -45,7 +46,7 @@ it.each([
   'src/main/runtime/../outside.ts'
 ])('retains every distro for a mixed change containing %s', (file) => {
   expect(wslOrcadQualification([runtime, file], [runtime, file], event).families).toEqual(
-    WSL_FAMILIES
+    fullFamilies
   )
 })
 
@@ -76,6 +77,6 @@ it.each([
 ])(
   'fails closed for incomplete, non-modification or reference evidence: %j',
   ({ changed, modified, context }) => {
-    expect(wslOrcadQualification(changed, modified, context).families).toEqual(WSL_FAMILIES)
+    expect(wslOrcadQualification(changed, modified, context).families).toEqual(fullFamilies)
   }
 )

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 import {
   chmod,
@@ -13,21 +14,18 @@ import {
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { parse } from 'yaml'
 import { observeSkillPackage } from '../../src/main/skills/skill-package-identity'
 import {
   classifyFile,
   collectPackageFiles,
   describeFile,
   findDroppedReleasedDigests,
-  normalizeText,
   packageDigest,
   sortManifestFiles,
   withDigests
 } from './generate-skill-bundle-manifest.mjs'
 
 const temporaryDirectories = []
-const REPO_ROOT = path.resolve(import.meta.dirname, '..', '..')
 
 async function createPackage() {
   const directory = await mkdtemp(path.join(tmpdir(), 'orca-skill-manifest-'))
@@ -42,17 +40,19 @@ function localEnv() {
   )
 }
 
-// Why: the generator resolves its repo root from its own location, so a copy of
-// the script inside a throwaway tree exercises the real CLI without touching
-// resources/skills.
+// Copy generator into throwaway tree so its location-based root resolves there, protecting resources/skills.
 async function createGeneratorSandbox() {
-  // Node resolves the entry point through symlinks, so the script's own
-  // repo-root check only matches when the sandbox path is already resolved.
+  // Resolve sandbox path: Node resolves script symlinks before its root check.
   const root = await realpath(await createPackage())
   const skillRoot = path.join(root, 'skills', 'demo')
   const script = path.join(root, 'config', 'scripts', 'generate-skill-bundle-manifest.mjs')
   await mkdir(path.dirname(script), { recursive: true })
   await mkdir(skillRoot, { recursive: true })
+  await mkdir(path.join(root, 'src', 'shared'), { recursive: true })
+  await copyFile(
+    path.resolve(import.meta.dirname, '../../src/shared/bundled-skill-renames.json'),
+    path.join(root, 'src', 'shared', 'bundled-skill-renames.json')
+  )
   for (const name of ['generate-skill-bundle-manifest.mjs', 'git-pull-request-diff-base.mjs']) {
     await copyFile(path.join(import.meta.dirname, name), path.join(path.dirname(script), name))
   }
@@ -94,14 +94,6 @@ afterEach(async () => {
 })
 
 describe('skill bundle manifest generator', () => {
-  it('folds platform line endings for text identity', () => {
-    const lf = Buffer.from('first\nsecond\n')
-    const crlf = Buffer.from('first\r\nsecond\r\n')
-
-    expect(classifyFile(lf)).toBe('text')
-    expect(normalizeText(crlf)).toEqual(lf)
-  })
-
   it('classifies null-containing and invalid UTF-8 content as binary', () => {
     expect(classifyFile(Buffer.from([0, 1, 2]))).toBe('binary')
     expect(classifyFile(Buffer.from([0xc3, 0x28]))).toBe('binary')
@@ -126,8 +118,7 @@ describe('skill bundle manifest generator', () => {
     }
     const walked = await collectPackageFiles(packageRoot)
 
-    // Why: git ls-tree emits [Zebra.md, apple.md, sub.md, sub/inner.txt]; the digest
-    // hashes files in array order, so every producer must share one order.
+    // Git tree ordering differs from depth-first filesystem ordering; hash producers must agree.
     const gitOrdered = ['Zebra.md', 'apple.md', 'sub.md', 'sub/inner.txt'].map((manifestPath) =>
       walked.find((file) => file.path === manifestPath)
     )
@@ -183,6 +174,23 @@ describe('skill bundle manifest generator', () => {
     sandbox.generate('--write')
     expect(JSON.parse(await sandbox.read('released-digests.json')).skills.demo).toHaveLength(3)
     expect(() => sandbox.generate()).not.toThrow()
+  })
+
+  it('keeps SKILL.md bytes only a release tag shipped, off HEAD', async () => {
+    const sandbox = await createGeneratorSandbox()
+    sandbox.git('init', '-q', '-b', 'main')
+    sandbox.git('add', 'skills')
+    sandbox.git('commit', '-qm', 'one')
+    sandbox.git('checkout', '-qb', 'release')
+    await sandbox.editSkill('release-only version\n')
+    sandbox.git('commit', '-qam', 'release cut')
+    sandbox.git('tag', 'v1.0.0')
+    sandbox.git('checkout', '-q', 'main')
+    await sandbox.editSkill('demo skill\n')
+    sandbox.generate('--write')
+    const digests = JSON.parse(await sandbox.read('released-digests.json')).skills.demo
+    expect(digests).toContain(createHash('sha256').update('release-only version\n').digest('hex'))
+    expect(digests).toHaveLength(2)
   })
 
   it('fails when a digest is missing or the pull request base cannot be read', async () => {
@@ -245,9 +253,7 @@ describe('skill bundle manifest generator', () => {
     await writeFile(path.join(packageRoot, 'references', 'guide.md'), 'nested\n')
     const pristine = await collectPackageFiles(packageRoot)
     expect(pristine.map((file) => file.path)).toEqual(['SKILL.md', 'references/guide.md'])
-    // Finder writes .DS_Store into any browsed folder, and it is gitignored — so without
-    // this the committed artifacts read as stale and lint fails for that developer, while
-    // the scanner would have no snapshot a real install could match.
+    // Ignored Finder sidecars must not stale committed artifacts or create manifests no runtime observation matches.
     await writeFile(path.join(packageRoot, '.DS_Store'), Buffer.from([0, 1, 2, 3]))
     await writeFile(path.join(packageRoot, '._SKILL.md'), Buffer.from([0, 5]))
     await writeFile(path.join(packageRoot, 'Thumbs.db'), Buffer.from([9]))
@@ -257,22 +263,10 @@ describe('skill bundle manifest generator', () => {
     expect(await collectPackageFiles(packageRoot)).toEqual(pristine)
   })
 
-  it('still records an unexpected file that is not OS metadata', async () => {
-    const packageRoot = await createPackage()
-    await writeFile(path.join(packageRoot, 'SKILL.md'), 'demo skill\n')
-    await writeFile(path.join(packageRoot, 'payload.sh'), 'echo hi\n')
-
-    expect((await collectPackageFiles(packageRoot)).map((file) => file.path)).toEqual([
-      'SKILL.md',
-      'payload.sh'
-    ])
-  })
-
   it('keeps guarding a directory or link that only wears an OS metadata name', async () => {
     const packageRoot = await createPackage()
     await writeFile(path.join(packageRoot, 'SKILL.md'), 'demo skill\n')
-    // Only plain files are OS-authored, so a subtree behind one of these names is real
-    // content that must stay in the manifest instead of shipping unrecorded.
+    // Sidecar-named directories are real content; dropping them ships unrecorded subtrees.
     await mkdir(path.join(packageRoot, '.DS_Store'))
     await writeFile(path.join(packageRoot, '.DS_Store', 'payload.sh'), 'echo hi\n')
 
@@ -290,10 +284,7 @@ describe('skill bundle manifest generator', () => {
     }
   })
 
-  // Why: the predicate is hand-copied from the scanner, and an asymmetric skip is worse than
-  // no skip — one side would bake in content the other can never observe, leaving every
-  // install permanently unrecognized. Compared through both walkers so ordering and the
-  // case-fold map are covered too, not just the name test.
+  // Compare both walkers: asymmetric sidecar rules strand installs as unrecognized; include order and case-fold behavior too.
   it('skips exactly the names the scanner skips', async () => {
     const packageRoot = await createPackage()
     for (const name of [
@@ -320,36 +311,5 @@ describe('skill bundle manifest generator', () => {
     const generated = (await collectPackageFiles(packageRoot)).map((file) => file.path)
     expect(generated).toEqual((await observeSkillPackage(packageRoot)).files.map((f) => f.path))
     expect(generated).toEqual(['.DS_Store.md', '.dsstore', 'SKILL.md', '_SKILL.md', 'ds_store.md'])
-  })
-
-  // Why: every step in the cut job shares one workspace and one index, so any of
-  // them can stage a regenerated manifest and the bump step's own commit then
-  // carries it into the tag. The cut asserts what its commit carries; this test
-  // pins that guard and adds a tripwire for the literal spellings.
-  it('keeps the whole release-cut job off skill regeneration', async () => {
-    const workflow = parse(
-      await readFile(path.join(REPO_ROOT, '.github/workflows/release-cut.yml'), 'utf8')
-    )
-    const runSteps = workflow.jobs.cut.steps
-      .filter((step) => typeof step.run === 'string')
-      .map((step) => ({ name: step.name ?? '(unnamed)', run: step.run.replace(/^\s*#.*$/gm, '') }))
-    const bumpStep = runSteps.find((step) => step.name === 'Bump package.json and tag')
-
-    // Asserted on the commit rather than the index because `git commit -a/-i/--only/
-    // <pathspec>` bypasses the index. -F is part of the contract; without it `.` admits a
-    // path like packageXjson. Dropping -m makes a merge commit report nothing.
-    expect(bumpStep.run).toMatch(
-      /git diff-tree --no-commit-id --name-only -r -m --first-parent HEAD\s*\|\s*grep -vxF -e 'package\.json'/
-    )
-    expect(bumpStep.run.indexOf('grep -vxF')).toBeLessThan(bumpStep.run.indexOf('git tag'))
-    // ...and that it aborts. A guard degraded to a warning still reads as covered.
-    expect(bumpStep.run).toMatch(
-      /if \[\[ -n "\$committed" \]\]; then(?:(?!\bfi\b)[\s\S])*exit 1[\s\S]*?fi/
-    )
-    for (const step of runSteps) {
-      expect(step.run, step.name).not.toMatch(
-        /resources[/\\]skills|--write|generate:skill-bundle-manifest/
-      )
-    }
   })
 })

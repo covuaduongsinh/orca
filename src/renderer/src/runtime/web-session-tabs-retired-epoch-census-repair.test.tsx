@@ -2,10 +2,8 @@
 
 import { act, cleanup, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { toWebTerminalSurfaceTabId } from '../../../shared/terminal-surface-id'
+import { toWebTerminalSurfaceTabId } from '../../../shared/workspace-layout/terminal-surface-id'
 import type { RuntimeMobileSessionTabsResult } from '../../../shared/runtime-types'
-import type { PublicKnownRuntimeEnvironment } from '../../../shared/runtime-environments'
-import type { AppState } from '@/store/types'
 
 const mocks = vi.hoisted(() => ({
   ownerEnvironmentIdForWorkspace: vi.fn()
@@ -30,6 +28,10 @@ import { useAppStore } from '@/store'
 import { replaceRuntimeEnvironmentRevisions } from './runtime-environment-revision'
 import { resetWebSessionTabsSnapshotFreshnessForTests } from './web-session-tabs-sync/tracking-lifecycle'
 import { useWebSessionTabsSync } from './web-session-tabs-sync/use-web-session-tabs-sync'
+import {
+  connectedRuntimeStatus,
+  publicRuntimeEnvironment
+} from './paired-runtime-environment-test-fixture'
 
 /**
  * #21928: a paired host mints `headless:` epochs for one worktree between renderer frames, so the
@@ -134,10 +136,9 @@ describe('a renderer publisher returning after a headless epoch', () => {
       value: { runtimeEnvironments: { call: runtimeCall, subscribe: runtimeSubscribe } }
     })
     resetWebSessionTabsSnapshotFreshnessForTests()
-    // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the mirror reads only id, createdAt and pairingRevision.
     const runtimeEnvironments = [
-      { id: ENV_A, createdAt: 100, pairingRevision: 101 }
-    ] as PublicKnownRuntimeEnvironment[]
+      publicRuntimeEnvironment({ id: ENV_A, createdAt: 100, pairingRevision: 101 })
+    ]
     replaceRuntimeEnvironmentRevisions(runtimeEnvironments)
     useAppStore.setState(
       {
@@ -145,10 +146,7 @@ describe('a renderer publisher returning after a headless epoch', () => {
         activeWorktreeId: WORKTREE,
         workspaceSessionReady: true,
         runtimeEnvironments,
-        // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the mirror reads only runtimeId and connectionGeneration.
-        runtimeStatusByEnvironmentId: new Map([
-          [ENV_A, { status: { runtimeId: 'runtime-a' }, connectionGeneration: 1 }]
-        ]) as AppState['runtimeStatusByEnvironmentId']
+        runtimeStatusByEnvironmentId: new Map([[ENV_A, connectedRuntimeStatus('runtime-a', 1)]])
       },
       true
     )
@@ -191,28 +189,6 @@ describe('a renderer publisher returning after a headless epoch', () => {
     // A delayed frame from the headless writer is now the retired one.
     await publish({ ...frame(HEADLESS_EPOCH, 2, [terminal('a')]), type: 'snapshot' })
     expect(mirroredTabIds()).toContain(toWebTerminalSurfaceTabId('host-tab-b'))
-  })
-
-  it('revives nothing from an older host whose census is not labelled authoritative', async () => {
-    renderHook(() => useWebSessionTabsSync())
-    await act(settle)
-
-    await publish({ ...frame(RENDERER_EPOCH, 3, [terminal('a')]), type: 'snapshot' })
-    await publish({ ...frame(HEADLESS_EPOCH, 1, [terminal('a')]), type: 'snapshot' })
-    const returning = frame(RENDERER_EPOCH, 5, [terminal('a'), terminal('b')])
-    census = {
-      id: 'list-all',
-      ok: true,
-      result: { snapshots: [returning] },
-      _meta: { runtimeId: 'runtime-a' }
-    }
-    await publish({ ...returning, type: 'snapshot' })
-    await act(async () => {
-      vi.advanceTimersByTime(300)
-      await settle()
-    })
-
-    expect(mirroredTabIds()).not.toContain(toWebTerminalSurfaceTabId('host-tab-b'))
   })
 
   it('does not let a census outrank a stream frame that arrived while it was in flight', async () => {

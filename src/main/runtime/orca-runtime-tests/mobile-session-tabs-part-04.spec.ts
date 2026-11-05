@@ -8,12 +8,11 @@ import {
   join,
   mkdtemp,
   tmpdir,
-  waitForMobileSessionTabsEvents
+  waitForMobileSessionTabsEvents,
+  type RuntimeMobileSessionTabsResult
 } from '../orca-runtime-test-mocks.spec'
-import type {
-  RuntimeMobileSessionTabsResult,
-  WorkspaceSessionState
-} from '../orca-runtime-test-mocks.spec'
+
+import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
 import {
   HEADLESS_LEAF_ID,
   TEST_FOLDER_PROJECT_GROUP_ID,
@@ -82,7 +81,6 @@ describe('OrcaRuntimeService', () => {
     const spawn = vi.fn().mockResolvedValue({ id: 'ssh:ssh-1@@remote-pty' })
     const runtime = new OrcaRuntimeService(remoteStore as never)
     runtime.setPtyController({
-      // The real Store keeps an SSH repo's session in its host's partition.
       spawn: committingSpawn(runtime, spawn, 'ssh:ssh-1'),
       write: () => true,
       kill: () => true,

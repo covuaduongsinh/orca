@@ -2,7 +2,7 @@ import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../shared/constants'
 import type { KeybindingOverrides, TerminalShortcutPolicy } from '../../../../shared/keybindings'
 import type { BrowserTab } from '../../../../shared/browser-workspace-types'
 import type { Tab, TabGroup, TabGroupLayoutNode } from '../../../../shared/tab-types'
-import type { TerminalTab } from '../../../../shared/terminal-tab-types'
+import type { TerminalTab } from '../../../../shared/workspace-layout/terminal-tab-types'
 import type { OpenFile } from '@/store/slices/editor'
 
 export type FloatingPanelStoreState = {
@@ -108,8 +108,7 @@ export function makeFile(overrides: Partial<OpenFile> = {}): OpenFile {
   }
 }
 
-// Models terminal-tab-actions.closeTerminalTab's store mutation: the real close removes the tab from
-// the floating store *before* it fires onClosed, so the reclaim intent arms on a decremented count.
+// Remove before onClosed, matching real closes so reclaim observes the decremented tab count.
 export function removeFloatingTerminalTabFromStore(entityId: string): void {
   const state = storeBox.state as FloatingPanelStoreState
   const current = state.tabsByWorktree?.[FLOATING_TERMINAL_WORKTREE_ID] ?? []
@@ -154,7 +153,6 @@ export function setFloatingTabs(tabs: TerminalTab[]): void {
     tabs.length > 0 ? { [FLOATING_TERMINAL_WORKTREE_ID]: { type: 'leaf', groupId } } : {}
 }
 
-/** Appends the unified strip entry a real createBrowserTab always writes beside the entity. */
 export function attachFloatingBrowserUnifiedTab(browserTabId: string): void {
   const state = storeBox.state as FloatingPanelStoreState
   const groupId = 'floating-group'

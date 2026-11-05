@@ -8,13 +8,18 @@ import {
   type ConnectCallbacks,
   type MockTransport
 } from './pty-connection-test-pane-fixtures'
-import { buildPaneConnectionDeps } from './pty-connection-test-deps'
+import {
+  buildPaneConnectionDeps,
+  type PtyConnectionAgentTitleMocks,
+  bindPaneAgentTitleMocks
+} from './pty-connection-test-deps'
 import { createInitialStoreState } from './pty-connection-test-store-fixtures'
 import type { StoreState } from './pty-connection-test-store-state'
 import {
   installTerminalTestGlobals,
   restoreTerminalTestGlobals
 } from './pty-connection-test-environment'
+import { mockPanePtyArgs } from './pty-connection-test-connect-mock-pane'
 
 // Why: switching back to a remote pane cost a 5000-row snapshot even when the host dropped nothing (#24863).
 export function registerPtyConnectionRemotePauseDropNoticeTests(): void {
@@ -49,6 +54,8 @@ export function registerPtyConnectionRemotePauseDropNoticeTests(): void {
 
     async function connectRemotePane(dropsReported: boolean) {
       const { connectPanePty } = await import('./pty-connection')
+      const agentTitleMocks =
+        await vi.importMock<PtyConnectionAgentTitleMocks>('@/lib/agent-status')
       const remotePtyId = 'remote:env-1@@terminal-1'
       const transport = createMockTransport(remotePtyId)
       const callbacks: { current: ConnectCallbacks } = { current: {} }
@@ -76,8 +83,9 @@ export function registerPtyConnectionRemotePauseDropNoticeTests(): void {
       const deps = buildPaneConnectionDeps(() => mockStoreState, {
         isVisibleRef: { current: true }
       })
-      // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the fixtures model the pane, manager and deps surface connectPanePty reads.
-      const binding = connectPanePty(pane as never, createManager(1) as never, deps as never)
+      const binding = connectPanePty(
+        ...mockPanePtyArgs(pane, createManager(1), bindPaneAgentTitleMocks(deps, agentTitleMocks))
+      )
       await flushAsyncTicks(6)
       const setVisible = async (visible: boolean): Promise<void> => {
         deps.isVisibleRef.current = visible
@@ -131,7 +139,7 @@ export function registerPtyConnectionRemotePauseDropNoticeTests(): void {
       binding.dispose()
     })
 
-    it('still restores on every reveal when the host cannot report drops', async () => {
+    it('restores on reveal when the host cannot report drops', async () => {
       const { transport, binding, setVisible } = await connectRemotePane(false)
 
       await setVisible(false)

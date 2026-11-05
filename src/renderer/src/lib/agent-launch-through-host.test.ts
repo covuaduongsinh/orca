@@ -3,6 +3,10 @@ import type * as AgentStatusModule from '@/lib/agent-status'
 import { createTabsSliceMockApi } from '../store/slices/tabs-slice-test-harness'
 import { createTestStore } from '../store/slices/store-test-helpers'
 
+import { projectSourceControlActionLaunch } from '../../../shared/source-control/ai/recipes/source-control-action-launch-preferences'
+import { buildAgentStartupPlan } from '../../../shared/agent-launch/startup/tui-agent-startup'
+import { resolveAgentStartupPlanInputs } from '../../../shared/agent-launch/startup/agent-startup-plan-inputs'
+
 vi.mock('sonner', () => ({ toast: { info: vi.fn(), success: vi.fn(), error: vi.fn() } }))
 vi.mock('@/lib/agent-status', async (importOriginal) => ({
   ...(await importOriginal<typeof AgentStatusModule>()),
@@ -41,11 +45,11 @@ function queuedLaunch(tabId: string) {
   return store.getState().pendingStartupByTabId[tabId]?.agentLaunch
 }
 
-function launch() {
+function launch(groupId = store.getState().activeGroupIdByWorktree[WT]) {
   return launchAgentThroughHost({
     agent: 'claude',
     worktreeId: WT,
-    groupId: store.getState().activeGroupIdByWorktree[WT],
+    groupId,
     prompt: 'fix the failing checks',
     agentArgs: null,
     launchSource: 'source_control_recovery'
@@ -61,7 +65,14 @@ beforeEach(() => {
 
 describe('a desktop AI-button launch', () => {
   it('shows its tab at the click, in its split, with the launch queued for its pane to start', () => {
-    const { tabId } = launch()
+    const activeGroupId = store.getState().activeGroupIdByWorktree[WT]
+    const targetGroupId = store
+      .getState()
+      .createEmptySplitGroup(WT, activeGroupId, 'down', { activate: false })!
+    const { tabId } = launch(targetGroupId)
+    expect(
+      store.getState().groupsByWorktree[WT].find((group) => group.id === targetGroupId)?.tabOrder
+    ).toContain(tabId)
 
     const tab = launchTab(tabId)!
     expect(tab).toMatchObject({ ptyId: null, launchAgent: 'claude' })
@@ -79,13 +90,60 @@ describe('a desktop AI-button launch', () => {
     })
   })
 
-  // Nothing reads a click's launch record, so its launch carries no operation and writes none.
-  it('names no operation, and each click has its own pane', () => {
-    const first = launch().tabId
-    const second = launch().tabId
-    expect(queuedLaunch(first)?.launch).not.toHaveProperty('operationId')
-    expect(second).not.toBe(first)
+  it('carries the source-owned Terminal base and exact raw bytes through the real generic pane wire and startup', () => {
+    const raw = `-c 'model="true"'  --search`
+    const projection = projectSourceControlActionLaunch(
+      {
+        agentArgs: raw,
+        launchPreferences: {
+          agentId: 'codex',
+          modelSelection: {
+            base: 'default',
+            options: { effort: { agentId: 'codex', value: 'high' } }
+          }
+        }
+      },
+      'codex',
+      { basePrompt: 'Fix checks' }
+    )
+    const { tabId } = launchAgentThroughHost({
+      agent: 'codex',
+      worktreeId: WT,
+      prompt: 'Fix checks',
+      ...projection
+    })
+    const wire = queuedLaunch(tabId)!.launch
+    expect(wire).toEqual({
+      agent: 'codex',
+      target: { kind: 'existing', worktree: `id:${WT}` },
+      agentArgs: raw,
+      sessionOptions: { effort: 'high' }
+    })
+    const startup = buildAgentStartupPlan({
+      ...resolveAgentStartupPlanInputs({
+        agent: wire.agent,
+        settings: { agentCmdOverrides: { codex: 'cx' } },
+        agentArgs: wire.agentArgs,
+        sessionOptions: wire.sessionOptions,
+        platform: 'linux',
+        shell: 'posix',
+        isRemote: false
+      }),
+      prompt: '',
+      allowEmptyPromptLaunch: true
+    })
+    expect(startup?.launchCommand).toBe(
+      `cx '-c' 'model="true"' '--search' '-c' 'model_reasoning_effort=high'`
+    )
+    expect(startup?.launchConfig.agentArgs).toBe(raw)
+    expect(JSON.stringify(store.getState().pendingStartupByTabId[tabId])).not.toContain(
+      'chatSessionOptions'
+    )
+    expect(JSON.stringify(store.getState().tabsByWorktree[WT])).not.toContain('chatLaunchOptions')
+    settleAgentLaunchPaneStart(tabId, launchTab(tabId)!.agentLaunchPane!.leafId, 'pty-proof')
   })
+
+  // Nothing reads a click's launch record, so its launch carries no operation and writes none.
 
   it("says the agent started once its pane's spawn returns, and not when main says it failed", async () => {
     const started = launch()
@@ -103,5 +161,28 @@ describe('a desktop AI-button launch', () => {
     })
     settleAgentLaunchPaneStart(failed.tabId, failedLeaf, 'pty-2')
     await expect(failed.started).resolves.toBeNull()
+  })
+
+  // The own pane's chain, as main plans it: string wire, the agent's strict preferences, the host.
+
+  it('keeps inactive launches in their requested group without revealing Terminal', () => {
+    const initial = store.getState()
+    const activeTabId = initial.activeTabId
+    const groupId = initial.createEmptySplitGroup(WT, initial.activeGroupIdByWorktree[WT], 'down', {
+      activate: false
+    })!
+    const { tabId } = launchAgentThroughHost({
+      agent: 'claude',
+      worktreeId: WT,
+      groupId,
+      prompt: 'p',
+      cwd: '/tmp/feature/sub',
+      activate: false
+    })
+    expect(store.getState().activeTabId).toBe(activeTabId)
+    expect(
+      store.getState().groupsByWorktree[WT].find((group) => group.id === groupId)?.tabOrder
+    ).toContain(tabId)
+    expect(queuedLaunch(tabId)?.launch.cwd).toBe('/tmp/feature/sub')
   })
 })

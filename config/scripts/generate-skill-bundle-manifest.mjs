@@ -4,17 +4,16 @@ import { lstat, mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { resolvePullRequestDiffBase } from './git-pull-request-diff-base.mjs'
+import skillRenames from '../../src/shared/bundled-skill-renames.json' with { type: 'json' }
 
-// Why: schema 3 dropped release revisions and git tree identity along with the snapshot
-// registry. Freshness compares installed copies against these bytes only.
+// Schema 3 removed revision/tree identity with snapshot registry; freshness compares installed bytes only.
 const CURRENT_MANIFEST_SCHEMA_VERSION = 3
 const SCRIPT_DIR = import.meta.dirname
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..', '..')
 const SKILLS_ROOT = path.join(REPO_ROOT, 'skills')
 const OUTPUT_ROOT = path.join(REPO_ROOT, 'resources', 'skills')
 const CURRENT_MANIFEST_PATH = path.join(OUTPUT_ROOT, 'current-manifest.json')
-// Why add-only: a copy counts as Orca's untouched install only while its SKILL.md digest is
-// listed, so dropping one would strand every user still on that version.
+// Digest ledger is add-only or older untouched SKILL.md installs become unrecognizable.
 const RELEASED_DIGESTS_PATH = path.join(OUTPUT_ROOT, 'released-digests.json')
 const BUNDLED_SOURCES_PATH = path.join(
   REPO_ROOT,
@@ -76,11 +75,8 @@ function describeFile(manifestPath, bytes, executable) {
   }
 }
 
-// Why: kept in step with isOsMetadataSkillEntryName in src/main/skills/skill-package-identity.ts.
-// The scanner ignores these because the OS writes them into a live install; the generator
-// ignores them so a stray one in a working tree cannot be committed into the manifest as
-// content no user could ever match. Skipped rather than rejected: the file is not the
-// developer's doing, so failing the build over it would be hostile.
+// Mirror runtime OS-sidecar exclusions (skill-package-identity.ts) or manifest can describe content no live install matches.
+// Skip OS-authored noise rather than failing builds for browsing a folder.
 const OS_METADATA_FILE_NAMES = new Set(['.ds_store', 'thumbs.db', 'ehthumbs.db', 'desktop.ini'])
 
 function isOsMetadataSkillEntryName(name) {
@@ -94,16 +90,12 @@ async function collectPackageFiles(packageRoot) {
 
   async function visit(directory) {
     const entries = await readdir(directory, { withFileTypes: true })
-    // Why: build-time Node and packaged Electron may ship different ICU data;
-    // package identity order must use the same locale-independent comparison.
+    // Build Node and packaged Electron may differ in ICU; use locale-independent identity ordering.
     entries.sort((left, right) => compareCodeUnits(left.name, right.name))
     for (const entry of entries) {
       const absolutePath = path.join(directory, entry.name)
       const fileStat = await lstat(absolutePath)
-      // Only a plain file is OS-authored, so the type decides and not the name alone: a
-      // directory or link wearing the name would otherwise drop its subtree out of the
-      // manifest and skip the guards below. Decided before the case-fold map so two
-      // spellings of one sidecar cannot collide.
+      // Skip sidecar-named plain files only: directories/links contain real content. Check before case-fold collision map.
       if (isOsMetadataSkillEntryName(entry.name) && fileStat.isFile()) {
         continue
       }
@@ -126,8 +118,7 @@ async function collectPackageFiles(packageRoot) {
       if (!fileStat.isFile()) {
         throw new Error(`Special file is not allowed in a shipped skill: ${manifestPath}`)
       }
-      // Why: Windows observation cannot see execute bits, so an executable file in
-      // a shipped skill would misclassify every pristine Windows install as outdated.
+      // Windows cannot observe execute bits; shipped executables would make pristine installs appear outdated.
       if ((fileStat.mode & 0o111) !== 0) {
         throw new Error(`Executable file is not allowed in a shipped skill: ${manifestPath}`)
       }
@@ -139,8 +130,7 @@ async function collectPackageFiles(packageRoot) {
   return sortManifestFiles(files)
 }
 
-// Why: the package digest hashes files in array order, so the generator and runtime
-// observation must emit one canonical order: the sorted depth-first filesystem walk.
+// Digest hashes array order; match runtime’s sorted depth-first filesystem walk.
 function compareManifestPaths(left, right) {
   const leftParts = left.split('/')
   const rightParts = right.split('/')
@@ -218,19 +208,13 @@ function tryGit(args, options) {
 
 const SKILL_FILE_RAW_LINE = /^:\d+ \d+ [0-9a-f]+ ([0-9a-f]+) [A-Z]\d*\tskills\/([^/]+)\/SKILL\.md$/u
 
-/** Every `skills/<name>/SKILL.md` blob reachable from HEAD; empty outside a git checkout. */
+/** Every `skills/<name>/SKILL.md` blob reachable from HEAD or a release tag; empty outside a git checkout. */
 function historicalSkillDigests() {
   // One path-limited log plus one batched read: never a per-commit or per-ref fan-out.
-  const log = tryGit([
-    'log',
-    '--format=',
-    '--raw',
-    '--no-abbrev',
-    '--no-renames',
-    'HEAD',
-    '--',
-    'skills'
-  ])
+  const logFrom = (refs) =>
+    tryGit(['log', '--format=', '--raw', '--no-abbrev', '--no-renames', ...refs, '--', 'skills'])
+  // Why tags: a release cut off a branch ships bytes HEAD may never contain; shallow CI simply has none.
+  const log = logFrom(['HEAD', '--tags=v*']) ?? logFrom(['HEAD'])
   if (log === null) {
     return []
   }
@@ -291,8 +275,7 @@ async function buildReleasedDigests(manifest) {
   return withDigests(await readReleasedDigests(), [...historicalSkillDigests(), ...current])
 }
 
-// Why embedded: `orca skills install` and paired servers run with no app resources folder,
-// so the installable bytes ship inside the code, as the skill guides do.
+// Embed install bytes: CLI/paired servers have no app resources directory.
 async function buildBundledSources(manifest, ledger) {
   const sources = []
   for (const skill of manifest.skills) {
@@ -304,13 +287,21 @@ async function buildBundledSources(manifest, ledger) {
     sources.push({
       name: skill.name,
       text: normalizeText(bytes).toString('utf8'),
-      releasedDigests: ledger.skills[skill.name]
+      ...(skillRenames[skill.name] ? { aliases: skillRenames[skill.name] } : {}),
+      releasedDigests: [
+        ...new Set(
+          [skill.name, ...(skillRenames[skill.name] ?? [])].flatMap(
+            (name) => ledger.skills[name] ?? []
+          )
+        )
+      ].sort(compareCodeUnits)
     })
   }
   return (
     '// Generated by config/scripts/generate-skill-bundle-manifest.mjs. Do not edit.\n\n' +
     'export type BundledSkillSource = {\n' +
     '  readonly name: string\n' +
+    '  readonly aliases?: readonly string[]\n' +
     '  /** LF-normalised `SKILL.md`, the only file a bundled skill ships. */\n' +
     '  readonly text: string\n' +
     '  /** sha256 of every LF-normalised `SKILL.md` any build shipped, this one included. */\n' +

@@ -1,3 +1,5 @@
+import type * as RepoDetectionModule from '../git/repo-detection'
+import type * as GitExecFileModule from '../git/command-runner/git-exec-file'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { existsSync } from 'node:fs'
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
@@ -6,32 +8,54 @@ import { join } from 'node:path'
 import type * as GitRunner from '../git/runner'
 import type * as RepoModule from '../git/repo'
 
-const { reposMocks, moduleMocks } = await vi.hoisted(async () => {
+const { reposMocks, moduleMocks, gitRepoProbeMocks } = await vi.hoisted(async () => {
   const moduleMocks = await import('./repos-remote-test-harness')
-  return { reposMocks: moduleMocks.createReposIpcMocks(), moduleMocks }
+  return {
+    reposMocks: moduleMocks.createReposIpcMocks(),
+    moduleMocks,
+    gitRepoProbeMocks: moduleMocks.createGitRepoProbeMocks()
+  }
+})
+
+vi.mock('../git/repo-detection', async (importOriginal) => {
+  return {
+    ...(await importOriginal<typeof RepoDetectionModule>()),
+    isGitRepoAsync: gitRepoProbeMocks.isGitRepo,
+    getGitRepoRootAsync: gitRepoProbeMocks.getGitRepoRoot
+  }
+})
+
+vi.mock('../git/command-runner/git-exec-file', async (importOriginal) => {
+  return {
+    ...(await importOriginal<typeof GitExecFileModule>()),
+    gitExecFileAsync: reposMocks.gitExecFileAsyncMock
+  }
 })
 
 vi.mock('electron', () => moduleMocks.electronModuleMock(reposMocks))
 vi.mock('../git/repo', async (importOriginal) =>
-  moduleMocks.gitRepoModuleMock(await importOriginal<typeof RepoModule>())
+  moduleMocks.gitRepoModuleMock(await importOriginal<typeof RepoModule>(), gitRepoProbeMocks)
 )
 vi.mock('../git/runner', async (importOriginal) =>
   moduleMocks.gitRunnerModuleMock(reposMocks, await importOriginal<typeof GitRunner>())
 )
-vi.mock('../git/worktree', () => moduleMocks.gitWorktreeModuleMock(reposMocks))
-vi.mock('./registered-worktree-roots-cache', () =>
+vi.mock('../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  listWorktreeGraph: reposMocks.listWorktreeGraphMock
+}))
+vi.mock('./worktrees/removal/registered-worktree-roots-cache', () =>
   moduleMocks.registeredWorktreeRootsCacheModuleMock(reposMocks)
 )
-vi.mock('../worktree-root-preparation', () =>
+vi.mock('../workspaces/creation/worktree-root-preparation', () =>
   moduleMocks.worktreeRootPreparationModuleMock(reposMocks)
 )
 
 import { registerRepoHandlers } from './repos'
-import { clearGitCapabilityStateForTests } from '../git/git-capability-state'
+import { clearGitCapabilityStateForTests } from '../git/command-runner/git-capability-state'
 import { resetSshProviderAuthorities } from '../ssh/ssh-provider-authority'
 import { DEFAULT_REPO_BADGE_COLOR } from '../../shared/constants'
 import { isGitRepoAsync } from '../git/repo'
-import { listSubmodulePaths } from '../git/status'
+import { listSubmodulePaths } from '../git/source-control/submodule-paths'
 import {
   createMockCloneProcess,
   createRepoHandlerHarness,
@@ -64,7 +88,6 @@ function readGitExecOptions(call: unknown[]): GitExecOptions {
   }
 }
 
-// Answers the proof the way git does inside a finished clone of `originUrl` at `path`.
 function answerAsCloneOf(path: string, originUrl: string): void {
   gitExecFileAsyncMock.mockImplementation((...call: unknown[]) => {
     const args = call[0]
@@ -130,7 +153,7 @@ describe('repos:add + repos:clone', () => {
       Promise.resolve({
         stdout:
           args[0] === 'config' && args.includes('.gitmodules') && cloned
-            ? 'submodule.lib.path vendor/lib\n'
+            ? 'submodule.lib.path\nvendor/lib\0'
             : '',
         stderr: ''
       })
@@ -319,7 +342,7 @@ describe('repos:add + repos:clone', () => {
       destination
     })
 
-    // Without this env, a clone needing auth makes Git Credential Manager pop and loop its OAuth window on Windows.
+    // Suppress Windows Git Credential Manager OAuth windows during noninteractive cloning.
     expect(gitSpawnMock).toHaveBeenCalledWith(
       ['clone', '--progress', '--', 'https://example.com/orca.git', join(destination, 'orca')],
       expect.objectContaining({
@@ -569,7 +592,7 @@ describe('repos:add + repos:clone', () => {
   it('dedupes retry when abort races with a successful clone close', async () => {
     const destination = await createTempRoot()
     const clonePath = join(destination, 'orca')
-    // The queued request finds the first clone's project and must see a finished clone there.
+    // The queued caller must prove the first clone finished before reusing its registration.
     answerAsCloneOf(clonePath, 'https://example.com/orca.git')
     const repos: unknown[] = []
     mockStore.getRepos.mockImplementation(() => repos)
@@ -605,7 +628,7 @@ describe('repos:add + repos:clone', () => {
   it('serializes concurrent clones for the same target', async () => {
     const destination = await createTempRoot()
     const clonePath = join(destination, 'orca')
-    // The queued request finds the first clone's project and must see a finished clone there.
+    // The queued caller must prove the first clone finished before reusing its registration.
     answerAsCloneOf(clonePath, 'https://example.com/orca.git')
     const repos: unknown[] = []
     mockStore.getRepos.mockImplementation(() => repos)
@@ -724,7 +747,7 @@ describe('repos:add + repos:clone', () => {
       expect(gitSpawnMock).toHaveBeenCalledTimes(1)
       expect(mockStore.addRepo).not.toHaveBeenCalled()
       expect(mockWindow.webContents.send).toHaveBeenCalledWith('repos:changed')
-      // The folder git just re-created has no worktree root, and the cached roots predate it.
+      // Recreated project folders invalidate both worktree-root preparation and cached authorization.
       expect(prepareLocalWorktreeRootForRepoMock).toHaveBeenCalledWith(mockStore, saved)
       expect(invalidateAuthorizedRootsCacheMock).toHaveBeenCalled()
     })

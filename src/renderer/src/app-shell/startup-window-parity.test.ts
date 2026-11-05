@@ -1,12 +1,9 @@
-// Window parity: for each stored profile, the window's startup hydration of the session as stored
-// and of the shared Loader's rewrite of it (load then save) must show the same thing. Where they
-// differ today, the difference is listed below with the Loader rule that causes it: as work to
-// do, or as accepted with the reason it is not a bug.
+// Compare window startup from disk with the Loader round trip. Enumerate each divergence as a known defect or accepted difference with its reason.
 
 import { describe, expect, it, vi } from 'vitest'
 import type * as AgentStatusModule from '@/lib/agent-status'
 import type { ExecutionHostId } from '../../../shared/execution-host'
-import type { WorkspaceSessionState } from '../../../shared/workspace-session-state-types'
+import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
 import { LEGACY_WORKSPACE_LAYOUT_PROFILES } from '../../../shared/workspace-layout/workspace-layout-legacy-profile.test-fixture'
 import { loadWorkspaceLayout } from '../../../shared/workspace-layout/workspace-layout-load'
 import { WORKSPACE_LAYOUT_PROFILES } from '../../../shared/workspace-layout/workspace-layout-profile.test-fixture'
@@ -25,7 +22,7 @@ import {
   projectStartupWindowView
 } from './startup-window-view.test-fixture'
 
-// The window boots as today's (the oracle); main loads as it does once it owns the layout.
+// Use legacy window boot as the oracle for main-owned layout loading.
 const layoutOwner = vi.hoisted(() => ({ isMain: false }))
 vi.mock('../../../shared/layout-owner-switch', () => ({
   get ORCA_LAYOUT_OWNER_IS_MAIN() {

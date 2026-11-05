@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { collectLeafIds } from '../../../../shared/terminal-pane-layout-tree'
+import { collectLeafIds } from '../../../../shared/workspace-layout/terminal-pane-layout-tree'
 import { toRuntimeExecutionHostId } from '../../../../shared/execution-host'
 import { setupLayoutOwnerRuntime, WORKTREE_ID } from '../../orca-runtime-layout-owner-start-fixture'
 
@@ -40,13 +40,17 @@ describe("the window's new tab, started by main in a layout-owner build", () => 
       tabId: TAB_ID,
       leafId: LEAF_ID,
       cwd: '/workspace/sub',
+      resolvedWorkspace: expect.objectContaining({
+        id: WORKTREE_ID,
+        path: '/workspace',
+        connectionId: null
+      }),
       command: 'make dev'
     })
-    // Views see the pane starting, so none starts its own; the start clears it.
+    // Publish starting status so views cannot spawn duplicates; clear it after binding.
     expect(statuses).toEqual([{ status: 'starting' }])
     expect(runtime.startStatusOf(`${TAB_ID}:${LEAF_ID}`)).toBeNull()
     expect(created).toMatchObject({ tabId: TAB_ID, ptyId: 'pty-window', surface: 'background' })
-    // The window's tab, not a second one.
     expect(session().tabsByWorktree[WORKTREE_ID]?.map((tab) => tab.id)).toEqual([TAB_ID])
     expect(collectLeafIds(session().terminalLayoutsByTabId[TAB_ID]?.root)).toEqual([LEAF_ID])
   })

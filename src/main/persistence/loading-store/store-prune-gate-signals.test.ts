@@ -1,15 +1,11 @@
 import { hostWorktreeTarget } from '../../../shared/worktree/host-qualified-identity'
-import { closeTestStores, createSqliteTestStore } from '../../persistence-test-harness'
-/**
- * Drives the real `Store`, because the value of the prune gate is entirely in whether the shipping
- * write paths signal it. A mutation that unwires the call site survives any test that pokes the gate
- * module directly.
- */
+import { closeTestStores, createSqliteTestStore } from '../persistence-test-harness'
+// Drive real Store writers so disconnected prune-gate call sites cannot pass unnoticed.
 import { mkdtempSync, realpathSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { WorkspaceSessionState } from '../../../shared/workspace-session-state-types'
+import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
 import { removeWorktreeMetaRow } from '../host-qualified-worktree-meta'
 
 vi.mock('electron', () => ({
@@ -35,7 +31,7 @@ const {
   __resetLocalWorktreeMetadataPruneGateForTests,
   isLocalWorktreeMetadataPruneDue,
   markLocalWorktreeMetadataPruneStarted
-} = await import('../../local-worktree-metadata-prune-gate')
+} = await import('../../workspaces/catalog/local-worktree-metadata-prune-gate')
 
 const REPO_ID = 'repo-1'
 const WORKTREE_ID = `${REPO_ID}::/tmp/worktree-a`
@@ -47,7 +43,7 @@ beforeEach(() => {
 })
 
 afterEach(async () => {
-  // Leaving a debounced save armed would write into a temp dir after the test file finishes.
+  // Freeze debounced writes before their temporary directories disappear.
   for (const store of stores.splice(0)) {
     store.freezeWrites()
   }
@@ -62,7 +58,6 @@ function createStore(): InstanceType<typeof Store> {
   return store
 }
 
-/** Park the gate the way a completed hygiene pass does. */
 function parkGate(): void {
   markLocalWorktreeMetadataPruneStarted(REPO_ID)
   expect(isLocalWorktreeMetadataPruneDue(REPO_ID)).toBe(false)
@@ -113,8 +108,7 @@ describe('store signals to the worktree metadata prune gate', () => {
       hostId: 'local'
     })
 
-    // Why this matters: the worktree listing itself stamps metadata on every scan, so a gate that
-    // re-armed on ordinary writes would restore the storm it exists to stop (#17775).
+    // Ordinary scan writes must not rearm pruning and recreate the scan storm.
     expect(isLocalWorktreeMetadataPruneDue(REPO_ID)).toBe(false)
   })
 })

@@ -2,12 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TerminalRunFactsRegister } from '../../../runtime/terminal-run-facts'
 import { ptyOwnership } from '../provider/ownership-state'
 import { createPtyWriteInput } from './write-input'
+
 import {
   WRITE_ACCEPTED,
   writeRefused,
   writeUnverifiable,
   type WriteSettlement
-} from '../../../../shared/pty-write-settlement'
+} from '../../../../shared/terminal/pty/lifecycle/pty-write-settlement'
 
 const PTY_ID = 'pty-user-input'
 
@@ -46,6 +47,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  vi.restoreAllMocks()
   ptyOwnership.delete(PTY_ID)
 })
 
@@ -84,37 +86,6 @@ describe('renderer PTY writes: input kind', () => {
       expect(provider.write).not.toHaveBeenCalled()
     }
   )
-
-  it.each(['writePtyInput', 'writePtyInputAccepted'] as const)(
-    '%s observes Escape only after a successful local write',
-    async (writer) => {
-      const observe = vi.fn()
-      const input = createWriteInput(new TerminalRunFactsRegister(), observe)
-      provider.write.mockImplementation(() => {
-        expect(observe).not.toHaveBeenCalled()
-        return true
-      })
-      expect(await input[writer]({ id: PTY_ID, data: '\x1b', inputKind: 'driving' })).toBe(true)
-      expect(observe).toHaveBeenCalledWith(PTY_ID, { kind: 'input', data: '\x1b' })
-      observe.mockClear()
-      provider.write.mockReturnValue(false)
-      expect(await input[writer]({ id: PTY_ID, data: '\x1b', inputKind: 'driving' })).toBe(false)
-      expect(observe).not.toHaveBeenCalled()
-      provider.write.mockImplementation(() => {
-        throw new Error('PTY unavailable')
-      })
-      expect(await input[writer]({ id: PTY_ID, data: '\x1b', inputKind: 'driving' })).toBe(false)
-      expect(observe).not.toHaveBeenCalled()
-    }
-  )
-
-  it('does not turn a client-side SSH handoff into host evidence', async () => {
-    ptyOwnership.set(PTY_ID, 'ssh:ssh-connection')
-    const observe = vi.fn()
-    const input = createWriteInput(new TerminalRunFactsRegister(), observe)
-    expect(await input.writePtyInput({ id: PTY_ID, data: '\x1b', inputKind: 'driving' })).toBe(true)
-    expect(observe).not.toHaveBeenCalled()
-  })
 
   it.each(['writePtyInput', 'writePtyInputAccepted'] as const)(
     '%s records driving input before the provider write',

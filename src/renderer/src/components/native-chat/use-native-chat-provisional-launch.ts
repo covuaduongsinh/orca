@@ -1,30 +1,31 @@
-import { useCallback, useMemo, useState, useSyncExternalStore } from 'react'
+import { restorePersistedStructuredLaunchState } from '@/lib/agent-session/launch/structured-agent-session-launch-reload'
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { getStructuredAgentSessionLaunchSelection } from '../../lib/agent-session/launch/structured-agent-session-launch-options'
 import {
+  subscribeStructuredAgentLaunchStatus,
+  structuredAgentSessionLaunchHasRetainedInput,
+  getStructuredLaunchStateBySessionId,
   getStructuredAgentSessionLaunchResumes,
-  relaunchFailedStructuredAgentSessionForMessage,
-  retryStructuredAgentSessionLaunch,
   useStructuredAgentSessionLaunchFailure,
   useStructuredAgentSessionLaunchLifecycle
-} from '@/lib/structured-agent-session-launch'
-import { getStructuredAgentSessionLaunchSelection } from '@/lib/structured-agent-session-launch-options'
-import { subscribeStructuredAgentLaunchStatus } from '@/lib/structured-agent-session-launch-registry'
-import { relaunchFailedStructuredAgentSessionWithMessage } from '@/lib/structured-agent-session-launch-message'
+} from '@/lib/agent-session/launch/structured-agent-session-launch-registry'
+import { relaunchFailedStructuredAgentSessionWithMessage } from '../../lib/agent-session/launch/structured-agent-session-launch-message'
+import {
+  relaunchFailedStructuredAgentSessionForMessage,
+  retryStructuredAgentSessionLaunch
+} from '@/lib/agent-session/launch/structured-agent-session-launch'
 import { toRuntimeWorktreeSelector } from '@/runtime/runtime-worktree-selector'
 
-/** A chat this view launched: a new conversation, or one resumed from history. */
 export type StructuredAgentSessionLaunchView = {
   kind: 'new' | 'resume'
   /** The encoded selection the launch seeded, shown until the host names the model. */
   seedOptions?: Readonly<Record<string, string>>
-  /** Picks the launch holds and applies before it publishes. */
-  heldOptions: Readonly<Record<string, string>>
+  explicitOptions?: Readonly<Record<string, string>>
   /** Where the chat runs; its own config may replace the listed default. */
   worktree?: string
   /** Its paired server has not said what create seeds yet; picks wait for it. */
   seedPending?: true
 }
-
-const NO_HELD_OPTIONS: Readonly<Record<string, string>> = {}
 
 function useLaunchView(
   sessionId: string,
@@ -37,8 +38,8 @@ function useLaunchView(
       const current = getStructuredAgentSessionLaunchSelection(sessionId)
       if (current) {
         snapshot = current
-      } else if (snapshot && snapshot.held !== NO_HELD_OPTIONS) {
-        snapshot = { seed: snapshot.seed, held: NO_HELD_OPTIONS, seedPending: true }
+      } else if (snapshot && !snapshot.seedPending) {
+        snapshot = { seed: snapshot.seed, seedPending: true }
       }
       return snapshot
     }
@@ -46,7 +47,7 @@ function useLaunchView(
       read,
       subscribe: (notify: () => void) =>
         subscribeStructuredAgentLaunchStatus(() => {
-          // Capture accepted picks even when retirement happens before React renders.
+          // Capture accepted picks even if retirement precedes React rendering.
           read()
           notify()
         })
@@ -70,7 +71,6 @@ function useLaunchView(
         : null
     })
   }
-  const held = selection?.held ?? NO_HELD_OPTIONS
   const seedPending = launching && (!selection || selection.seedPending === true)
   return useMemo(
     () =>
@@ -79,11 +79,11 @@ function useLaunchView(
             kind: intent.kind,
             ...(selection?.seed ? { seedOptions: selection.seed } : {}),
             ...(seedPending ? { seedPending: true as const } : {}),
-            heldOptions: held,
+            ...(selection?.explicit ? { explicitOptions: selection.explicit } : {}),
             ...(worktreeId ? { worktree: toRuntimeWorktreeSelector(worktreeId) } : {})
           }
         : undefined,
-    [held, intent.kind, selection?.seed, seedPending, worktreeId]
+    [intent.kind, selection?.seed, selection?.explicit, seedPending, worktreeId]
   )
 }
 
@@ -91,7 +91,14 @@ export function useNativeChatProvisionalLaunch(
   worktreeId: string | null | undefined,
   sessionId: string
 ) {
-  const lifecycle = useStructuredAgentSessionLaunchLifecycle(worktreeId ?? '', sessionId)
+  const rawLifecycle = useStructuredAgentSessionLaunchLifecycle(worktreeId ?? '', sessionId)
+  const retainedInput = structuredAgentSessionLaunchHasRetainedInput(worktreeId ?? '', sessionId)
+  const lifecycle = retainedInput ? null : rawLifecycle
+  useEffect(() => {
+    if (worktreeId && retainedInput && !getStructuredLaunchStateBySessionId(sessionId)) {
+      restorePersistedStructuredLaunchState(worktreeId, sessionId)
+    }
+  }, [worktreeId, sessionId, retainedInput])
   const failure = useStructuredAgentSessionLaunchFailure(worktreeId ?? '', sessionId)
   const launch = useLaunchView(sessionId, worktreeId, lifecycle !== null)
   const retry = useCallback(() => {
@@ -99,7 +106,6 @@ export function useNativeChatProvisionalLaunch(
       retryStructuredAgentSessionLaunch(worktreeId, sessionId)
     }
   }, [sessionId, worktreeId])
-  // While the chat starts it takes no send, so Send stays off and the text stays in the box.
   const starting = lifecycle === 'pending' || lifecycle === 'visibility-unknown'
   const sendThroughLaunch = useCallback(
     (text: string, withImages: boolean, send: () => boolean | 'queued'): boolean | 'queued' => {
@@ -109,7 +115,6 @@ export function useNativeChatProvisionalLaunch(
       if (lifecycle !== 'failed' || !worktreeId) {
         return send()
       }
-      // A failed start restarts, and a text message goes as the restart's first message.
       if (!withImages && text.trim()) {
         return relaunchFailedStructuredAgentSessionWithMessage(worktreeId, sessionId, text) !== null
       }
